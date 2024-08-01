@@ -1,0 +1,21 @@
+{
+  "name": "untitled-game-lib",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "saud <mdsaud@pm.me>",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/dev.js",
+    "uglify": "uglifyjs --compress --mangle -o app/main.js -- app/main.js",
+    "roll": "roadroller app/main.js -o app/main.js",
+    "bundle": "./bundle.sh"
+  },
+  "devDependencies": {
+    "@craftamap/esbuild-plugin-html": "^0.7.0",
+    "esbuild": "^0.23.0",
+    "roadroller": "^2.1.0",
+    "uglify-js": "^3.19.0"
+  }
+}
