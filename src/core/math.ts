@@ -1,6 +1,6 @@
 export const floor = (x: number) => ~~x
 
-export const radians = (a: number) => (a * Math.PI) / 180
+export const rad = (a: number) => (a * Math.PI) / 180
 
 export const rand = (a = 0, b = 1) => b + (a - b) * Math.random()
 
