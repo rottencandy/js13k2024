@@ -1,6 +1,6 @@
 import { CompPhysics } from "./physics"
 
-type WatchedKeys = {
+export type WatchedKeys = {
     left: boolean
     right: boolean
     up: boolean
