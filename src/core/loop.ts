@@ -3,7 +3,7 @@ type StepFn = (delta: number) => void
 /**
  * Start the game loop
  */
-export const gameLoop = (update: StepFn, render: StepFn) => {
+export const loop = (update: StepFn, render: StepFn) => {
     let last = performance.now(),
         delta = 0
     ;(function loop(now: number) {

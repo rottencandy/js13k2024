@@ -40,18 +40,32 @@ const pixel = (
     imgData.data[index + 3] = col[3]
 }
 
+export const texture = (
+    builder: (ctx: CTX) => void,
+    width: number,
+    height: number,
+) => {
+    const tex = $("canvas", { width, height })
+    const ctx = tex.getContext("2d")!
+    ctx.clearRect(0, 0, width, height)
+    builder(ctx)
+    return tex
+}
+
 export const sprite = (spr: number[][], palette: Color[]) => {
     const width = spr[0].length
     const height = spr.length
-    const tex = $("canvas", { width, height })
-    const oCtx = tex.getContext("2d")!
-    oCtx.clearRect(0, 0, width, height)
-    const imgData = oCtx.getImageData(0, 0, width, height)
-    oCtx.putImageData(imgData, 0, 0)
-    for (let x = 0; x < width; x++) {
-        for (let y = 0; y < width; y++) {
-            pixel(imgData, width, x, y, palette[spr[x][y]])
-        }
-    }
-    return tex
+    return texture(
+        (ctx) => {
+            const imgData = ctx.getImageData(0, 0, width, height)
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < width; y++) {
+                    pixel(imgData, width, x, y, palette[spr[x][y]])
+                }
+            }
+            ctx.putImageData(imgData, 0, 0)
+        },
+        width,
+        height,
+    )
 }
