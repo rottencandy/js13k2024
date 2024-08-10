@@ -2,6 +2,7 @@ import { CompInitRun } from "./components/init"
 import { setupKeyListener } from "./components/input"
 import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
+import { CompResizeRun } from "./components/resize"
 import { createCtx, resize } from "./core/canvas"
 import { loop } from "./core/loop"
 import { setupPP } from "./core/post-process"
@@ -22,6 +23,7 @@ window.onresize = () => {
     resize(canvas, width, height)
     // display note if device is in portrait
     portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
+    CompResizeRun(width, height)
 }
 
 CompInitRun(ctx)
