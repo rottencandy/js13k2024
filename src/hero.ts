@@ -21,5 +21,5 @@ CompPhysics.push((dt, keys) => {
 
 CompRender.push((ctx) => {
     ctx.fillStyle = "red"
-    ctx.fillRect(x, y, 10, 10)
+    ctx.fillRect(x, y, 100, 100)
 })
