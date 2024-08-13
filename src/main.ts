@@ -3,6 +3,7 @@ import { setupKeyListener } from "./components/input"
 import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
 import { CompResizeRun } from "./components/resize"
+import { HEIGHT, WIDTH } from "./const"
 import { createCtx, resize } from "./core/canvas"
 import { loop } from "./core/loop"
 import { setupPP } from "./core/post-process"
@@ -12,18 +13,16 @@ import "./hero"
 const canvas2d = document.createElement("canvas")
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const portraitNote = document.getElementById("d")!
-const width = 1280
-const height = 720
-const ctx = createCtx(canvas2d, width, height)
+const ctx = createCtx(canvas2d, WIDTH, HEIGHT)
 const keys = setupKeyListener(canvas2d, false)
-setupPP(canvas, width, height)
+setupPP(canvas, WIDTH, HEIGHT)
 
 window.onresize = () => {
-    resize(canvas2d, width, height)
-    resize(canvas, width, height)
+    resize(canvas2d, WIDTH, HEIGHT)
+    resize(canvas, WIDTH, HEIGHT)
     // display note if device is in portrait
     portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
-    CompResizeRun(width, height)
+    CompResizeRun(WIDTH, HEIGHT)
 }
 
 CompInitRun(ctx)
@@ -33,6 +32,6 @@ loop(
         CompPhysicsRun(dt, keys)
     },
     () => {
-        CompRenderRun(ctx, width, height)
+        CompRenderRun(ctx, WIDTH, HEIGHT)
     },
 )
