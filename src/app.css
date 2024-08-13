@@ -18,7 +18,7 @@ html, body {
 }
 
 /* Canvas */
-#f, #c {
+#c {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -30,12 +30,6 @@ html, body {
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
-}
-
-#ui {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
 }
 
 /* Note for potrait devices */
