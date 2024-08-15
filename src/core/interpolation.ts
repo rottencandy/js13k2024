@@ -23,6 +23,7 @@ export const EASEINOUTELASTIC: TweenFn = (t) =>
 
 /**
  * Returns a callback that returns true every time `interval` ticks have passed.
+ * @param interval interval in seconds
  */
 export const ticker = (interval: number, repeat = true) => {
     let ticks = 0

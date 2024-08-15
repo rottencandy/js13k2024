@@ -9,6 +9,7 @@ import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
 
 import "./hero"
+import "./mob"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const offscreenCanvas = document.createElement("canvas")
