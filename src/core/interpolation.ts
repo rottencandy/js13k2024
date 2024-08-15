@@ -23,18 +23,24 @@ export const EASEINOUTELASTIC: TweenFn = (t) =>
 
 /**
  * Returns a callback that returns true every time `interval` ticks have passed.
- * @param interval interval in seconds
+ * @param interval interval in milliseconds
  */
 export const ticker = (interval: number, repeat = true) => {
-    let ticks = 0
-    return (dt: number) => {
-        if ((ticks += dt) > interval) {
-            if (repeat) ticks = 0
-            return true
-        } else {
-            return false
-        }
+    const obj = {
+        ticks: 0,
+        tick: (dt: number) => {
+            if ((obj.ticks += dt) > interval) {
+                if (repeat) obj.ticks = 0
+                return true
+            } else {
+                return false
+            }
+        },
+        reset: () => {
+            obj.ticks = 0
+        },
     }
+    return obj
 }
 
 export const tween = (
@@ -49,7 +55,7 @@ export const tween = (
     const obj = {
         val: from,
         done: false,
-        step(delta: number) {
+        step: (delta: number) => {
             // check if interpolation is done
             if (obj.done) {
                 obj.val = to

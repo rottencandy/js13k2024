@@ -20,8 +20,33 @@ export const aabb = (
     y2: number,
     w2: number,
     h2: number,
+) => x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+
+export const ccCollision = (
+    x1: number,
+    y1: number,
+    r1: number,
+    x2: number,
+    y2: number,
+    r2: number,
 ) => {
-    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+    const dx = x2 - x1
+    const dy = y2 - y1
+    const dist = Math.sqrt(dx * dx + dy * dy)
+    return dist < r1 + r2
+}
+
+export const cpCollision = (
+    cx: number,
+    cy: number,
+    r: number,
+    px: number,
+    py: number,
+) => {
+    const dx = px - cx
+    const dy = py - cy
+    const dist = Math.sqrt(dx * dx + dy + dy)
+    return dist < r
 }
 
 /**
@@ -34,11 +59,11 @@ export const lerp = (from: number, to: number, weight: number) => {
 
 /**
  * Normalize a vec2 inplace
+ * taken from gl-matrix
  */
 export const normalize = (v: Vec2) => {
     var len = v.x * v.x + v.y * v.y
     if (len > 0) {
-        //TODO: evaluate use of glm_invsqrt here?
         len = 1 / Math.sqrt(len)
     }
     v.x = v.x * len
