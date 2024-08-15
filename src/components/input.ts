@@ -1,4 +1,4 @@
-import { CompPhysics } from "./physics"
+import { addPhysicsComp } from "./physics"
 
 export type WatchedKeys = {
     left: boolean
@@ -111,7 +111,7 @@ export const setupKeyListener = (
                 }
             }
 
-    CompPhysics.push(() => {
+    addPhysicsComp(() => {
         if (justClicked) {
             justClicked = false
             keys.justClicked = true

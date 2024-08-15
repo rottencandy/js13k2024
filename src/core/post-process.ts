@@ -1,5 +1,5 @@
 import { resize } from "./canvas"
-import { CompRender } from "../components/render"
+import { addRenderComp, } from "../components/render"
 
 const vertShader = `#version 300 es
 precision lowp float;
@@ -78,7 +78,7 @@ export const setupPP = (
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 
-    CompRender.push((ctx) => {
+    addRenderComp((ctx) => {
         gl.texImage2D(
             gl.TEXTURE_2D,
             0,

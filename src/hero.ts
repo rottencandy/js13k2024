@@ -1,10 +1,10 @@
-import { CompPhysics } from "./components/physics"
-import { CompRender } from "./components/render"
+import { addPhysicsComp } from "./components/physics"
+import { addRenderComp } from "./components/render"
 
 let x = 50,
     y = 50
 
-CompPhysics.push((dt, keys) => {
+addPhysicsComp((dt, keys) => {
     if (keys.left) {
         x -= 1 * dt
     }
@@ -19,7 +19,7 @@ CompPhysics.push((dt, keys) => {
     }
 })
 
-CompRender.push((ctx) => {
+addRenderComp((ctx) => {
     ctx.fillStyle = "red"
     ctx.fillRect(x, y, 100, 100)
 })
