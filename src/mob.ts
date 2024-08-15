@@ -3,17 +3,17 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
-import { ccCollision, normalize, rand } from "./core/math"
+import { angleToVec, ccCollision, normalize, rand } from "./core/math"
 import { hitHero, playerCol, playerPos } from "./hero"
 
 // poor man's ecs
-const mobs = {
+const entities = {
     x: [] as number[],
     y: [] as number[],
-    alive: [] as boolean[],
+    active: [] as boolean[],
 }
 // stores ids of free entities
-const freeMobs: number[] = []
+const freeEntities: number[] = []
 const spawnRadius = HEIGHT / 2
 const width = 20
 const height = 20
@@ -30,53 +30,55 @@ addPhysicsComp((dt) => {
         spawnMob()
     }
     // todo optimize out non-visible mobs?
-    for (let i = 0; i < mobs.x.length; i++) {
-        // move towards player
-        _vec.x = playerPos.x - mobs.x[i]
-        _vec.y = playerPos.y - mobs.y[i]
-        normalize(_vec)
-        mobs.x[i] += _vec.x * speed * dt
-        mobs.y[i] += _vec.y * speed * dt
+    for (let i = 0; i < entities.x.length; i++) {
+        if (entities.active[i]) {
+            // move towards player
+            _vec.x = playerPos.x - entities.x[i]
+            _vec.y = playerPos.y - entities.y[i]
+            normalize(_vec)
+            entities.x[i] += _vec.x * speed * dt
+            entities.y[i] += _vec.y * speed * dt
 
-        // check player collision
-        // todo: possible optimization: skip detection if player is invulnerable
-        if (
-            ccCollision(
-                mobs.x[i],
-                mobs.y[i],
-                mobCol,
-                playerPos.x,
-                playerPos.y,
-                playerCol,
-            )
-        ) {
-            hitHero(mobDmg)
+            // check player collision
+            // todo: possible optimization: skip detection if player is invulnerable
+            if (
+                ccCollision(
+                    entities.x[i],
+                    entities.y[i],
+                    mobCol,
+                    playerPos.x,
+                    playerPos.y,
+                    playerCol,
+                )
+            ) {
+                hitHero(mobDmg)
+            }
         }
     }
 })
 
 addRenderComp((ctx) => {
     ctx.fillStyle = "red"
-    for (let i = 0; i < mobs.x.length; i++) {
-        if (mobs.alive[i]) {
+    for (let i = 0; i < entities.x.length; i++) {
+        if (entities.active[i]) {
             ctx.fillRect(
-                mobs.x[i] - width / 2 - cam.x,
-                mobs.y[i] - height / 2 - cam.y,
+                entities.x[i] - width / 2 - cam.x,
+                entities.y[i] - height / 2 - cam.y,
                 width,
                 height,
             )
-        }
-        // draw collision radius
-        if (DEBUG) {
-            ctx.beginPath()
-            ctx.arc(
-                mobs.x[i] - cam.x,
-                mobs.y[i] - cam.y,
-                mobCol,
-                0,
-                Math.PI * 2,
-            )
-            ctx.stroke()
+            // draw collision radius
+            if (DEBUG) {
+                ctx.beginPath()
+                ctx.arc(
+                    entities.x[i] - cam.x,
+                    entities.y[i] - cam.y,
+                    mobCol,
+                    0,
+                    Math.PI * 2,
+                )
+                ctx.stroke()
+            }
         }
     }
 
@@ -96,22 +98,22 @@ addRenderComp((ctx) => {
 
 /** returns mob index */
 const spawnMob = () => {
-    const theta = rand(0, Math.PI * 2)
-    const spawnX = Math.sin(theta) * spawnRadius + playerPos.x
-    const spawnY = Math.cos(theta) * spawnRadius + playerPos.y
-    if (freeMobs.length > 0) {
-        const i = freeMobs.pop()!
-        mobs.x[i] = spawnX
-        mobs.y[i] = spawnX
-        mobs.alive[i] = true
+    const spawnPos = angleToVec(rand(0, Math.PI * 2))
+    spawnPos.x = spawnPos.x * spawnRadius + playerPos.x
+    spawnPos.y = spawnPos.y * spawnRadius + playerPos.y
+    if (freeEntities.length > 0) {
+        const i = freeEntities.pop()!
+        entities.x[i] = spawnPos.x
+        entities.y[i] = spawnPos.y
+        entities.active[i] = true
         return i
     }
-    mobs.x.push(spawnX)
-    mobs.y.push(spawnY)
-    return mobs.alive.push(true)
+    entities.x.push(spawnPos.x)
+    entities.y.push(spawnPos.y)
+    return entities.active.push(true)
 }
 
 const killMob = (i: number) => {
-    mobs.alive[i] = false
-    freeMobs.push(i)
+    entities.active[i] = false
+    freeEntities.push(i)
 }

@@ -3,6 +3,8 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT, WIDTH } from "./const"
 import { ticker } from "./core/interpolation"
+import { rand } from "./core/math"
+import { spawnBullet } from "./weapon"
 
 const enum State {
     idle,
@@ -22,7 +24,8 @@ let dir = Dir.right
 let health = 100
 let invulnerable = false
 
-const vulnerability = ticker(1000, true)
+const vulnerability = ticker(1e3, true)
+const fireRate = ticker(2e3, true)
 
 addPhysicsComp((dt, keys) => {
     // movement
@@ -33,6 +36,11 @@ addPhysicsComp((dt, keys) => {
     } else {
         state = State.moving
         dir = keys.dir.x < 0 ? Dir.left : Dir.right
+    }
+
+    // fire weapons
+    if (fireRate.tick(dt)) {
+        spawnBullet(playerPos.x, playerPos.y, rand(0, Math.PI * 2))
     }
 
     // vulnerability

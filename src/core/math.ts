@@ -53,9 +53,8 @@ export const cpCollision = (
  * Linearly interpolate between two values.
  * `weight` should be between 0 & 1, but may be larger for extrapolation
  */
-export const lerp = (from: number, to: number, weight: number) => {
-    return from + (to - from) * weight
-}
+export const lerp = (from: number, to: number, weight: number) =>
+    from + (to - from) * weight
 
 /**
  * Normalize a vec2 inplace
@@ -69,3 +68,8 @@ export const normalize = (v: Vec2) => {
     v.x = v.x * len
     v.y = v.y * len
 }
+
+export const angleToVec = (a: number): Vec2 => ({
+    x: Math.sin(a),
+    y: Math.cos(a),
+})
