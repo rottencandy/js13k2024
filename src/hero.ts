@@ -5,18 +5,8 @@ let x = 50,
     y = 50
 
 addPhysicsComp((dt, keys) => {
-    if (keys.left) {
-        x -= 1 * dt
-    }
-    if (keys.right) {
-        x += 1 * dt
-    }
-    if (keys.up) {
-        y -= 1 * dt
-    }
-    if (keys.down) {
-        y += 1 * dt
-    }
+    x += keys.dir.x * dt
+    y += keys.dir.y * dt
 })
 
 addRenderComp((ctx) => {

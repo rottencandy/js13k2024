@@ -1,3 +1,5 @@
+export type Vec2 = { x: number; y: number }
+
 export const floor = (x: number) => ~~x
 
 export const rad = (a: number) => (a * Math.PI) / 180
@@ -28,4 +30,17 @@ export const aabb = (
  */
 export const lerp = (from: number, to: number, weight: number) => {
     return from + (to - from) * weight
+}
+
+/**
+ * Normalize a vec2 inplace
+ */
+export const normalize = (v: Vec2) => {
+    var len = v.x * v.x + v.y * v.y
+    if (len > 0) {
+        //TODO: evaluate use of glm_invsqrt here?
+        len = 1 / Math.sqrt(len)
+    }
+    v.x = v.x * len
+    v.y = v.y * len
 }

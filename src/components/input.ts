@@ -1,97 +1,86 @@
+import { normalize, Vec2 } from "src/core/math"
 import { addPhysicsComp } from "./physics"
 
 export type WatchedKeys = {
-    left: boolean
-    right: boolean
-    up: boolean
-    down: boolean
+    dir: Vec2
     space: boolean
-    shift: boolean
     esc: boolean
     clicked: boolean
-    justClicked: boolean
-    pointerLocked: boolean
     ptrX: number
     ptrY: number
 }
 
-export const dirKeysPressed = (k: WatchedKeys): boolean =>
-    !!(k.left || k.right || k.up || k.down)
-
 /**
  * Initialize onkey listeners
  */
-export const setupKeyListener = (
-    canvas: HTMLCanvasElement,
-    lockPointer: boolean,
-) => {
-    let justClicked = false
-    const keys: WatchedKeys = {
-        left: false,
-        right: false,
+export const setupKeyListener = (canvas: HTMLCanvasElement) => {
+    let dirty = false
+    let gamepad: Gamepad | null = null
+    const mvt = {
         up: false,
-        down: false,
+        lf: false,
+        dn: false,
+        rt: false,
+    }
+    const keys: WatchedKeys = {
+        dir: {
+            x: 0,
+            y: 0,
+        },
         space: false,
-        shift: false,
         esc: false,
         clicked: false,
-        justClicked: false,
-        pointerLocked: false,
         ptrX: 0,
         ptrY: 0,
     }
     const setKeyState =
-        (value: boolean) =>
+        (pressed: boolean) =>
         ({ key }: { key: string }) => {
+            dirty = true
             switch (key) {
                 case "ArrowUp":
                 case "w":
                 case "z":
-                    keys.up = value
+                    mvt.up = pressed
                     break
                 case "ArrowDown":
                 case "s":
-                    keys.down = value
+                    mvt.dn = pressed
                     break
                 case "ArrowLeft":
                 case "a":
                 case "q":
-                    keys.left = value
+                    mvt.lf = pressed
                     break
                 case "ArrowRight":
                 case "d":
-                    keys.right = value
+                    mvt.rt = pressed
                     break
                 case "Escape":
-                    keys.esc = value
+                    keys.esc = pressed
                     break
                 case " ":
-                    keys.space = value
-                case "Shift":
-                    keys.shift = value
+                    keys.space = pressed
             }
         }
 
-    window.onkeydown = setKeyState(true)
-    window.onkeyup = setKeyState(false)
+    onkeydown = setKeyState(true)
+    onkeyup = setKeyState(false)
 
-    canvas.onpointerdown = () => (keys.clicked = justClicked = true)
+    ongamepadconnected = (e) => {
+        // only consider gamepads with analog sticks
+        if (e.gamepad.axes.length > 1) {
+            gamepad = e.gamepad
+        }
+    }
+    ongamepaddisconnected = () => {
+        gamepad = null
+    }
+
     canvas.onpointerup = () => (keys.clicked = false)
     canvas.onpointermove = (e) => {
         keys.ptrX = e.offsetX / canvas.clientWidth
         keys.ptrY = e.offsetY / canvas.clientHeight
-    }
-
-    if (lockPointer) {
-        canvas.onclick = () => {
-            if (!keys.pointerLocked) {
-                canvas.requestPointerLock()
-            }
-        }
-
-        document.onpointerlockchange = () => {
-            keys.pointerLocked = document.pointerLockElement === canvas
-        }
     }
 
     canvas.ontouchstart =
@@ -100,23 +89,29 @@ export const setupKeyListener = (
         canvas.ontouchcancel =
             (e) => {
                 e.preventDefault()
-                keys.clicked = justClicked = e.touches.length > 0
                 if (keys.clicked) {
                     const offset = canvas.getBoundingClientRect()
                     const touch = e.touches[0]
                     keys.ptrX =
                         (touch.clientX - offset.left) / canvas.clientWidth
-                    // offset.top is not needed since canvas is always stuck to top
-                    keys.ptrY = touch.clientY / canvas.clientHeight
+                    keys.ptrY =
+                        (touch.clientY - offset.top) / canvas.clientHeight
                 }
             }
 
     addPhysicsComp(() => {
-        if (justClicked) {
-            justClicked = false
-            keys.justClicked = true
-        } else {
-            keys.justClicked = false
+        if (dirty) {
+            keys.dir.x = keys.dir.y = 0
+            keys.dir.x += mvt.rt ? 1 : 0
+            keys.dir.x -= mvt.lf ? 1 : 0
+            keys.dir.y -= mvt.up ? 1 : 0
+            keys.dir.y += mvt.dn ? 1 : 0
+            normalize(keys.dir)
+            dirty = false
+        }
+        if (gamepad) {
+            keys.dir.x = gamepad.axes[0]
+            keys.dir.y = gamepad.axes[1]
         }
     })
 

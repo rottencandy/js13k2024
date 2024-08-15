@@ -15,10 +15,10 @@ const offscreenCanvas = document.createElement("canvas")
 const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
-const keys = setupKeyListener(offscreenCanvas, false)
+const keys = setupKeyListener(offscreenCanvas)
 setupPostProcess(canvas, WIDTH, HEIGHT)
 
-window.onresize = () => {
+onresize = () => {
     resize(offscreenCanvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)
     // display note if device is in portrait
