@@ -1,28 +1,30 @@
 import { resize } from "./canvas"
 import { addRenderComp, } from "../components/render"
 
+// prettier-ignore
 const vertShader = `#version 300 es
-precision lowp float;
-layout(location=0)in vec2 aPos;
-out vec2 vTex;
+precision lowp float;`+
+"layout(location=0)in vec2 aPos;"+
+"out vec2 vTex;"+
 
-void main() {
-    vec2 vwPos = aPos * 2. - 1.;
-    vTex = vec2(aPos.x, 1. - aPos.y);
-    gl_Position = vec4(vwPos, 0., 1.);
-}`
+"void main() {"+
+    "vec2 vwPos = aPos * 2. - 1.;"+
+    "vTex = vec2(aPos.x, 1. - aPos.y);"+
+    "gl_Position = vec4(vwPos, 0., 1.);"+
+"}"
 
+// prettier-ignore
 const fragShader = `#version 300 es
-precision lowp float;
-in vec2 vTex;
-out vec4 outColor;
-uniform sampler2D uTex;
+precision lowp float;`+
+"in vec2 vTex;"+
+"out vec4 outColor;"+
+"uniform sampler2D uTex;"+
 
-void main() {
-    outColor = texture(uTex, vTex);
-}`
+"void main() {"+
+    "outColor = texture(uTex, vTex);"+
+"}"
 
-export const setupPP = (
+export const setupPostProcess = (
     canvas: HTMLCanvasElement,
     width: number,
     height: number,
