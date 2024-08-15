@@ -18,7 +18,7 @@ html, body {
 }
 
 /* Canvas */
-#c {
+canvas {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -30,6 +30,8 @@ html, body {
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+    font-smooth: never;
+    -webkit-font-smoothing: none;
 }
 
 /* Note for potrait devices */
