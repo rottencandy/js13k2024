@@ -18,7 +18,7 @@ const spawnRadius = HEIGHT / 2
 const width = 20
 const height = 20
 const speed = 0.1
-const mobCol = 10
+export const mobCollisionRadius = 10
 const mobDmg = 10
 
 const spawnTimer = ticker(1000, true)
@@ -45,7 +45,7 @@ addPhysicsComp((dt) => {
                 ccCollision(
                     entities.x[i],
                     entities.y[i],
-                    mobCol,
+                    mobCollisionRadius,
                     playerPos.x,
                     playerPos.y,
                     playerCol,
@@ -73,7 +73,7 @@ addRenderComp((ctx) => {
                 ctx.arc(
                     entities.x[i] - cam.x,
                     entities.y[i] - cam.y,
-                    mobCol,
+                    mobCollisionRadius,
                     0,
                     Math.PI * 2,
                 )
@@ -113,9 +113,21 @@ const spawnMob = () => {
     return entities.active.push(true)
 }
 
-const killMob = (i: number) => {
+export const killMob = (i: number) => {
     entities.active[i] = false
     freeEntities.push(i)
+}
+
+// TODO: check if using this instead of for-looping saves space
+export const iterMobs = (fn: (x: number, y: number, id: number) => boolean) => {
+    for (let i = 0; i < entities.x.length; i++) {
+        if (entities.active[i]) {
+            const end = fn(entities.x[i], entities.y[i], i)
+            if (end) {
+                break
+            }
+        }
+    }
 }
 
 /**

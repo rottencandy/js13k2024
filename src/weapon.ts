@@ -1,15 +1,13 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { ticker } from "./core/interpolation"
-import { angleToVec } from "./core/math"
-import { playerPos } from "./hero"
-import { nearestMobPos } from "./mob"
+import { angleToVec, ccCollision } from "./core/math"
+import { mobCollisionRadius, iterMobs, killMob } from "./mob"
 
 const entities = {
     x: [] as number[],
     y: [] as number[],
-    // direction angle
+    // direction vector(angle)
     ax: [] as number[],
     ay: [] as number[],
     active: [] as boolean[],
@@ -19,11 +17,30 @@ const bulletSpeed = 0.5
 const bulletRadius = 10
 
 addPhysicsComp((dt) => {
-    // update existing bullets
     for (let i = 0; i < entities.x.length; i++) {
         if (entities.active[i]) {
+            // update existing bullets
             entities.x[i] += entities.ax[i] * bulletSpeed * dt
             entities.y[i] += entities.ay[i] * bulletSpeed * dt
+
+            // check for impact
+            iterMobs((mobx, moby, idx) => {
+                if (
+                    ccCollision(
+                        entities.x[i],
+                        entities.y[i],
+                        bulletRadius,
+                        mobx,
+                        moby,
+                        mobCollisionRadius,
+                    )
+                ) {
+                    killMob(idx)
+                    killBullet(i)
+                    return true
+                }
+                return false
+            })
         }
     }
 })
