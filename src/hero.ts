@@ -3,7 +3,7 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT, WIDTH } from "./const"
 import { ticker } from "./core/interpolation"
-import { rand } from "./core/math"
+import { nearestMobPos } from "./mob"
 import { spawnBullet } from "./weapon"
 
 const enum State {
@@ -40,7 +40,14 @@ addPhysicsComp((dt, keys) => {
 
     // fire weapons
     if (fireRate.tick(dt)) {
-        spawnBullet(playerPos.x, playerPos.y, rand(0, Math.PI * 2))
+        const aimedMob = nearestMobPos(playerPos.x, playerPos.y)
+        if (aimedMob !== undefined) {
+            // translate mob pos to player pos
+            const xpos = aimedMob.x - playerPos.x
+            const ypos = aimedMob.y - playerPos.y
+            const angle = Math.atan2(xpos, ypos)
+            spawnBullet(playerPos.x, playerPos.y, angle)
+        }
     }
 
     // vulnerability

@@ -1,7 +1,10 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
+import { ticker } from "./core/interpolation"
 import { angleToVec } from "./core/math"
+import { playerPos } from "./hero"
+import { nearestMobPos } from "./mob"
 
 const entities = {
     x: [] as number[],
@@ -12,10 +15,11 @@ const entities = {
     active: [] as boolean[],
 }
 const freeEntities: number[] = []
-const bulletSpeed = 0.4
+const bulletSpeed = 0.5
 const bulletRadius = 10
 
 addPhysicsComp((dt) => {
+    // update existing bullets
     for (let i = 0; i < entities.x.length; i++) {
         if (entities.active[i]) {
             entities.x[i] += entities.ax[i] * bulletSpeed * dt

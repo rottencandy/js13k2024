@@ -3,7 +3,7 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
-import { angleToVec, ccCollision, normalize, rand } from "./core/math"
+import { angleToVec, ccCollision, distance, normalize, rand } from "./core/math"
 import { hitHero, playerCol, playerPos } from "./hero"
 
 // poor man's ecs
@@ -116,4 +116,24 @@ const spawnMob = () => {
 const killMob = (i: number) => {
     entities.active[i] = false
     freeEntities.push(i)
+}
+
+/**
+ * This returns undefined if there are no mobs alive
+ */
+export const nearestMobPos = (x: number, y: number) => {
+    let smallestDist = 1e3
+    let id: number | undefined = undefined
+    for (let i = 0; i < entities.x.length; i++) {
+        if (entities.active[i]) {
+            const dist = distance(x, y, entities.x[i], entities.y[i])
+            if (dist < smallestDist) {
+                smallestDist = dist
+                id = i
+            }
+        }
+    }
+    if (id !== undefined) {
+        return { x: entities.x[id], y: entities.y[id] }
+    }
 }

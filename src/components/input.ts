@@ -15,7 +15,7 @@ export type WatchedKeys = {
  */
 export const setupKeyListener = (canvas: HTMLCanvasElement) => {
     let dirty = false
-    let gamepad: Gamepad | null = null
+    let gamepad: Gamepad | undefined = undefined
     const mvt = {
         up: false,
         lf: false,
@@ -74,7 +74,7 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
         }
     }
     ongamepaddisconnected = () => {
-        gamepad = null
+        gamepad = undefined
     }
 
     canvas.onpointerup = () => (keys.clicked = false)

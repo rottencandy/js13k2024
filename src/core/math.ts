@@ -6,8 +6,16 @@ export const rad = (a: number) => (a * Math.PI) / 180
 
 export const rand = (a = 0, b = 1) => b + (a - b) * Math.random()
 
-export const clamp = (value: number, min: number, max: number) => {
-    return value < min ? min : value > max ? max : value
+export const clamp = (value: number, min: number, max: number) =>
+    value < min ? min : value > max ? max : value
+
+/**
+ * Distance b/w 2 vectors
+ */
+export const distance = (x1: number, y1: number, x2: number, y2: number) => {
+    const dx = x2 - x1
+    const dy = y2 - y1
+    return Math.sqrt(dx * dx + dy * dy)
 }
 
 // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
@@ -29,12 +37,7 @@ export const ccCollision = (
     x2: number,
     y2: number,
     r2: number,
-) => {
-    const dx = x2 - x1
-    const dy = y2 - y1
-    const dist = Math.sqrt(dx * dx + dy * dy)
-    return dist < r1 + r2
-}
+) => distance(x1, y1, x2, y2) < r1 + r2
 
 export const cpCollision = (
     cx: number,
@@ -42,12 +45,7 @@ export const cpCollision = (
     r: number,
     px: number,
     py: number,
-) => {
-    const dx = px - cx
-    const dy = py - cy
-    const dist = Math.sqrt(dx * dx + dy + dy)
-    return dist < r
-}
+) => distance(cx, cy, px, py) < r
 
 /**
  * Linearly interpolate between two values.
