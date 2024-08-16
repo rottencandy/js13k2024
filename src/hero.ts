@@ -4,19 +4,20 @@ import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT, WIDTH } from "./const"
 import { ticker } from "./core/interpolation"
 import { nearestMobPos } from "./mob"
-import { spawnBullet } from "./weapon"
+import { fireBullet } from "./weapon"
 
 const enum State {
     idle,
     moving,
 }
+
 const enum Dir {
     left,
     right,
 }
 
 export const playerPos = { x: WIDTH / 2, y: HEIGHT / 2 }
-export const playerCol = 20
+export const playerCollisionRadius = 20
 const width = 50
 const height = 50
 let state = State.idle
@@ -46,7 +47,7 @@ addPhysicsComp((dt, keys) => {
             const xpos = aimedMob.x - playerPos.x
             const ypos = aimedMob.y - playerPos.y
             const angle = Math.atan2(xpos, ypos)
-            spawnBullet(playerPos.x, playerPos.y, angle)
+            fireBullet(playerPos.x, playerPos.y, angle)
         }
     }
 
@@ -71,7 +72,7 @@ addRenderComp((ctx) => {
         ctx.arc(
             playerPos.x - cam.x,
             playerPos.y - cam.y,
-            playerCol,
+            playerCollisionRadius,
             0,
             Math.PI * 2,
         )

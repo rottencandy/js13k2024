@@ -4,7 +4,7 @@ import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
 import { angleToVec, ccCollision, distance, normalize, rand } from "./core/math"
-import { hitHero, playerCol, playerPos } from "./hero"
+import { hitHero, playerCollisionRadius, playerPos } from "./hero"
 
 // poor man's ecs
 const entities = {
@@ -29,58 +29,51 @@ addPhysicsComp((dt) => {
     if (spawnTimer.tick(dt)) {
         spawnMob()
     }
-    // todo optimize out non-visible mobs?
-    for (let i = 0; i < entities.x.length; i++) {
-        if (entities.active[i]) {
-            // move towards player
-            _vec.x = playerPos.x - entities.x[i]
-            _vec.y = playerPos.y - entities.y[i]
-            normalize(_vec)
-            entities.x[i] += _vec.x * speed * dt
-            entities.y[i] += _vec.y * speed * dt
+    // todo optimize out offscreen mobs?
+    iterMobs((x, y, id) => {
+        // move towards player
+        _vec.x = playerPos.x - x
+        _vec.y = playerPos.y - y
+        normalize(_vec)
+        entities.x[id] += _vec.x * speed * dt
+        entities.y[id] += _vec.y * speed * dt
 
-            // check player collision
-            // todo: possible optimization: skip detection if player is invulnerable
-            if (
-                ccCollision(
-                    entities.x[i],
-                    entities.y[i],
-                    mobCollisionRadius,
-                    playerPos.x,
-                    playerPos.y,
-                    playerCol,
-                )
-            ) {
-                hitHero(mobDmg)
-            }
+        // check player collision
+        // todo: possible optimization: skip detection if player is invulnerable
+        if (
+            ccCollision(
+                // we use values from component because we just updated them above
+                entities.x[id],
+                entities.y[id],
+                mobCollisionRadius,
+                playerPos.x,
+                playerPos.y,
+                playerCollisionRadius,
+            )
+        ) {
+            hitHero(mobDmg)
         }
-    }
+        return false
+    })
 })
 
 addRenderComp((ctx) => {
     ctx.fillStyle = "red"
-    for (let i = 0; i < entities.x.length; i++) {
-        if (entities.active[i]) {
-            ctx.fillRect(
-                entities.x[i] - width / 2 - cam.x,
-                entities.y[i] - height / 2 - cam.y,
-                width,
-                height,
-            )
-            // draw collision radius
-            if (DEBUG) {
-                ctx.beginPath()
-                ctx.arc(
-                    entities.x[i] - cam.x,
-                    entities.y[i] - cam.y,
-                    mobCollisionRadius,
-                    0,
-                    Math.PI * 2,
-                )
-                ctx.stroke()
-            }
+    iterMobs((x, y) => {
+        ctx.fillRect(
+            x - width / 2 - cam.x,
+            y - height / 2 - cam.y,
+            width,
+            height,
+        )
+        // draw collision radius
+        if (DEBUG) {
+            ctx.beginPath()
+            ctx.arc(x - cam.x, y - cam.y, mobCollisionRadius, 0, Math.PI * 2)
+            ctx.stroke()
         }
-    }
+        return false
+    })
 
     // draw spawn circle
     if (DEBUG) {
@@ -136,15 +129,14 @@ export const iterMobs = (fn: (x: number, y: number, id: number) => boolean) => {
 export const nearestMobPos = (x: number, y: number) => {
     let smallestDist = 1e3
     let id: number | undefined = undefined
-    for (let i = 0; i < entities.x.length; i++) {
-        if (entities.active[i]) {
-            const dist = distance(x, y, entities.x[i], entities.y[i])
-            if (dist < smallestDist) {
-                smallestDist = dist
-                id = i
-            }
+    iterMobs((mobx, moby, mobid) => {
+        const dist = distance(x, y, mobx, moby)
+        if (dist < smallestDist) {
+            smallestDist = dist
+            id = mobid
         }
-    }
+        return false
+    })
     if (id !== undefined) {
         return { x: entities.x[id], y: entities.y[id] }
     }
