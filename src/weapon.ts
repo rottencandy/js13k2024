@@ -12,47 +12,64 @@ const bullets = {
     diry: [] as number[],
     active: [] as boolean[],
 }
-const freeEntities: number[] = []
+let freeEntities: number[] = []
 const bulletSpeed = 0.5
 const bulletRadius = 10
 
-addPhysicsComp((dt) => {
-    iterBullets((x, y, _dirx, _diry, id) => {
-        // update existing bullets
-        bullets.x[id] += x * bulletSpeed * dt
-        bullets.y[id] += y * bulletSpeed * dt
+let unloadPhysics: () => void
+let unloadRender: () => void
 
-        // check for impact
-        iterMobs((mobx, moby, mobid) => {
-            if (
-                ccCollision(
-                    bullets.x[id],
-                    bullets.y[id],
-                    bulletRadius,
-                    mobx,
-                    moby,
-                    mobCollisionRadius,
-                )
-            ) {
-                killMob(mobid)
-                removeBullet(id)
-                return true
-            }
+export const unloadWeapon = () => {
+    unloadPhysics()
+    unloadRender()
+}
+
+export const loadWeapon = () => {
+    bullets.x = []
+    bullets.y = []
+    bullets.dirx = []
+    bullets.diry = []
+    bullets.active = []
+    freeEntities = []
+
+    unloadPhysics = addPhysicsComp((dt) => {
+        iterBullets((x, y, _dirx, _diry, id) => {
+            // update existing bullets
+            bullets.x[id] += x * bulletSpeed * dt
+            bullets.y[id] += y * bulletSpeed * dt
+
+            // check for impact
+            iterMobs((mobx, moby, mobid) => {
+                if (
+                    ccCollision(
+                        bullets.x[id],
+                        bullets.y[id],
+                        bulletRadius,
+                        mobx,
+                        moby,
+                        mobCollisionRadius,
+                    )
+                ) {
+                    killMob(mobid)
+                    removeBullet(id)
+                    return true
+                }
+                return false
+            })
             return false
         })
-        return false
     })
-})
 
-addRenderComp((ctx) => {
-    iterBullets((x, y, _dirx, _diry, _id) => {
-        ctx.fillStyle = "orange"
-        ctx.beginPath()
-        ctx.arc(x - cam.x, y - cam.y, bulletRadius, 0, Math.PI * 2)
-        ctx.fill()
-        return false
+    unloadRender = addRenderComp((ctx) => {
+        iterBullets((x, y, _dirx, _diry, _id) => {
+            ctx.fillStyle = "orange"
+            ctx.beginPath()
+            ctx.arc(x - cam.x, y - cam.y, bulletRadius, 0, Math.PI * 2)
+            ctx.fill()
+            return false
+        })
     })
-})
+}
 
 export const fireBullet = (x: number, y: number, dir: number) => {
     const angle = angleToVec(dir)

@@ -13,81 +13,102 @@ const entities = {
     active: [] as boolean[],
 }
 // stores ids of free entities
-const freeEntities: number[] = []
+let freeEntities: number[] = []
 const spawnRadius = HEIGHT / 2
+export const mobCollisionRadius = 10
 const width = 20
 const height = 20
 const speed = 0.1
-export const mobCollisionRadius = 10
 const mobDmg = 10
 
 const spawnTimer = ticker(1000, true)
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
 
-addPhysicsComp((dt) => {
-    if (spawnTimer.tick(dt)) {
-        spawnMob()
-    }
-    // todo optimize out offscreen mobs?
-    iterMobs((x, y, id) => {
-        // move towards player
-        _vec.x = playerPos.x - x
-        _vec.y = playerPos.y - y
-        normalize(_vec)
-        entities.x[id] += _vec.x * speed * dt
-        entities.y[id] += _vec.y * speed * dt
+let unloadPhysics: () => void
+let unloadRender: () => void
 
-        // check player collision
-        // todo: possible optimization: skip detection if player is invulnerable
-        if (
-            ccCollision(
-                // we use values from component because we just updated them above
-                entities.x[id],
-                entities.y[id],
-                mobCollisionRadius,
-                playerPos.x,
-                playerPos.y,
-                playerCollisionRadius,
-            )
-        ) {
-            hitHero(mobDmg)
+export const unloadMob = () => {
+    unloadPhysics()
+    unloadRender()
+}
+
+export const loadMob = () => {
+    entities.x = []
+    entities.y = []
+    entities.active = []
+    freeEntities = []
+
+    unloadPhysics = addPhysicsComp((dt) => {
+        if (spawnTimer.tick(dt)) {
+            spawnMob()
         }
-        return false
-    })
-})
+        // todo optimize out offscreen mobs?
+        iterMobs((x, y, id) => {
+            // move towards player
+            _vec.x = playerPos.x - x
+            _vec.y = playerPos.y - y
+            normalize(_vec)
+            entities.x[id] += _vec.x * speed * dt
+            entities.y[id] += _vec.y * speed * dt
 
-addRenderComp((ctx) => {
-    ctx.fillStyle = "red"
-    iterMobs((x, y) => {
-        ctx.fillRect(
-            x - width / 2 - cam.x,
-            y - height / 2 - cam.y,
-            width,
-            height,
-        )
-        // draw collision radius
+            // check player collision
+            // todo: possible optimization: skip detection if player is invulnerable
+            if (
+                ccCollision(
+                    // we use values from component because we just updated them above
+                    entities.x[id],
+                    entities.y[id],
+                    mobCollisionRadius,
+                    playerPos.x,
+                    playerPos.y,
+                    playerCollisionRadius,
+                )
+            ) {
+                hitHero(mobDmg)
+            }
+            return false
+        })
+    })
+
+    unloadRender = addRenderComp((ctx) => {
+        ctx.fillStyle = "red"
+        iterMobs((x, y) => {
+            ctx.fillRect(
+                x - width / 2 - cam.x,
+                y - height / 2 - cam.y,
+                width,
+                height,
+            )
+            // draw collision radius
+            if (DEBUG) {
+                ctx.beginPath()
+                ctx.arc(
+                    x - cam.x,
+                    y - cam.y,
+                    mobCollisionRadius,
+                    0,
+                    Math.PI * 2,
+                )
+                ctx.stroke()
+            }
+            return false
+        })
+
+        // draw spawn circle
         if (DEBUG) {
             ctx.beginPath()
-            ctx.arc(x - cam.x, y - cam.y, mobCollisionRadius, 0, Math.PI * 2)
+            ctx.arc(
+                playerPos.x - cam.x,
+                playerPos.y - cam.y,
+                spawnRadius,
+                0,
+                Math.PI * 2,
+            )
             ctx.stroke()
         }
-        return false
     })
-
-    // draw spawn circle
-    if (DEBUG) {
-        ctx.beginPath()
-        ctx.arc(
-            playerPos.x - cam.x,
-            playerPos.y - cam.y,
-            spawnRadius,
-            0,
-            Math.PI * 2,
-        )
-        ctx.stroke()
-    }
-})
+}
 
 /** returns mob index */
 const spawnMob = () => {

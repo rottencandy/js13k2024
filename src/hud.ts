@@ -7,13 +7,21 @@ const healthBarWidth = 1000
 const barx = (WIDTH - healthBarWidth) / 2
 const bary = 20
 
-addRenderComp((ctx) => {
-    ctx.fillStyle = "blue"
-    ctx.fillRect(
-        barx,
-        bary,
-        healthBarWidth * (health / maxHealth),
-        healthBarHeight,
-    )
-    ctx.strokeRect(barx, bary, healthBarWidth, healthBarHeight)
-})
+let unloadRender: () => void
+
+export const unloadHud = () => {
+    unloadRender()
+}
+
+export const loadHud = () => {
+    unloadRender = addRenderComp((ctx) => {
+        ctx.fillStyle = "blue"
+        ctx.fillRect(
+            barx,
+            bary,
+            healthBarWidth * (health / maxHealth),
+            healthBarHeight,
+        )
+        ctx.strokeRect(barx, bary, healthBarWidth, healthBarHeight)
+    })
+}

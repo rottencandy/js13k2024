@@ -1,4 +1,3 @@
-import { CompInitRun } from "./components/init"
 import { setupKeyListener } from "./components/input"
 import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
@@ -7,10 +6,7 @@ import { HEIGHT, WIDTH } from "./const"
 import { createCtx, resize } from "./core/canvas"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
-
-import "./hero"
-import "./mob"
-import "./hud"
+import { loadGame } from "./scene"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const offscreenCanvas = document.createElement("canvas")
@@ -18,6 +14,7 @@ const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
 const keys = setupKeyListener(offscreenCanvas)
+loadGame()
 setupPostProcess(canvas, WIDTH, HEIGHT)
 
 onresize = () => {
@@ -27,8 +24,6 @@ onresize = () => {
     portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
     CompResizeRun(WIDTH, HEIGHT)
 }
-
-CompInitRun(ctx)
 
 loop(
     (dt) => {
