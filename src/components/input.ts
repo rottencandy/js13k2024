@@ -77,6 +77,7 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
         gamepad = undefined
     }
 
+    canvas.onpointerdown = () => (keys.clicked = true)
     canvas.onpointerup = () => (keys.clicked = false)
     canvas.onpointermove = (e) => {
         keys.ptrX = e.offsetX / canvas.clientWidth
