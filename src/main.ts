@@ -15,7 +15,7 @@ const portraitNote = document.getElementById("d")!
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
 const keys = setupKeyListener(offscreenCanvas)
 loadGame()
-setupPostProcess(canvas, WIDTH, HEIGHT)
+const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 
 onresize = () => {
     resize(offscreenCanvas, WIDTH, HEIGHT)
@@ -31,5 +31,6 @@ loop(
     },
     () => {
         CompRenderRun(ctx, WIDTH, HEIGHT)
+        postProcess(ctx)
     },
 )

@@ -1,5 +1,4 @@
 import { resize } from "./canvas"
-import { addRenderComp, } from "../components/render"
 
 // prettier-ignore
 const vertShader = `#version 300 es
@@ -80,7 +79,7 @@ export const setupPostProcess = (
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 
-    addRenderComp((ctx) => {
+    return (ctx: CanvasRenderingContext2D) => {
         gl.texImage2D(
             gl.TEXTURE_2D,
             0,
@@ -92,5 +91,5 @@ export const setupPostProcess = (
         gl.clearColor(0.3, 0.3, 0.3, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.drawArrays(gl.TRIANGLES, 0, 6)
-    })
+    }
 }
