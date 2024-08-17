@@ -6,15 +6,16 @@ import { HEIGHT, WIDTH } from "./const"
 import { createCtx, resize } from "./core/canvas"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
-import { loadGame } from "./scene"
+import { $ } from "./core/ui"
+import { loadTitle } from "./scene"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
-const offscreenCanvas = document.createElement("canvas")
+const offscreenCanvas = $("canvas")
 const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
-const keys = setupKeyListener(offscreenCanvas)
-loadGame()
+const keys = setupKeyListener(canvas)
+loadTitle()
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 
 onresize = () => {

@@ -271,8 +271,8 @@ const letters: Record<string, number[][]> = {
 };
 
 /**
- * WARNING: this does not check if string contains invalid chars.
- * ONLY ALPHANUMERIC, DOT, SPC CHARS ALLOWED!!
+ * WARNING: ONLY ALPHANUMERIC, DOT, SPC CHARS ALLOWED!!
+ * this does not check if string contains invalid chars.
  */
 export const renderFont = (
     ctx: CanvasRenderingContext2D,

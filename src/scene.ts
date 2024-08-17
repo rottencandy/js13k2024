@@ -2,6 +2,7 @@ import { loadCam, unloadCam } from "./cam"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
+import { loadStartScreen, unloadStartScreen } from "./ui"
 import { loadWeapon, unloadWeapon } from "./weapon"
 
 const enum Scene {
@@ -16,6 +17,7 @@ const unloadActiveScene = () => {
     if (scene !== undefined) {
         switch (scene) {
             case Scene.title:
+                unloadStartScreen()
                 break
             case Scene.gameplay:
                 unloadCam()
@@ -35,6 +37,7 @@ const loadScene = (next: Scene) => {
     scene = next
     switch (scene) {
         case Scene.title:
+            loadStartScreen()
             break
         case Scene.gameplay:
             // order matters
@@ -49,6 +52,10 @@ const loadScene = (next: Scene) => {
     }
 }
 
-export const loadGame = () => {
+export const loadTitle = () => {
+    loadScene(Scene.title)
+}
+
+export const startGame = () => {
     loadScene(Scene.gameplay)
 }
