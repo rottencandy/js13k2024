@@ -10,6 +10,7 @@ import { setupPostProcess } from "./core/post-process"
 
 import "./hero"
 import "./mob"
+import "./hud"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const offscreenCanvas = document.createElement("canvas")

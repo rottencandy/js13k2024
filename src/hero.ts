@@ -18,11 +18,12 @@ const enum Dir {
 
 export const playerPos = { x: WIDTH / 2, y: HEIGHT / 2 }
 export const playerCollisionRadius = 20
+export const maxHealth = 100
+export let health = 100
 const width = 50
 const height = 50
 let state = State.idle
 let dir = Dir.right
-let health = 100
 let invulnerable = false
 
 const vulnerability = ticker(1e3, true)

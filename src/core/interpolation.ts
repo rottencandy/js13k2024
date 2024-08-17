@@ -39,6 +39,10 @@ export const ticker = (interval: number, repeat = true) => {
         reset: () => {
             obj.ticks = 0
         },
+        interval: (val: number) => {
+            interval = val
+            obj.reset()
+        }
     }
     return obj
 }
