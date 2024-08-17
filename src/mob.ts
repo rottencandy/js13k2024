@@ -67,7 +67,6 @@ export const loadMob = () => {
             ) {
                 hitHero(mobDmg)
             }
-            return false
         })
     })
 
@@ -133,7 +132,9 @@ export const killMob = (i: number) => {
 }
 
 // TODO: check if using this instead of for-looping saves space
-export const iterMobs = (fn: (x: number, y: number, id: number) => boolean) => {
+export const iterMobs = (
+    fn: (x: number, y: number, id: number) => boolean | void,
+) => {
     for (let i = 0; i < entities.x.length; i++) {
         if (entities.active[i]) {
             const end = fn(entities.x[i], entities.y[i], i)
@@ -156,7 +157,6 @@ export const nearestMobPos = (x: number, y: number) => {
             smallestDist = dist
             id = mobid
         }
-        return false
     })
     if (id !== undefined) {
         return { x: entities.x[id], y: entities.y[id] }

@@ -33,10 +33,10 @@ export const loadWeapon = () => {
     freeEntities = []
 
     unloadPhysics = addPhysicsComp((dt) => {
-        iterBullets((x, y, _dirx, _diry, id) => {
+        iterBullets((x, y, dirx, diry, id) => {
             // update existing bullets
-            bullets.x[id] += x * bulletSpeed * dt
-            bullets.y[id] += y * bulletSpeed * dt
+            bullets.x[id] += dirx * bulletSpeed * dt
+            bullets.y[id] += diry * bulletSpeed * dt
 
             // check for impact
             iterMobs((mobx, moby, mobid) => {
@@ -54,9 +54,7 @@ export const loadWeapon = () => {
                     removeBullet(id)
                     return true
                 }
-                return false
             })
-            return false
         })
     })
 
@@ -66,7 +64,6 @@ export const loadWeapon = () => {
             ctx.beginPath()
             ctx.arc(x - cam.x, y - cam.y, bulletRadius, 0, Math.PI * 2)
             ctx.fill()
-            return false
         })
     })
 }
@@ -94,14 +91,14 @@ const removeBullet = (i: number) => {
     freeEntities.push(i)
 }
 
-export const iterBullets = (
+const iterBullets = (
     fn: (
         x: number,
         y: number,
         dirx: number,
         diry: number,
         id: number,
-    ) => boolean,
+    ) => boolean | void,
 ) => {
     for (let i = 0; i < bullets.x.length; i++) {
         if (bullets.active[i]) {
