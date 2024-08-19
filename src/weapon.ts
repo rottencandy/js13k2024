@@ -1,8 +1,8 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { angleToVec, ccCollision } from "./core/math"
-import { mobCollisionRadius, iterMobs, killMob } from "./mob"
+import { aabb, angleToVec } from "./core/math"
+import { iterMobs, killMob, mobCollisionRect } from "./mob"
 
 const bullets = {
     x: [] as number[],
@@ -14,7 +14,7 @@ const bullets = {
 }
 let freeEntities: number[] = []
 const bulletSpeed = 0.5
-const bulletRadius = 10
+const bulletCollisionRect = 10
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -41,13 +41,15 @@ export const loadWeapon = () => {
             // check for impact
             iterMobs((mobx, moby, mobid) => {
                 if (
-                    ccCollision(
+                    aabb(
                         bullets.x[id],
                         bullets.y[id],
-                        bulletRadius,
+                        bulletCollisionRect,
+                        bulletCollisionRect,
                         mobx,
                         moby,
-                        mobCollisionRadius,
+                        mobCollisionRect,
+                        mobCollisionRect,
                     )
                 ) {
                     killMob(mobid)
@@ -61,9 +63,12 @@ export const loadWeapon = () => {
     unloadRender = addRenderComp((ctx) => {
         iterBullets((x, y, _dirx, _diry, _id) => {
             ctx.fillStyle = "orange"
-            ctx.beginPath()
-            ctx.arc(x - cam.x, y - cam.y, bulletRadius, 0, Math.PI * 2)
-            ctx.fill()
+            ctx.fillRect(
+                x - cam.x,
+                y - cam.y,
+                bulletCollisionRect,
+                bulletCollisionRect,
+            )
         })
     })
 }

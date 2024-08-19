@@ -3,8 +3,8 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
-import { angleToVec, ccCollision, distance, normalize, rand } from "./core/math"
-import { hitHero, playerCollisionRadius, playerPos } from "./hero"
+import { aabb, angleToVec, distance, normalize, rand } from "./core/math"
+import { hitHero, playerCollisionRect, playerPos } from "./hero"
 
 // poor man's ecs
 const entities = {
@@ -15,7 +15,7 @@ const entities = {
 // stores ids of free entities
 let freeEntities: number[] = []
 const spawnRadius = HEIGHT / 2
-export const mobCollisionRadius = 10
+export const mobCollisionRect = 20
 const width = 20
 const height = 20
 const speed = 0.1
@@ -55,14 +55,16 @@ export const loadMob = () => {
             // check player collision
             // todo: possible optimization: skip detection if player is invulnerable
             if (
-                ccCollision(
+                aabb(
                     // we use values from component because we just updated them above
                     entities.x[id],
                     entities.y[id],
-                    mobCollisionRadius,
+                    mobCollisionRect,
+                    mobCollisionRect,
                     playerPos.x,
                     playerPos.y,
-                    playerCollisionRadius,
+                    playerCollisionRect,
+                    playerCollisionRect,
                 )
             ) {
                 hitHero(mobDmg)
@@ -79,17 +81,14 @@ export const loadMob = () => {
                 width,
                 height,
             )
-            // draw collision radius
+            // draw collision rect
             if (DEBUG) {
-                ctx.beginPath()
-                ctx.arc(
-                    x - cam.x,
-                    y - cam.y,
-                    mobCollisionRadius,
-                    0,
-                    Math.PI * 2,
+                ctx.strokeRect(
+                    x - width / 2 - cam.x,
+                    y - height / 2 - cam.y,
+                    mobCollisionRect,
+                    mobCollisionRect,
                 )
-                ctx.stroke()
             }
             return false
         })

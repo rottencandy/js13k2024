@@ -16,7 +16,7 @@ const enum Dir {
     right,
 }
 
-export const playerCollisionRadius = 20
+export const playerCollisionRect = 30
 export const maxHealth = 100
 export const playerPos = { x: WIDTH / 2, y: HEIGHT / 2 }
 export let health = 100
@@ -85,15 +85,12 @@ export const loadHero = () => {
 
         // draw collision radius
         if (DEBUG) {
-            ctx.beginPath()
-            ctx.arc(
-                playerPos.x - cam.x,
-                playerPos.y - cam.y,
-                playerCollisionRadius,
-                0,
-                Math.PI * 2,
+            ctx.strokeRect(
+                playerPos.x - width / 2 - cam.x + 10,
+                playerPos.y - height / 2 - cam.y + 10,
+                playerCollisionRect,
+                playerCollisionRect,
             )
-            ctx.stroke()
         }
     })
 }
