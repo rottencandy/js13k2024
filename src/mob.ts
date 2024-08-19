@@ -13,7 +13,7 @@ const entities = {
     active: [] as boolean[],
 }
 // stores ids of free entities
-let freeEntities: number[] = []
+let freePool: number[] = []
 const spawnRadius = HEIGHT / 2
 export const mobCollisionRect = 20
 const width = 20
@@ -37,7 +37,7 @@ export const loadMob = () => {
     entities.x = []
     entities.y = []
     entities.active = []
-    freeEntities = []
+    freePool = []
 
     unloadPhysics = addPhysicsComp((dt) => {
         if (spawnTimer.tick(dt)) {
@@ -113,8 +113,8 @@ const spawnMob = () => {
     const spawnPos = angleToVec(rand(0, Math.PI * 2))
     spawnPos.x = spawnPos.x * spawnRadius + playerPos.x
     spawnPos.y = spawnPos.y * spawnRadius + playerPos.y
-    if (freeEntities.length > 0) {
-        const i = freeEntities.pop()!
+    if (freePool.length > 0) {
+        const i = freePool.pop()!
         entities.x[i] = spawnPos.x
         entities.y[i] = spawnPos.y
         entities.active[i] = true
@@ -127,7 +127,7 @@ const spawnMob = () => {
 
 export const killMob = (i: number) => {
     entities.active[i] = false
-    freeEntities.push(i)
+    freePool.push(i)
 }
 
 // TODO: check if using this instead of for-looping saves space

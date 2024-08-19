@@ -2,12 +2,18 @@ import { loadCam, unloadCam } from "./cam"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
-import { loadStartScreen, unloadStartScreen } from "./ui"
+import {
+    loadGameOverScreen,
+    loadStartScreen,
+    unloadGameOverScreen,
+    unloadStartScreen,
+} from "./ui"
 import { loadWeapon, unloadWeapon } from "./weapon"
 
 const enum Scene {
     title,
     gameplay,
+    pause,
     gameover,
 }
 
@@ -26,7 +32,10 @@ const unloadActiveScene = () => {
                 unloadWeapon()
                 unloadHud()
                 break
+            case Scene.pause:
+                break
             case Scene.gameover:
+                unloadGameOverScreen()
                 break
         }
     }
@@ -47,7 +56,10 @@ const loadScene = (next: Scene) => {
             loadWeapon()
             loadHud()
             break
+        case Scene.pause:
+            break
         case Scene.gameover:
+            loadGameOverScreen()
             break
     }
 }
@@ -58,4 +70,8 @@ export const loadTitle = () => {
 
 export const startGame = () => {
     loadScene(Scene.gameplay)
+}
+
+export const endGame = () => {
+    loadScene(Scene.gameover)
 }

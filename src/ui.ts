@@ -23,8 +23,8 @@ export const loadStartScreen = () => {
     let x = 0,
         y = 0
     unloadStartPhysics = addPhysicsComp((dt, keys) => {
-        x = keys.ptrX * WIDTH
-        y = keys.ptrY * HEIGHT
+        x = keys.ptrx * WIDTH
+        y = keys.ptry * HEIGHT
 
         if (keys.clicked) {
             startGame()
@@ -33,7 +33,7 @@ export const loadStartScreen = () => {
 
     unloadStartRender = addRenderComp((ctx) => {
         ctx.fillStyle = "pink"
-        renderFont(ctx, "TEST", 5, 50, 200)
+        renderFont(ctx, "TEST", 10, 100, 200)
         if (DEBUG) {
             ctx.fillRect(x, y, 10, 10)
         }
@@ -42,8 +42,13 @@ export const loadStartScreen = () => {
 
 export const loadGameOverScreen = () => {
     unloadGameOverPhysics = addPhysicsComp((dt, keys) => {
+        if (keys.clicked) {
+            startGame()
+        }
     })
 
     unloadGameOverRender = addRenderComp((ctx) => {
+        ctx.fillStyle = "pink"
+        renderFont(ctx, "GAME OVER", 10, 100, 200)
     })
 }

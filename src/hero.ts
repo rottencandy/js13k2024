@@ -4,6 +4,7 @@ import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT, WIDTH } from "./const"
 import { ticker } from "./core/interpolation"
 import { nearestMobPos } from "./mob"
+import { endGame } from "./scene"
 import { fireBullet } from "./weapon"
 
 const enum State {
@@ -101,7 +102,7 @@ export const hitHero = (amt: number) => {
         invulnerable = true
         vulnerability.reset()
         if (health <= 0) {
-            // gameOver()
+            endGame()
         }
     }
 }

@@ -12,7 +12,7 @@ const bullets = {
     diry: [] as number[],
     active: [] as boolean[],
 }
-let freeEntities: number[] = []
+let freePool: number[] = []
 const bulletSpeed = 0.5
 const bulletCollisionRect = 10
 
@@ -30,7 +30,7 @@ export const loadWeapon = () => {
     bullets.dirx = []
     bullets.diry = []
     bullets.active = []
-    freeEntities = []
+    freePool = []
 
     unloadPhysics = addPhysicsComp((dt) => {
         iterBullets((x, y, dirx, diry, id) => {
@@ -75,8 +75,8 @@ export const loadWeapon = () => {
 
 export const fireBullet = (x: number, y: number, dir: number) => {
     const angle = angleToVec(dir)
-    if (freeEntities.length > 0) {
-        const i = freeEntities.pop()!
+    if (freePool.length > 0) {
+        const i = freePool.pop()!
         bullets.x[i] = x
         bullets.y[i] = y
         bullets.dirx[i] = angle.x
@@ -93,7 +93,7 @@ export const fireBullet = (x: number, y: number, dir: number) => {
 
 const removeBullet = (i: number) => {
     bullets.active[i] = false
-    freeEntities.push(i)
+    freePool.push(i)
 }
 
 const iterBullets = (
