@@ -67,6 +67,18 @@ export const normalize = (v: Vec2) => {
     v.y = v.y * len
 }
 
+/**
+ * Limit vec2 magnitude to not exceed 1, inplace
+ */
+export const limitMagnitude = (v: Vec2) => {
+    const len = distance(0, 0, v.x, v.y)
+    if (len > 1) {
+        const mag = 1 / len
+        v.x *= mag
+        v.y *= mag
+    }
+}
+
 export const angleToVec = (a: number): Vec2 => ({
     x: Math.sin(a),
     y: Math.cos(a),

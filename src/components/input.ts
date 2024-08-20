@@ -1,4 +1,4 @@
-import { clamp, normalize, Vec2 } from "../core/math"
+import { clamp, limitMagnitude, normalize, Vec2 } from "../core/math"
 import { addPhysicsComp } from "./physics"
 
 export type Keys = {
@@ -148,7 +148,7 @@ export const setupKeyListener = (
                     )
                     keys.dir.x = keys.clampedTouchPos.x / maxWidth
                     keys.dir.y = keys.clampedTouchPos.y / maxHeight
-                    normalize(keys.dir)
+                    limitMagnitude(keys.dir)
                 } else {
                     keys.touchStartPos = {
                         x: keys.ptr.x,
