@@ -1,16 +1,18 @@
 import { CTX } from "../core/canvas"
+import { Keys } from "./input"
 
-type RenderFunc = (ctx: CTX, width: number, height: number) => void
+type RenderFunc = (ctx: CTX, width: number, height: number, keys: Keys) => void
 let components: RenderFunc[] = []
 
 export const CompRenderRun: RenderFunc = (
     ctx: CTX,
     width: number,
     height: number,
+    keys: Keys,
 ) => {
     ctx.clearRect(0, 0, width, height)
     for (let i = 0; i < components.length; i++) {
-        components[i](ctx, width, height)
+        components[i](ctx, width, height, keys)
     }
 }
 

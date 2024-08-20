@@ -1,9 +1,9 @@
-import { WatchedKeys } from "./input"
+import { Keys } from "./input"
 
-type Func = (dt: number, keys: WatchedKeys) => void
+type Func = (dt: number, keys: Keys) => void
 let components: (Func)[] = []
 
-export const CompPhysicsRun = (dt: number, keys: WatchedKeys) => {
+export const CompPhysicsRun = (dt: number, keys: Keys) => {
     for (let i = 0; i < components.length; i++) {
         components[i](dt, keys)
     }

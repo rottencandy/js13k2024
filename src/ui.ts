@@ -23,8 +23,8 @@ export const loadStartScreen = () => {
     let x = 0,
         y = 0
     unloadStartPhysics = addPhysicsComp((dt, keys) => {
-        x = keys.ptrx * WIDTH
-        y = keys.ptry * HEIGHT
+        x = keys.ptr.x * WIDTH
+        y = keys.ptr.y * HEIGHT
 
         if (keys.clicked) {
             startGame()

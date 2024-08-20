@@ -14,7 +14,7 @@ export const unloadHud = () => {
 }
 
 export const loadHud = () => {
-    unloadRender = addRenderComp((ctx) => {
+    unloadRender = addRenderComp((ctx, width, height, keys) => {
         ctx.fillStyle = "blue"
         ctx.fillRect(
             barx,
@@ -23,5 +23,30 @@ export const loadHud = () => {
             healthBarHeight,
         )
         ctx.strokeRect(barx, bary, healthBarWidth, healthBarHeight)
+
+        if (keys.touchStartPos) {
+            ctx.fillStyle = "#FFF7"
+            ctx.beginPath()
+            ctx.arc(
+                keys.touchStartPos.x * width,
+                keys.touchStartPos.y * height,
+                150,
+                0,
+                Math.PI * 2,
+            )
+            ctx.closePath()
+            ctx.fill()
+
+            ctx.beginPath()
+            ctx.arc(
+                (keys.touchStartPos.x + keys.clampedTouchPos.x) * width,
+                (keys.touchStartPos.y + keys.clampedTouchPos.y) * height,
+                50,
+                0,
+                Math.PI * 2,
+            )
+            ctx.closePath()
+            ctx.fill()
+        }
     })
 }

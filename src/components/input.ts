@@ -1,19 +1,31 @@
-import { normalize, Vec2 } from "src/core/math"
+import { clamp, normalize, Vec2 } from "../core/math"
 import { addPhysicsComp } from "./physics"
 
-export type WatchedKeys = {
+export type Keys = {
     dir: Vec2
     space: boolean
     esc: boolean
     clicked: boolean
-    ptrX: number
-    ptrY: number
+    ptr: Vec2
+    /** Whether virtual joystick controls & visuals are enabled */
+    virtualCtrl: boolean
+    /** Position when touch starts, only set when virtualCtrl is used and when
+     * touch is happening, range: [0, 1] */
+    touchStartPos: Vec2 | undefined
+    /** Clamped position when dragging virtual joystick, range: [0, 1] */
+    clampedTouchPos: Vec2
 }
+
+const JOYSTICK_SIZE = 150
 
 /**
  * Initialize onkey listeners
  */
-export const setupKeyListener = (canvas: HTMLCanvasElement) => {
+export const setupKeyListener = (
+    canvas: HTMLCanvasElement,
+    width: number,
+    height: number,
+) => {
     let dirty = false
     let gamepad: Gamepad | undefined = undefined
     const mvt = {
@@ -22,7 +34,8 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
         dn: false,
         rt: false,
     }
-    const keys: WatchedKeys = {
+
+    const keys: Keys = {
         dir: {
             x: 0,
             y: 0,
@@ -30,8 +43,10 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
         space: false,
         esc: false,
         clicked: false,
-        ptrX: 0,
-        ptrY: 0,
+        ptr: { x: 0, y: 0 },
+        virtualCtrl: true,
+        touchStartPos: undefined,
+        clampedTouchPos: { x: 0, y: 0 },
     }
     const setKeyState =
         (pressed: boolean) =>
@@ -80,8 +95,8 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
     canvas.onpointerdown = () => (keys.clicked = true)
     canvas.onpointerup = () => (keys.clicked = false)
     canvas.onpointermove = (e) => {
-        keys.ptrX = e.offsetX / canvas.clientWidth
-        keys.ptrY = e.offsetY / canvas.clientHeight
+        keys.ptr.x = e.offsetX / canvas.clientWidth
+        keys.ptr.y = e.offsetY / canvas.clientHeight
     }
 
     canvas.ontouchstart =
@@ -93,9 +108,9 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
                 if (keys.clicked) {
                     const offset = canvas.getBoundingClientRect()
                     const touch = e.touches[0]
-                    keys.ptrX =
+                    keys.ptr.x =
                         (touch.clientX - offset.left) / canvas.clientWidth
-                    keys.ptrY =
+                    keys.ptr.y =
                         (touch.clientY - offset.top) / canvas.clientHeight
                 }
             }
@@ -110,9 +125,43 @@ export const setupKeyListener = (canvas: HTMLCanvasElement) => {
             normalize(keys.dir)
             dirty = false
         }
+
         if (gamepad) {
             keys.dir.x = gamepad.axes[0]
             keys.dir.y = gamepad.axes[1]
+        }
+
+        if (keys.virtualCtrl) {
+            if (keys.clicked) {
+                if (keys.touchStartPos) {
+                    const maxWidth = JOYSTICK_SIZE / width
+                    const maxHeight = JOYSTICK_SIZE / height
+                    keys.clampedTouchPos.x = clamp(
+                        keys.ptr.x - keys.touchStartPos.x,
+                        -maxWidth,
+                        maxWidth,
+                    )
+                    keys.clampedTouchPos.y = clamp(
+                        keys.ptr.y - keys.touchStartPos.y,
+                        -maxHeight,
+                        maxHeight,
+                    )
+                    keys.dir.x = keys.clampedTouchPos.x / maxWidth
+                    keys.dir.y = keys.clampedTouchPos.y / maxHeight
+                    normalize(keys.dir)
+                } else {
+                    keys.touchStartPos = {
+                        x: keys.ptr.x,
+                        y: keys.ptr.y,
+                    }
+                }
+            } else {
+                if (keys.touchStartPos) {
+                    keys.touchStartPos = undefined
+                    keys.dir.x = 0
+                    keys.dir.y = 0
+                }
+            }
         }
     })
 

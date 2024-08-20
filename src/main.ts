@@ -14,24 +14,24 @@ const offscreenCanvas = $("canvas")
 const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
-const keys = setupKeyListener(canvas)
+const keys = setupKeyListener(canvas, WIDTH, HEIGHT)
 loadTitle()
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 
-onresize = () => {
+;(onresize = () => {
     resize(offscreenCanvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)
     // display note if device is in portrait
     portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
     CompResizeRun(WIDTH, HEIGHT)
-}
+})()
 
 loop(
     (dt) => {
         CompPhysicsRun(dt, keys)
     },
     () => {
-        CompRenderRun(ctx, WIDTH, HEIGHT)
+        CompRenderRun(ctx, WIDTH, HEIGHT, keys)
         postProcess(ctx)
     },
 )
