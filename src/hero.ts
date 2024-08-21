@@ -27,8 +27,9 @@ let state: State
 let dir: Dir
 let invulnerable: boolean
 
-const vulnerability = ticker(1e3, true)
-const fireRate = ticker(2e3, true)
+const vulnerability = ticker(1e3)
+const fireRate = ticker(2e3)
+const frameChange = ticker(200)
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -45,6 +46,9 @@ export const loadHero = () => {
     state = State.idle
     dir = Dir.right
     invulnerable = false
+
+    vulnerability.reset()
+    fireRate.reset()
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
         // movement

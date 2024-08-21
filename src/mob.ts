@@ -3,25 +3,29 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
-import { aabb, angleToVec, distance, normalize, rand } from "./core/math"
+import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hitHero, playerCollisionRect, playerPos } from "./hero"
 
 // poor man's ecs
 const entities = {
     x: [] as number[],
     y: [] as number[],
+    health: [] as number[],
     active: [] as boolean[],
 }
+
 // stores ids of free entities
 let freePool: number[] = []
+
 const spawnRadius = HEIGHT / 2
 export const mobCollisionRect = 20
 const width = 20
 const height = 20
 const speed = 0.1
-const mobDmg = 10
+const health = 5
+const dmg = 10
 
-const spawnTimer = ticker(1000, true)
+const spawnTimer = ticker(1000)
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
 
@@ -37,7 +41,9 @@ export const loadMob = () => {
     entities.x = []
     entities.y = []
     entities.active = []
+    entities.health = []
     freePool = []
+    spawnTimer.reset()
 
     unloadPhysics = addPhysicsComp((dt) => {
         if (spawnTimer.tick(dt)) {
@@ -48,7 +54,7 @@ export const loadMob = () => {
             // move towards player
             _vec.x = playerPos.x - x
             _vec.y = playerPos.y - y
-            normalize(_vec)
+            limitMagnitude(_vec)
             entities.x[id] += _vec.x * speed * dt
             entities.y[id] += _vec.y * speed * dt
 
@@ -67,7 +73,7 @@ export const loadMob = () => {
                     playerCollisionRect,
                 )
             ) {
-                hitHero(mobDmg)
+                hitHero(dmg)
             }
         })
     })
@@ -118,16 +124,21 @@ const spawnMob = () => {
         entities.x[i] = spawnPos.x
         entities.y[i] = spawnPos.y
         entities.active[i] = true
+        entities.health[i] = health
         return i
     }
     entities.x.push(spawnPos.x)
     entities.y.push(spawnPos.y)
+    entities.health.push(health)
     return entities.active.push(true)
 }
 
-export const killMob = (i: number) => {
-    entities.active[i] = false
-    freePool.push(i)
+export const attackMob = (id: number, dmg: number) => {
+    entities.health[id] -= dmg
+    if (entities.health[id] <= 0) {
+        entities.active[id] = false
+        freePool.push(id)
+    }
 }
 
 // TODO: check if using this instead of for-looping saves space

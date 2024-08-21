@@ -2,7 +2,7 @@ import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { aabb, angleToVec } from "./core/math"
-import { iterMobs, killMob, mobCollisionRect } from "./mob"
+import { attackMob, iterMobs, mobCollisionRect } from "./mob"
 
 const bullets = {
     x: [] as number[],
@@ -15,6 +15,7 @@ const bullets = {
 let freePool: number[] = []
 const bulletSpeed = 0.5
 const bulletCollisionRect = 10
+const bulletDmg = 10
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -52,7 +53,7 @@ export const loadWeapon = () => {
                         mobCollisionRect,
                     )
                 ) {
-                    killMob(mobid)
+                    attackMob(mobid, bulletDmg)
                     removeBullet(id)
                     return true
                 }
