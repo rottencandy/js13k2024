@@ -2,6 +2,7 @@ import { loadCam, unloadCam } from "./cam"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
+import { loadText, unloadText } from "./text"
 import {
     loadGameOverScreen,
     loadStartScreen,
@@ -31,6 +32,7 @@ const unloadActiveScene = () => {
                 unloadHero()
                 unloadWeapon()
                 unloadHud()
+                unloadText()
                 break
             case Scene.pause:
                 break
@@ -54,6 +56,7 @@ const loadScene = (next: Scene) => {
             loadMob()
             loadHero()
             loadWeapon()
+            loadText()
             loadHud()
             break
         case Scene.pause:

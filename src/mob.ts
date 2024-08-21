@@ -5,6 +5,7 @@ import { DEBUG, HEIGHT } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hitHero, playerCollisionRect, playerPos } from "./hero"
+import { spawnFloatingText } from "./text"
 
 // poor man's ecs
 const entities = {
@@ -24,6 +25,7 @@ const height = 20
 const speed = 0.1
 const health = 5
 const dmg = 10
+const killPoints = 10
 
 const spawnTimer = ticker(1000)
 // throwaway temporary variable for optimization
@@ -138,6 +140,7 @@ export const attackMob = (id: number, dmg: number) => {
     if (entities.health[id] <= 0) {
         entities.active[id] = false
         freePool.push(id)
+        spawnFloatingText(killPoints, entities.x[id], entities.y[id])
     }
 }
 
