@@ -1,5 +1,5 @@
-import { clamp, limitMagnitude, normalize, Vec2 } from "../core/math"
-import { addPhysicsComp } from "./physics"
+import { clamp, limitMagnitude, Vec2 } from "./math"
+import { addPhysicsComp } from "../components/physics"
 
 export type Keys = {
     dir: Vec2
@@ -28,7 +28,7 @@ export const setupKeyListener = (
 ) => {
     let dirty = false
     let gamepad: Gamepad | undefined = undefined
-    const mvt = {
+    const dirPressed = {
         up: false,
         lf: false,
         dn: false,
@@ -56,20 +56,20 @@ export const setupKeyListener = (
                 case "ArrowUp":
                 case "w":
                 case "z":
-                    mvt.up = pressed
+                    dirPressed.up = pressed
                     break
                 case "ArrowDown":
                 case "s":
-                    mvt.dn = pressed
+                    dirPressed.dn = pressed
                     break
                 case "ArrowLeft":
                 case "a":
                 case "q":
-                    mvt.lf = pressed
+                    dirPressed.lf = pressed
                     break
                 case "ArrowRight":
                 case "d":
-                    mvt.rt = pressed
+                    dirPressed.rt = pressed
                     break
                 case "Escape":
                     keys.esc = pressed
@@ -118,11 +118,11 @@ export const setupKeyListener = (
     addPhysicsComp(() => {
         if (dirty) {
             keys.dir.x = keys.dir.y = 0
-            keys.dir.x += mvt.rt ? 1 : 0
-            keys.dir.x -= mvt.lf ? 1 : 0
-            keys.dir.y -= mvt.up ? 1 : 0
-            keys.dir.y += mvt.dn ? 1 : 0
-            normalize(keys.dir)
+            keys.dir.x += dirPressed.rt ? 1 : 0
+            keys.dir.x -= dirPressed.lf ? 1 : 0
+            keys.dir.y -= dirPressed.up ? 1 : 0
+            keys.dir.y += dirPressed.dn ? 1 : 0
+            limitMagnitude(keys.dir)
             dirty = false
         }
 

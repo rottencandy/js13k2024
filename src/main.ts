@@ -1,9 +1,8 @@
-import { setupKeyListener } from "./components/input"
 import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
-import { CompResizeRun } from "./components/resize"
 import { HEIGHT, WIDTH } from "./const"
 import { createCtx, resize } from "./core/canvas"
+import { setupKeyListener } from "./core/input"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
 import { $ } from "./core/ui"
@@ -23,7 +22,6 @@ const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)
     // display note if device is in portrait
     portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
-    CompResizeRun(WIDTH, HEIGHT)
 })()
 
 loop(

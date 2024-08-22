@@ -1,5 +1,5 @@
 import { CTX } from "../core/canvas"
-import { Keys } from "./input"
+import { Keys } from "../core/input"
 
 type RenderFunc = (ctx: CTX, width: number, height: number, keys: Keys) => void
 let components: RenderFunc[] = []

@@ -1,11 +1,13 @@
-import { Keys } from "./input"
+import { Keys } from "../core/input"
 
 type Func = (dt: number, keys: Keys) => void
 let components: (Func)[] = []
 
+export let paused = false
+
 export const CompPhysicsRun = (dt: number, keys: Keys) => {
     for (let i = 0; i < components.length; i++) {
-        components[i](dt, keys)
+        components[i](paused ? 0 : dt, keys)
     }
 }
 
