@@ -7,11 +7,17 @@ import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hitHero, playerCollisionRect, playerPos } from "./hero"
 import { spawnFloatingText } from "./text"
 
+const enum Dir {
+    left,
+    right,
+}
+
 // poor man's ecs
 const entities = {
     x: [] as number[],
     y: [] as number[],
     health: [] as number[],
+    dir: [] as Dir[],
     active: [] as boolean[],
 }
 
@@ -42,8 +48,9 @@ export const unloadMob = () => {
 export const loadMob = () => {
     entities.x = []
     entities.y = []
-    entities.active = []
     entities.health = []
+    entities.dir = []
+    entities.active = []
     freePool = []
     spawnTimer.reset()
 
@@ -59,6 +66,7 @@ export const loadMob = () => {
             limitMagnitude(_vec)
             entities.x[id] += _vec.x * speed * dt
             entities.y[id] += _vec.y * speed * dt
+            entities.dir[id] = entities.x[id] < 0 ? Dir.left : Dir.right
 
             // check player collision
             // todo: possible optimization: skip detection if player is invulnerable
@@ -125,13 +133,15 @@ const spawnMob = () => {
         const i = freePool.pop()!
         entities.x[i] = spawnPos.x
         entities.y[i] = spawnPos.y
-        entities.active[i] = true
         entities.health[i] = health
+        entities.dir[i] = Dir.left
+        entities.active[i] = true
         return i
     }
     entities.x.push(spawnPos.x)
     entities.y.push(spawnPos.y)
     entities.health.push(health)
+    entities.health.push(Dir.left)
     return entities.active.push(true)
 }
 
@@ -146,11 +156,11 @@ export const attackMob = (id: number, dmg: number) => {
 
 // TODO: check if using this instead of for-looping saves space
 export const iterMobs = (
-    fn: (x: number, y: number, id: number) => boolean | void,
+    fn: (x: number, y: number, id: number, dir: Dir) => boolean | void,
 ) => {
     for (let i = 0; i < entities.x.length; i++) {
         if (entities.active[i]) {
-            const end = fn(entities.x[i], entities.y[i], i)
+            const end = fn(entities.x[i], entities.y[i], i, entities.dir[i])
             if (end) {
                 break
             }

@@ -1,5 +1,5 @@
+import { JOYSTICK_SIZE } from "../const"
 import { clamp, limitMagnitude, Vec2 } from "./math"
-import { addPhysicsComp } from "../components/physics"
 
 export type Keys = {
     dir: Vec2
@@ -16,12 +16,24 @@ export type Keys = {
     clampedTouchPos: Vec2
 }
 
-const JOYSTICK_SIZE = 150
+export const keys: Keys = {
+    dir: {
+        x: 0,
+        y: 0,
+    },
+    space: false,
+    esc: false,
+    clicked: false,
+    ptr: { x: 0, y: 0 },
+    virtualCtrl: true,
+    touchStartPos: undefined,
+    clampedTouchPos: { x: 0, y: 0 },
+}
 
 /**
  * Initialize onkey listeners
  */
-export const setupKeyListener = (
+export const initInput = (
     canvas: HTMLCanvasElement,
     width: number,
     height: number,
@@ -35,19 +47,6 @@ export const setupKeyListener = (
         rt: false,
     }
 
-    const keys: Keys = {
-        dir: {
-            x: 0,
-            y: 0,
-        },
-        space: false,
-        esc: false,
-        clicked: false,
-        ptr: { x: 0, y: 0 },
-        virtualCtrl: true,
-        touchStartPos: undefined,
-        clampedTouchPos: { x: 0, y: 0 },
-    }
     const setKeyState =
         (pressed: boolean) =>
         ({ key }: { key: string }) => {
@@ -115,7 +114,7 @@ export const setupKeyListener = (
                 }
             }
 
-    addPhysicsComp(() => {
+    return () => {
         if (dirty) {
             keys.dir.x = keys.dir.y = 0
             keys.dir.x += dirPressed.rt ? 1 : 0
@@ -163,7 +162,5 @@ export const setupKeyListener = (
                 }
             }
         }
-    })
-
-    return keys
+    }
 }

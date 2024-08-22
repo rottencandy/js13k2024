@@ -2,7 +2,7 @@ import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
 import { HEIGHT, WIDTH } from "./const"
 import { createCtx, resize } from "./core/canvas"
-import { setupKeyListener } from "./core/input"
+import { initInput } from "./core/input"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
 import { $ } from "./core/ui"
@@ -14,10 +14,9 @@ const offscreenCanvas = $("canvas")
 const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
-const keys = setupKeyListener(canvas, WIDTH, HEIGHT)
+const processInput = initInput(canvas, WIDTH, HEIGHT)
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 loadTitle()
-
 ;(onresize = () => {
     resize(offscreenCanvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)
@@ -27,12 +26,13 @@ loadTitle()
 
 loop(
     (dt) => {
-        CompPhysicsRun(dt, keys)
+        processInput()
+        CompPhysicsRun(dt)
         // we have separate methods for UI because it draws above all entities
-        updateUI(dt, keys)
+        updateUI(dt)
     },
     () => {
-        CompRenderRun(ctx, WIDTH, HEIGHT, keys)
+        CompRenderRun(ctx, WIDTH, HEIGHT)
         renderUI(ctx)
         postProcess(ctx)
     },

@@ -1,9 +1,9 @@
 import { CTX } from "./core/canvas"
 import { renderFont } from "./core/font"
-import { Keys } from "./core/input"
+import { keys } from "./core/input"
 import { scene, Scene, startGame } from "./scene"
 
-export const updateUI = (dt: number, keys: Keys) => {
+export const updateUI = (dt: number) => {
     switch (scene) {
         case Scene.title:
             if (keys.clicked) {
