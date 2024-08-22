@@ -1,54 +1,36 @@
-import { addPhysicsComp } from "./components/physics"
-import { addRenderComp } from "./components/render"
-import { DEBUG, HEIGHT, WIDTH } from "./const"
+import { CTX } from "./core/canvas"
 import { renderFont } from "./core/font"
-import { startGame } from "./scene"
+import { Keys } from "./core/input"
+import { scene, Scene, startGame } from "./scene"
 
-let unloadStartPhysics: () => void
-let unloadStartRender: () => void
-let unloadGameOverPhysics: () => void
-let unloadGameOverRender: () => void
-
-export const unloadStartScreen = () => {
-    unloadStartRender()
-    unloadStartPhysics()
+export const updateUI = (dt: number, keys: Keys) => {
+    switch (scene) {
+        case Scene.title:
+            if (keys.clicked) {
+                startGame()
+            }
+            break
+        case Scene.gameplay:
+            break
+        case Scene.gameover:
+            if (keys.clicked) {
+                startGame()
+            }
+            break
+    }
 }
 
-export const unloadGameOverScreen = () => {
-    unloadGameOverRender()
-    unloadGameOverPhysics()
-}
-
-export const loadStartScreen = () => {
-    let x = 0,
-        y = 0
-    unloadStartPhysics = addPhysicsComp((dt, keys) => {
-        x = keys.ptr.x * WIDTH
-        y = keys.ptr.y * HEIGHT
-
-        if (keys.clicked) {
-            startGame()
-        }
-    })
-
-    unloadStartRender = addRenderComp((ctx) => {
-        ctx.fillStyle = "pink"
-        renderFont(ctx, "TEST", 10, 100, 200)
-        if (DEBUG) {
-            ctx.fillRect(x, y, 10, 10)
-        }
-    })
-}
-
-export const loadGameOverScreen = () => {
-    unloadGameOverPhysics = addPhysicsComp((dt, keys) => {
-        if (keys.clicked) {
-            startGame()
-        }
-    })
-
-    unloadGameOverRender = addRenderComp((ctx) => {
-        ctx.fillStyle = "pink"
-        renderFont(ctx, "GAME OVER", 10, 100, 200)
-    })
+export const renderUI = (ctx: CTX) => {
+    switch (scene) {
+        case Scene.title:
+            ctx.fillStyle = "pink"
+            renderFont(ctx, "TEST", 10, 100, 200)
+            break
+        case Scene.gameplay:
+            break
+        case Scene.gameover:
+            ctx.fillStyle = "pink"
+            renderFont(ctx, "GAME OVER", 10, 100, 200)
+            break
+    }
 }
