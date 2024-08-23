@@ -1,6 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
+import { UI_TEXT_DURATION } from "./const"
 import { renderFont } from "./core/font"
 
 const entities = {
@@ -12,8 +13,6 @@ const entities = {
 }
 
 let freePool: number[] = []
-
-const duration = 300
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -27,7 +26,7 @@ export const loadText = () => {
     unloadPhysics = addPhysicsComp((dt) => {
         iterEnts((id, x, y, str, dur) => {
             entities.dur[id] += dt
-            if (entities.dur[id] >= duration) {
+            if (entities.dur[id] >= UI_TEXT_DURATION) {
                 entities.active[id] = false
             }
         })

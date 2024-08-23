@@ -1,10 +1,15 @@
 import { addRenderComp } from "./components/render"
-import { WIDTH } from "./const"
-import { health, maxHealth } from "./hero"
+import {
+    INIT_MAX_HEALTH,
+    JOYSTICK_SIZE,
+    JOYSTICK_THUMB_SIZE,
+    UI_HEALTHBAR_HEIGHT,
+    UI_HEALTHBAR_WIDTH,
+    WIDTH,
+} from "./const"
+import { stats } from "./stat"
 
-const healthBarHeight = 20
-const healthBarWidth = 1000
-const barx = (WIDTH - healthBarWidth) / 2
+const barx = (WIDTH - UI_HEALTHBAR_WIDTH) / 2
 const bary = 20
 
 let unloadRender: () => void
@@ -19,10 +24,10 @@ export const loadHud = () => {
         ctx.fillRect(
             barx,
             bary,
-            healthBarWidth * (health / maxHealth),
-            healthBarHeight,
+            UI_HEALTHBAR_WIDTH * (stats.health / INIT_MAX_HEALTH),
+            UI_HEALTHBAR_HEIGHT,
         )
-        ctx.strokeRect(barx, bary, healthBarWidth, healthBarHeight)
+        ctx.strokeRect(barx, bary, UI_HEALTHBAR_WIDTH, UI_HEALTHBAR_HEIGHT)
 
         if (keys.touchStartPos) {
             ctx.fillStyle = "#FFF7"
@@ -30,7 +35,7 @@ export const loadHud = () => {
             ctx.arc(
                 keys.touchStartPos.x * width,
                 keys.touchStartPos.y * height,
-                150,
+                JOYSTICK_SIZE,
                 0,
                 Math.PI * 2,
             )
@@ -41,7 +46,7 @@ export const loadHud = () => {
             ctx.arc(
                 (keys.touchStartPos.x + keys.clampedTouchPos.x) * width,
                 (keys.touchStartPos.y + keys.clampedTouchPos.y) * height,
-                50,
+                JOYSTICK_THUMB_SIZE,
                 0,
                 Math.PI * 2,
             )

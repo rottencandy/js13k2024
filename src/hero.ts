@@ -1,10 +1,19 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { DEBUG, HEIGHT, WIDTH } from "./const"
+import {
+    ANIM_RATE_MS,
+    DEBUG,
+    Dir,
+    HEIGHT,
+    INIT_FIRE_RATE_MS,
+    INIT_VULNERABILITY_MS,
+    WIDTH,
+} from "./const"
 import { ticker } from "./core/interpolation"
 import { nearestMobPos } from "./mob"
 import { endGame } from "./scene"
+import { stats } from "./stat"
 import { fireBullet } from "./weapon"
 
 const enum State {
@@ -12,24 +21,17 @@ const enum State {
     moving,
 }
 
-const enum Dir {
-    left,
-    right,
-}
-
 export const playerCollisionRect = 30
-export const maxHealth = 100
 export const playerPos = { x: WIDTH / 2, y: HEIGHT / 2 }
-export let health = 100
 const width = 50
 const height = 50
 let state: State
 let dir: Dir
 let invulnerable: boolean
 
-const vulnerability = ticker(1e3)
-const fireRate = ticker(2e3)
-const frameChange = ticker(200)
+const vulnerability = ticker(INIT_VULNERABILITY_MS)
+const fireRate = ticker(INIT_FIRE_RATE_MS)
+const frameChange = ticker(ANIM_RATE_MS)
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -42,7 +44,7 @@ export const unloadHero = () => {
 export const loadHero = () => {
     playerPos.x = WIDTH / 2
     playerPos.y = HEIGHT / 2
-    health = 100
+    stats.health = 100
     state = State.idle
     dir = Dir.right
     invulnerable = false
@@ -52,8 +54,8 @@ export const loadHero = () => {
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
         // movement
-        playerPos.x += keys.dir.x * dt
-        playerPos.y += keys.dir.y * dt
+        playerPos.x += keys.dir.x * stats.speed * dt
+        playerPos.y += keys.dir.y * stats.speed * dt
         if (keys.dir.x === 0 && keys.dir.y === 0) {
             state = State.idle
         } else {
@@ -102,10 +104,10 @@ export const loadHero = () => {
 
 export const hitHero = (amt: number) => {
     if (!invulnerable) {
-        health -= amt
+        stats.health -= amt
         invulnerable = true
         vulnerability.reset()
-        if (health <= 0) {
+        if (stats.health <= 0) {
             endGame()
         }
     }

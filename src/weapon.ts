@@ -3,6 +3,7 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { aabb, angleToVec } from "./core/math"
 import { attackMob, iterMobs, mobCollisionRect } from "./mob"
+import { stats } from "./stat"
 
 const bullets = {
     x: [] as number[],
@@ -13,9 +14,7 @@ const bullets = {
     active: [] as boolean[],
 }
 let freePool: number[] = []
-const bulletSpeed = 0.5
 const bulletCollisionRect = 10
-const bulletDmg = 10
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -36,8 +35,8 @@ export const loadWeapon = () => {
     unloadPhysics = addPhysicsComp((dt) => {
         iterBullets((x, y, dirx, diry, id) => {
             // update existing bullets
-            bullets.x[id] += dirx * bulletSpeed * dt
-            bullets.y[id] += diry * bulletSpeed * dt
+            bullets.x[id] += dirx * stats.bulletSpeed * dt
+            bullets.y[id] += diry * stats.bulletSpeed * dt
 
             // check for impact
             iterMobs((mobx, moby, mobid) => {
@@ -53,7 +52,7 @@ export const loadWeapon = () => {
                         mobCollisionRect,
                     )
                 ) {
-                    attackMob(mobid, bulletDmg)
+                    attackMob(mobid, stats.bulletDmg)
                     removeBullet(id)
                     return true
                 }

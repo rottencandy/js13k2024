@@ -2,6 +2,7 @@ import { loadCam, unloadCam } from "./cam"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
+import { resetStats } from "./stat"
 import { loadText, unloadText } from "./text"
 import { loadWeapon, unloadWeapon } from "./weapon"
 
@@ -58,6 +59,7 @@ export const loadTitle = () => {
 
 export const startGame = () => {
     loadScene(Scene.gameplay)
+    resetStats()
 }
 
 export const endGame = () => {

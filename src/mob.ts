@@ -1,7 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { DEBUG, HEIGHT } from "./const"
+import { ANIM_RATE_MS, DEBUG, INIT_SPAWN_RATE, SPAWN_RADIUS } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hitHero, playerCollisionRect, playerPos } from "./hero"
@@ -24,7 +24,6 @@ const entities = {
 // stores ids of free entities
 let freePool: number[] = []
 
-const spawnRadius = HEIGHT / 2
 export const mobCollisionRect = 20
 const width = 20
 const height = 20
@@ -33,7 +32,9 @@ const health = 5
 const dmg = 10
 const killPoints = 10
 
-const spawnTimer = ticker(1000)
+const spawnTimer = ticker(INIT_SPAWN_RATE)
+const frameChange = ticker(ANIM_RATE_MS)
+
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
 
@@ -115,7 +116,7 @@ export const loadMob = () => {
             ctx.arc(
                 playerPos.x - cam.x,
                 playerPos.y - cam.y,
-                spawnRadius,
+                SPAWN_RADIUS,
                 0,
                 Math.PI * 2,
             )
@@ -127,8 +128,8 @@ export const loadMob = () => {
 /** returns mob index */
 const spawnMob = () => {
     const spawnPos = angleToVec(rand(0, Math.PI * 2))
-    spawnPos.x = spawnPos.x * spawnRadius + playerPos.x
-    spawnPos.y = spawnPos.y * spawnRadius + playerPos.y
+    spawnPos.x = spawnPos.x * SPAWN_RADIUS + playerPos.x
+    spawnPos.y = spawnPos.y * SPAWN_RADIUS + playerPos.y
     if (freePool.length > 0) {
         const i = freePool.pop()!
         entities.x[i] = spawnPos.x
