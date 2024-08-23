@@ -49,8 +49,8 @@ export const loadHero = () => {
     dir = Dir.right
     invulnerable = false
 
-    vulnerability.reset()
-    fireRate.reset()
+    vulnerability.clear()
+    fireRate.clear()
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
         // movement

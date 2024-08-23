@@ -26,10 +26,11 @@ export const EASEINOUTELASTIC: TweenFn = (t) =>
  * @param interval interval in milliseconds
  */
 export const ticker = (interval: number, repeat = true) => {
+    let tickerInterval = interval
     const obj = {
         ticks: 0,
         tick: (dt: number) => {
-            if ((obj.ticks += dt) > interval) {
+            if ((obj.ticks += dt) > tickerInterval) {
                 if (repeat) obj.ticks = 0
                 return true
             } else {
@@ -39,8 +40,12 @@ export const ticker = (interval: number, repeat = true) => {
         reset: () => {
             obj.ticks = 0
         },
+        clear: () => {
+            tickerInterval = interval
+            obj.reset()
+        },
         interval: (val: number) => {
-            interval = val
+            tickerInterval = val
             obj.reset()
         }
     }

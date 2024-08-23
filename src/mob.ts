@@ -53,7 +53,7 @@ export const loadMob = () => {
     entities.dir = []
     entities.active = []
     freePool = []
-    spawnTimer.reset()
+    spawnTimer.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
         if (spawnTimer.tick(dt)) {
