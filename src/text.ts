@@ -13,7 +13,7 @@ const entities = {
 
 let freePool: number[] = []
 
-const duration = 500
+const duration = 300
 
 let unloadPhysics: () => void
 let unloadRender: () => void

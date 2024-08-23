@@ -17,6 +17,7 @@ const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
 const processInput = initInput(canvas, WIDTH, HEIGHT)
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 loadTitle()
+
 ;(onresize = () => {
     resize(offscreenCanvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)

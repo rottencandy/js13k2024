@@ -1,11 +1,10 @@
 import { JOYSTICK_SIZE } from "../const"
-import { clamp, limitMagnitude, Vec2 } from "./math"
+import { clamp, limitMagnitude, type Vec2 } from "./math"
 
 export type Keys = {
+    /** Direction keys, normalized */
     dir: Vec2
-    space: boolean
-    esc: boolean
-    clicked: boolean
+    /** Pointer position, normalized */
     ptr: Vec2
     /** Whether virtual joystick controls & visuals are enabled */
     virtualCtrl: boolean
@@ -14,6 +13,21 @@ export type Keys = {
     touchStartPos: Vec2 | undefined
     /** Clamped position when dragging virtual joystick, range: [0, 1] */
     clampedTouchPos: Vec2
+    /** True if key is down */
+    btn: {
+        spc: boolean
+        clk: boolean
+        esc: boolean
+    }
+    /** True only if key is just pressed (not pressed last frame) */
+    btnp: {
+        up: boolean
+        dn: boolean
+        lf: boolean
+        rt: boolean
+        clk: boolean
+        esc: boolean
+    }
 }
 
 export const keys: Keys = {
@@ -21,13 +35,23 @@ export const keys: Keys = {
         x: 0,
         y: 0,
     },
-    space: false,
-    esc: false,
-    clicked: false,
     ptr: { x: 0, y: 0 },
     virtualCtrl: true,
     touchStartPos: undefined,
     clampedTouchPos: { x: 0, y: 0 },
+    btn: {
+        spc: false,
+        esc: false,
+        clk: false,
+    },
+    btnp: {
+        up: false,
+        lf: false,
+        dn: false,
+        rt: false,
+        clk: false,
+        esc: false,
+    },
 }
 
 /**
@@ -45,6 +69,14 @@ export const initInput = (
         lf: false,
         dn: false,
         rt: false,
+    }
+    const lastFrame = {
+        up: false,
+        lf: false,
+        dn: false,
+        rt: false,
+        clk: false,
+        esc: false,
     }
 
     const setKeyState =
@@ -71,28 +103,29 @@ export const initInput = (
                     dirPressed.rt = pressed
                     break
                 case "Escape":
-                    keys.esc = pressed
+                    keys.btn.esc = pressed
                     break
                 case " ":
-                    keys.space = pressed
+                    keys.btn.spc = pressed
             }
         }
 
     onkeydown = setKeyState(true)
     onkeyup = setKeyState(false)
 
-    ongamepadconnected = (e) => {
+    // not using `window` breaks chrome
+    window.ongamepadconnected = (e) => {
         // only consider gamepads with analog sticks
         if (e.gamepad.axes.length > 1) {
             gamepad = e.gamepad
         }
     }
-    ongamepaddisconnected = () => {
+    window.ongamepaddisconnected = () => {
         gamepad = undefined
     }
 
-    canvas.onpointerdown = () => (keys.clicked = true)
-    canvas.onpointerup = () => (keys.clicked = false)
+    canvas.onpointerdown = () => (keys.btn.clk = true)
+    canvas.onpointerup = () => (keys.btn.clk = false)
     canvas.onpointermove = (e) => {
         keys.ptr.x = e.offsetX / canvas.clientWidth
         keys.ptr.y = e.offsetY / canvas.clientHeight
@@ -104,7 +137,7 @@ export const initInput = (
         canvas.ontouchcancel =
             (e) => {
                 e.preventDefault()
-                if (keys.clicked) {
+                if (keys.btn.clk) {
                     const offset = canvas.getBoundingClientRect()
                     const touch = e.touches[0]
                     keys.ptr.x =
@@ -131,7 +164,7 @@ export const initInput = (
         }
 
         if (keys.virtualCtrl) {
-            if (keys.clicked) {
+            if (keys.btn.clk) {
                 if (keys.touchStartPos) {
                     const maxWidth = JOYSTICK_SIZE / width
                     const maxHeight = JOYSTICK_SIZE / height
@@ -162,5 +195,19 @@ export const initInput = (
                 }
             }
         }
+
+        keys.btnp.up = dirPressed.up && !lastFrame.up
+        keys.btnp.dn = dirPressed.dn && !lastFrame.dn
+        keys.btnp.lf = dirPressed.lf && !lastFrame.lf
+        keys.btnp.rt = dirPressed.rt && !lastFrame.rt
+        keys.btnp.clk = keys.btn.clk && !lastFrame.clk
+        keys.btnp.esc = keys.btn.esc && !lastFrame.esc
+
+        lastFrame.up = dirPressed.up
+        lastFrame.dn = dirPressed.dn
+        lastFrame.lf = dirPressed.lf
+        lastFrame.rt = dirPressed.rt
+        lastFrame.clk = keys.btn.clk
+        lastFrame.clk = keys.btn.clk
     }
 }

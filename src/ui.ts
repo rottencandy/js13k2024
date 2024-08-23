@@ -6,14 +6,14 @@ import { scene, Scene, startGame } from "./scene"
 export const updateUI = (dt: number) => {
     switch (scene) {
         case Scene.title:
-            if (keys.clicked) {
+            if (keys.btnp.clk) {
                 startGame()
             }
             break
         case Scene.gameplay:
             break
         case Scene.gameover:
-            if (keys.clicked) {
+            if (keys.btnp.clk) {
                 startGame()
             }
             break
