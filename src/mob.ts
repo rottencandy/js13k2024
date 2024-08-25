@@ -1,4 +1,5 @@
 import { cam } from "./cam"
+import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import { ANIM_RATE_MS, DEBUG, INIT_SPAWN_RATE, SPAWN_RADIUS } from "./const"
@@ -148,10 +149,11 @@ const spawnMob = () => {
 
 export const attackMob = (id: number, dmg: number) => {
     entities.health[id] -= dmg
+    spawnFloatingText(dmg, entities.x[id], entities.y[id])
     if (entities.health[id] <= 0) {
         entities.active[id] = false
         freePool.push(id)
-        spawnFloatingText(killPoints, entities.x[id], entities.y[id])
+        dropCoin(entities.x[id], entities.y[id])
     }
 }
 

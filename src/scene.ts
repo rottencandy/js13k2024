@@ -1,4 +1,5 @@
 import { loadCam, unloadCam } from "./cam"
+import { loadCoin, unloadCoin } from "./coin"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
@@ -22,6 +23,7 @@ const unloadActiveScene = () => {
             case Scene.gameplay:
                 unloadCam()
                 unloadMob()
+                unloadCoin()
                 unloadHero()
                 unloadWeapon()
                 unloadHud()
@@ -43,6 +45,7 @@ const loadScene = (next: Scene) => {
             // order matters
             loadCam()
             loadMob()
+            loadCoin()
             loadHero()
             loadWeapon()
             loadText()

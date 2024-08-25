@@ -1,16 +1,14 @@
 import { addRenderComp } from "./components/render"
 import {
-    INIT_MAX_HEALTH,
     JOYSTICK_SIZE,
     JOYSTICK_THUMB_SIZE,
-    UI_HEALTHBAR_HEIGHT,
-    UI_HEALTHBAR_WIDTH,
-    WIDTH,
+    UI_BAR_HEIGHT,
+    UI_BAR_WIDTH,
+    UI_BAR_X,
+    UI_HEALTH_BAR_Y,
+    UI_XP_BAR_Y,
 } from "./const"
 import { stats } from "./stat"
-
-const barx = (WIDTH - UI_HEALTHBAR_WIDTH) / 2
-const bary = 20
 
 let unloadRender: () => void
 
@@ -22,12 +20,20 @@ export const loadHud = () => {
     unloadRender = addRenderComp((ctx, width, height, keys) => {
         ctx.fillStyle = "blue"
         ctx.fillRect(
-            barx,
-            bary,
-            UI_HEALTHBAR_WIDTH * (stats.health / INIT_MAX_HEALTH),
-            UI_HEALTHBAR_HEIGHT,
+            UI_BAR_X,
+            UI_HEALTH_BAR_Y,
+            UI_BAR_WIDTH * (stats.health / stats.maxHealth),
+            UI_BAR_HEIGHT,
         )
-        ctx.strokeRect(barx, bary, UI_HEALTHBAR_WIDTH, UI_HEALTHBAR_HEIGHT)
+        ctx.strokeRect(UI_BAR_X, UI_HEALTH_BAR_Y, UI_BAR_WIDTH, UI_BAR_HEIGHT)
+        ctx.fillStyle = "red"
+        ctx.fillRect(
+            UI_BAR_X,
+            UI_XP_BAR_Y,
+            UI_BAR_WIDTH * (stats.xp / stats.levelXp),
+            UI_BAR_HEIGHT,
+        )
+        ctx.strokeRect(UI_BAR_X, UI_XP_BAR_Y, UI_BAR_WIDTH, UI_BAR_HEIGHT)
 
         if (keys.touchStartPos) {
             ctx.fillStyle = "#FFF7"
