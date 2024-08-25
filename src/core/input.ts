@@ -6,9 +6,7 @@ export type Keys = {
     dir: Vec2
     /** Pointer position, normalized */
     ptr: Vec2
-    /** Whether virtual joystick controls & visuals are enabled */
-    virtualCtrl: boolean
-    /** Position when touch starts, only set when virtualCtrl is used and when
+    /** Position when touch starts, only set when touch feature is detected
      * touch is happening, range: [0, 1] */
     touchStartPos: Vec2 | undefined
     /** Clamped position when dragging virtual joystick, range: [0, 1] */
@@ -36,7 +34,6 @@ export const keys: Keys = {
         y: 0,
     },
     ptr: { x: 0, y: 0 },
-    virtualCtrl: true,
     touchStartPos: undefined,
     clampedTouchPos: { x: 0, y: 0 },
     btn: {
@@ -64,6 +61,7 @@ export const initInput = (
 ) => {
     let dirty = false
     let gamepad: Gamepad | undefined = undefined
+    const hasTouch = !!window.ontouchend
     const dirPressed = {
         up: false,
         lf: false,
@@ -131,21 +129,23 @@ export const initInput = (
         keys.ptr.y = e.offsetY / canvas.clientHeight
     }
 
-    canvas.ontouchstart =
-        canvas.ontouchmove =
-        canvas.ontouchend =
-        canvas.ontouchcancel =
-            (e) => {
-                e.preventDefault()
-                if (keys.btn.clk) {
-                    const offset = canvas.getBoundingClientRect()
-                    const touch = e.touches[0]
-                    keys.ptr.x =
-                        (touch.clientX - offset.left) / canvas.clientWidth
-                    keys.ptr.y =
-                        (touch.clientY - offset.top) / canvas.clientHeight
+    if (hasTouch) {
+        canvas.ontouchstart =
+            canvas.ontouchmove =
+            canvas.ontouchend =
+            canvas.ontouchcancel =
+                (e) => {
+                    e.preventDefault()
+                    if (keys.btn.clk) {
+                        const offset = canvas.getBoundingClientRect()
+                        const touch = e.touches[0]
+                        keys.ptr.x =
+                            (touch.clientX - offset.left) / canvas.clientWidth
+                        keys.ptr.y =
+                            (touch.clientY - offset.top) / canvas.clientHeight
+                    }
                 }
-            }
+    }
 
     return () => {
         if (dirty) {
@@ -163,7 +163,7 @@ export const initInput = (
             keys.dir.y = gamepad.axes[1]
         }
 
-        if (keys.virtualCtrl) {
+        if (hasTouch) {
             if (keys.btn.clk) {
                 if (keys.touchStartPos) {
                     const maxWidth = JOYSTICK_SIZE / width
