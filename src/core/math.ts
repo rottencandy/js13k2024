@@ -37,7 +37,7 @@ export const pointInRect = (
     y: number,
     w: number,
     h: number,
-) => px > x && py > x && px < x + w && py < y + h
+) => px > x && py > y && px < x + w && py < y + h
 
 export const ccCollision = (
     x1: number,

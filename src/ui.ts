@@ -1,16 +1,19 @@
-import { HEIGHT, WIDTH } from "./const"
+import { DEBUG, HEIGHT, WIDTH } from "./const"
 import { type CTX } from "./core/canvas"
 import { renderFont } from "./core/font"
 import { keys } from "./core/input"
 import { pointInRect } from "./core/math"
-import { scene, Scene, startGame } from "./scene"
+import { resumeGame, scene, Scene, startGame } from "./scene"
 
-export const updateUI = (dt: number) => {
+export const updateUI = () => {
     switch (scene) {
         case Scene.title:
-            startButton.update()
+            startBtn.update()
             break
-        case Scene.gameplay:
+        case Scene.powerup:
+            powerup1btn.update()
+            powerup2btn.update()
+            powerup3btn.update()
             break
         case Scene.gameover:
             if (keys.btnp.clk) {
@@ -24,11 +27,23 @@ export const renderUI = (ctx: CTX) => {
     switch (scene) {
         case Scene.title:
             ctx.fillStyle = "brown"
-            startButton.render(ctx)
+            startBtn.render(ctx)
             ctx.fillStyle = "pink"
             renderFont(ctx, "TITLE", 10, 100, 200)
             renderFont(ctx, "START", 10, 200, 400)
             break
+        // lack of break in this case is intentional
+        case Scene.powerup:
+            ctx.fillStyle = "pink"
+            ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
+            ctx.fillStyle = "white"
+            renderFont(ctx, "SELECT POWERUP", 10, 100, 200)
+            ctx.fillStyle = "red"
+            powerup1btn.render(ctx)
+            ctx.fillStyle = "green"
+            powerup2btn.render(ctx)
+            ctx.fillStyle = "blue"
+            powerup3btn.render(ctx)
         case Scene.gameplay:
             break
         case Scene.gameover:
@@ -55,9 +70,22 @@ const btn = (
             }
         },
         render: (ctx: CTX) => {
+            if (
+                DEBUG &&
+                pointInRect(keys.ptr.x * WIDTH, keys.ptr.y * HEIGHT, x, y, w, h)
+            ) {
+                ctx.fillStyle = "black"
+            }
             ctx.fillRect(x, y, w, h)
         },
     }
 }
 
-const startButton = btn(180, 380, 220, 90, startGame)
+const selectPowerup = (power: 1 | 2 | 3) => () => {
+    resumeGame()
+}
+
+const startBtn = btn(180, 380, 220, 90, startGame)
+const powerup1btn = btn(200, 300, 100, 100, selectPowerup(1))
+const powerup2btn = btn(600, 300, 100, 100, selectPowerup(2))
+const powerup3btn = btn(1000, 300, 100, 100, selectPowerup(3))

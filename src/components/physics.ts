@@ -3,7 +3,11 @@ import { keys, Keys } from "../core/input"
 type Func = (dt: number, keys: Keys) => void
 let components: Func[] = []
 
-export let paused = false
+let paused = false
+
+export let physicsPause = (val: boolean) => {
+    paused = val
+}
 
 export const CompPhysicsRun = (dt: number) => {
     for (let i = 0; i < components.length; i++) {

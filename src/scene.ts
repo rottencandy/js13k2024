@@ -1,5 +1,6 @@
 import { loadCam, unloadCam } from "./cam"
 import { loadCoin, unloadCoin } from "./coin"
+import { physicsPause } from "./components/physics"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
@@ -10,61 +11,63 @@ import { loadWeapon, unloadWeapon } from "./weapon"
 export const enum Scene {
     title,
     gameplay,
+    pause,
+    powerup,
     gameover,
 }
 
 export let scene: Scene
 
-const unloadActiveScene = () => {
-    if (scene !== undefined) {
-        switch (scene) {
-            case Scene.title:
-                break
-            case Scene.gameplay:
-                unloadCam()
-                unloadMob()
-                unloadCoin()
-                unloadHero()
-                unloadWeapon()
-                unloadHud()
-                unloadText()
-                break
-            case Scene.gameover:
-                break
-        }
+const unloadGameEntities = () => {
+    if (scene === Scene.gameplay) {
+        unloadCam()
+        unloadMob()
+        unloadCoin()
+        unloadHero()
+        unloadWeapon()
+        unloadHud()
+        unloadText()
     }
 }
 
-const loadScene = (next: Scene) => {
-    unloadActiveScene()
-    scene = next
-    switch (scene) {
-        case Scene.title:
-            break
-        case Scene.gameplay:
-            // order matters
-            loadCam()
-            loadMob()
-            loadCoin()
-            loadHero()
-            loadWeapon()
-            loadText()
-            loadHud()
-            break
-        case Scene.gameover:
-            break
-    }
+const loadGameEntities = () => {
+    // order matters
+    loadCam()
+    loadMob()
+    loadCoin()
+    loadHero()
+    loadWeapon()
+    loadText()
+    loadHud()
 }
 
 export const loadTitle = () => {
-    loadScene(Scene.title)
+    unloadGameEntities()
+    scene = Scene.title
 }
 
 export const startGame = () => {
-    loadScene(Scene.gameplay)
+    scene = Scene.gameplay
     resetStats()
+    loadGameEntities()
 }
 
 export const endGame = () => {
-    loadScene(Scene.gameover)
+    unloadGameEntities()
+    scene = Scene.gameover
+}
+
+export const powerupMenu = () => {
+    physicsPause(true)
+    scene = Scene.powerup
+}
+
+export const pauseGame = () => {
+    physicsPause(true)
+    scene = Scene.pause
+}
+
+export const resumeGame = () => {
+    physicsPause(false)
+    scene = Scene.gameplay
 }

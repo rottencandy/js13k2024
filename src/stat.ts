@@ -7,6 +7,7 @@ import {
     INIT_PICKUP_RADIUS,
     INIT_SPEED,
 } from "./const"
+import { powerupMenu } from "./scene"
 
 export const stats = {
     health: 0,
@@ -34,5 +35,6 @@ export const increaseXp = () => {
     stats.xp += COIN_XP
     if (stats.xp > stats.levelXp) {
         stats.xp = 0
+        powerupMenu()
     }
 }

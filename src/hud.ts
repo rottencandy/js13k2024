@@ -18,7 +18,7 @@ export const unloadHud = () => {
 
 export const loadHud = () => {
     unloadRender = addRenderComp((ctx, width, height, keys) => {
-        ctx.fillStyle = "blue"
+        ctx.fillStyle = "red"
         ctx.fillRect(
             UI_BAR_X,
             UI_HEALTH_BAR_Y,
@@ -26,7 +26,7 @@ export const loadHud = () => {
             UI_BAR_HEIGHT,
         )
         ctx.strokeRect(UI_BAR_X, UI_HEALTH_BAR_Y, UI_BAR_WIDTH, UI_BAR_HEIGHT)
-        ctx.fillStyle = "red"
+        ctx.fillStyle = "blue"
         ctx.fillRect(
             UI_BAR_X,
             UI_XP_BAR_Y,
