@@ -1,5 +1,7 @@
-// source: https://github.com/PaulBGD/PixelFont
+import { FONT_SIZE } from "src/const"
+import { texture } from "./canvas"
 
+// source: https://github.com/PaulBGD/PixelFont
 // prettier-ignore
 const letters: Record<string, number[][]> = {
     'A': [
@@ -262,18 +264,21 @@ const letters: Record<string, number[][]> = {
         [0, 0]
     ],
     '.': [
-        [0, 0],
-        [0, 0],
-        [0, 0],
+        [],
+        [],
+        [],
         [1, 1],
         [1, 1]
-    ]
+    ],
+    '-':[
+        [],
+        [],
+        [1,1,1],
+        [],
+        []
+    ],
 };
 
-/**
- * WARNING: ONLY ALPHANUMERIC, DOT, SPC CHARS ALLOWED!!
- * this does not check if string contains invalid chars.
- */
 export const renderFont = (
     ctx: CanvasRenderingContext2D,
     str: string,
@@ -297,5 +302,42 @@ export const renderFont = (
             currY += size
         }
         currX += size + addX
+    }
+}
+
+const letterCache: Record<string, { i: HTMLCanvasElement; w: number }> = {}
+for (const letter in letters) {
+    const fontWidth =
+        Math.max(...letters[letter].map((v) => v.length)) * FONT_SIZE
+    const tex = texture(
+        (ctx) => {
+            ctx.fillStyle = "white"
+            renderFont(ctx, letter, FONT_SIZE, 0, 0)
+        },
+        fontWidth,
+        // height is always 5
+        FONT_SIZE * 5,
+    )
+    letterCache[letter] = {
+        i: tex,
+        w: fontWidth,
+    }
+}
+
+/**
+ * WARNING: ONLY ALPHANUMERIC, '. -' ALLOWED!!
+ * this does not check if string contains invalid chars.
+ */
+export const renderFontTex = (
+    ctx: CanvasRenderingContext2D,
+    str: string,
+    x: number,
+    y: number,
+) => {
+    let currX = x
+    for (let i = 0; i < str.length; i++) {
+        const font = letterCache[str[i]]
+        ctx.drawImage(font.i, currX, y)
+        currX += font.w + FONT_SIZE
     }
 }
