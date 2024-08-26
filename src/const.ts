@@ -14,6 +14,7 @@ export const UI_XP_BAR_Y = 50
 export const ANIM_RATE_MS = 200
 export const SPAWN_RADIUS = HEIGHT / 2
 export const COIN_XP = 10
+export const COIN_PICKUP_SPEED = 2
 
 export const INIT_SPEED = 1
 export const INIT_MAX_HEALTH = 100

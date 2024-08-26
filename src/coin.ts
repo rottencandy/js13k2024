@@ -1,6 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
+import { COIN_PICKUP_SPEED } from "./const"
 import { aabb, distance, limitMagnitude } from "./core/math"
 import { playerCollisionRect, playerPos } from "./hero"
 import { increaseXp, stats } from "./stat"
@@ -40,12 +41,11 @@ export const loadCoin = () => {
                 _vec.x = playerPos.x - x
                 _vec.y = playerPos.y - y
                 limitMagnitude(_vec)
-                entities.x[id] += _vec.x * dt
+                entities.x[id] += _vec.x * dt * COIN_PICKUP_SPEED
                 entities.y[id] += _vec.y * dt
             }
 
             // check if picked
-            // todo: possible optimization: skip detection if player is invulnerable
             if (
                 aabb(
                     // we use values from component because we just updated them above
