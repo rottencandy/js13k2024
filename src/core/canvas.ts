@@ -1,5 +1,3 @@
-import { $ } from "../core/ui"
-
 export type CTX = CanvasRenderingContext2D
 export type Color = [number, number, number, number]
 
@@ -45,7 +43,9 @@ export const texture = (
     width: number,
     height: number,
 ) => {
-    const tex = $("canvas", { width, height })
+    const tex = document.createElement("canvas")
+    tex.width = width
+    tex.height = height
     const ctx = tex.getContext("2d")!
     ctx.clearRect(0, 0, width, height)
     builder(ctx)
