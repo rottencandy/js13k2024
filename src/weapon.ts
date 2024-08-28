@@ -1,6 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
+import { MAX_BULLET_AGE } from "./const"
 import { aabb, angleToVec } from "./core/math"
 import { attackMob, iterMobs, mobCollisionRect } from "./mob"
 import { stats } from "./stat"
@@ -11,6 +12,7 @@ const bullets = {
     // direction vector(angle)
     dirx: [] as number[],
     diry: [] as number[],
+    age: [] as number[],
     active: [] as boolean[],
 }
 let freePool: number[] = []
@@ -29,14 +31,21 @@ export const loadWeapon = () => {
     bullets.y = []
     bullets.dirx = []
     bullets.diry = []
+    bullets.age = []
     bullets.active = []
     freePool = []
 
     unloadPhysics = addPhysicsComp((dt) => {
-        iterBullets((x, y, dirx, diry, id) => {
+        iterBullets((_x, _y, dirx, diry, id) => {
             // update existing bullets
             bullets.x[id] += dirx * stats.bulletSpeed * dt
             bullets.y[id] += diry * stats.bulletSpeed * dt
+            bullets.age[id] += dt
+
+            if (bullets.age[id] > MAX_BULLET_AGE) {
+                removeBullet(id)
+                return
+            }
 
             // check for impact
             iterMobs((mobx, moby, mobid) => {
@@ -81,12 +90,14 @@ export const fireBullet = (x: number, y: number, dir: number) => {
         bullets.y[i] = y
         bullets.dirx[i] = angle.x
         bullets.diry[i] = angle.y
+        bullets.age[i] = 0
         bullets.active[i] = true
     } else {
         bullets.x.push(x)
         bullets.y.push(y)
         bullets.dirx.push(angle.x)
         bullets.diry.push(angle.y)
+        bullets.age.push(0)
         bullets.active.push(true)
     }
 }

@@ -2,7 +2,7 @@ import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
-    ANIM_RATE_MS,
+    SPRITE_ANIM_RATE_MS,
     DEBUG,
     Dir,
     HEIGHT,
@@ -31,7 +31,7 @@ let invulnerable: boolean
 
 const vulnerability = ticker(INIT_VULNERABILITY_MS)
 const fireRate = ticker(INIT_FIRE_RATE_MS)
-const frameChange = ticker(ANIM_RATE_MS)
+const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
 let unloadPhysics: () => void
 let unloadRender: () => void

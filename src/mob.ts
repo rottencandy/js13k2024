@@ -2,7 +2,7 @@ import { cam } from "./cam"
 import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { ANIM_RATE_MS, DEBUG, INIT_SPAWN_RATE, SPAWN_RADIUS } from "./const"
+import { SPRITE_ANIM_RATE_MS, DEBUG, INIT_SPAWN_RATE, SPAWN_RADIUS } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hitHero, playerCollisionRect, playerPos } from "./hero"
@@ -34,7 +34,7 @@ const dmg = 10
 const killPoints = 10
 
 const spawnTimer = ticker(INIT_SPAWN_RATE)
-const frameChange = ticker(ANIM_RATE_MS)
+const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
