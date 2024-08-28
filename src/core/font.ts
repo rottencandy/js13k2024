@@ -273,9 +273,23 @@ const letters: Record<string, number[][]> = {
     '-':[
         [],
         [],
-        [1,1,1],
+        [1, 1],
         [],
         []
+    ],
+    '_':[
+        [],
+        [],
+        [],
+        [],
+        [1, 1, 1],
+    ],
+    '%':[
+        [1, 0, 0, 0, 1],
+        [0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0],
+        [1, 0, 0, 0, 1],
     ],
 };
 
@@ -325,7 +339,7 @@ for (const letter in letters) {
 }
 
 /**
- * WARNING: ONLY ALPHANUMERIC, '. -' ALLOWED!!
+ * WARNING: ONLY ALPHANUMERIC, '. -_%' ALLOWED!!
  * this does not check if string contains invalid chars.
  */
 export const renderFontTex = (

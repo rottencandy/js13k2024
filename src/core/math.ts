@@ -1,10 +1,13 @@
 export type Vec2 = { x: number; y: number }
 
+/** Try to use this operator directly */
 export const floor = (x: number) => ~~x
 
 export const rad = (a: number) => (a * Math.PI) / 180
 
 export const rand = (a = 0, b = 1) => b + (a - b) * Math.random()
+
+export const randInt = (a: number, b: number) => Math.round(rand(a, b))
 
 export const clamp = (value: number, min: number, max: number) =>
     value < min ? min : value > max ? max : value
