@@ -24,6 +24,7 @@ const enum State {
 
 const SIZE = 16
 const center = SIZE / 2
+let pendingDamage = 0
 
 export const hero = {
     x: WIDTH / 2,
@@ -89,6 +90,14 @@ export const loadHero = () => {
         if (hero.invulnerable) {
             hero.invulnerable = !vulnerability.tick(dt)
         }
+        // reduce health and check if dead
+        if (pendingDamage > 0) {
+            stats.health -= 1
+            pendingDamage -= 1
+            if (stats.health <= 0) {
+                endGame()
+            }
+        }
 
         // animation frame
         if (frameChange.tick(dt)) {
@@ -131,12 +140,9 @@ export const loadHero = () => {
 
 export const hitHero = (amt: number) => {
     if (!hero.invulnerable) {
-        stats.health -= amt
+        pendingDamage += amt
         hero.invulnerable = true
         vulnerability.reset()
-        if (stats.health <= 0) {
-            endGame()
-        }
     }
 }
 
