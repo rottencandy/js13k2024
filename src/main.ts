@@ -10,7 +10,6 @@ import { renderUI, updateUI } from "./ui"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const offscreenCanvas = document.createElement("canvas")
-const portraitNote = document.getElementById("d")!
 
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
 const processInput = initInput(canvas, WIDTH, HEIGHT)
@@ -20,8 +19,10 @@ loadTitle()
     resize(offscreenCanvas, WIDTH, HEIGHT)
     resize(canvas, WIDTH, HEIGHT)
     // display note if device is in portrait
-    portraitNote.style.display = innerWidth < innerHeight ? "block" : "none"
 })()
+    if (innerWidth < innerHeight) {
+        alert("For best experience play in landscape mode")
+    }
 
 loop(
     (dt) => {

@@ -34,7 +34,7 @@ canvas {
     -webkit-font-smoothing: none;
 }
 
-/* Note for potrait devices */
+/* Note for portrait devices
 #d {
     display: none;
     position: absolute;
@@ -45,6 +45,7 @@ canvas {
     font: 100 32px sans-serif;
     text-align: center;
 }
+*/
 
 /* Debug panel
 #debug {
