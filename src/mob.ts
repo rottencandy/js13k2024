@@ -2,10 +2,18 @@ import { cam } from "./cam"
 import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { SPRITE_ANIM_RATE_MS, DEBUG, INIT_SPAWN_RATE, SPAWN_RADIUS } from "./const"
+import {
+    SPRITE_ANIM_RATE_MS,
+    DEBUG,
+    INIT_SPAWN_RATE,
+    SPAWN_RADIUS,
+    MOB_SPEED,
+    MOB_HEALTH,
+    MOB_ATTACK,
+} from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
-import { hitHero, playerCollisionRect, playerPos } from "./hero"
+import { hitHero, hero, isHittingHero } from "./hero"
 import { spawnFloatingText } from "./text"
 
 const enum Dir {
@@ -14,7 +22,7 @@ const enum Dir {
 }
 
 // poor man's ecs
-const entities = {
+const E = {
     x: [] as number[],
     y: [] as number[],
     health: [] as number[],
@@ -25,13 +33,7 @@ const entities = {
 // stores ids of free entities
 let freePool: number[] = []
 
-export const mobCollisionRect = 20
-const width = 20
-const height = 20
-const speed = 0.1
-const health = 5
-const dmg = 10
-const killPoints = 10
+const SIZE = 16
 
 const spawnTimer = ticker(INIT_SPAWN_RATE)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
@@ -48,11 +50,11 @@ export const unloadMob = () => {
 }
 
 export const loadMob = () => {
-    entities.x = []
-    entities.y = []
-    entities.health = []
-    entities.dir = []
-    entities.active = []
+    E.x = []
+    E.y = []
+    E.health = []
+    E.dir = []
+    E.active = []
     freePool = []
     spawnTimer.clear()
 
@@ -63,29 +65,25 @@ export const loadMob = () => {
         // todo optimize out offscreen mobs?
         iterMobs((x, y, id) => {
             // move towards player
-            _vec.x = playerPos.x - x
-            _vec.y = playerPos.y - y
+            _vec.x = hero.x - x
+            _vec.y = hero.y - y
             limitMagnitude(_vec)
-            entities.x[id] += _vec.x * speed * dt
-            entities.y[id] += _vec.y * speed * dt
-            entities.dir[id] = entities.x[id] < 0 ? Dir.left : Dir.right
+            E.x[id] += _vec.x * MOB_SPEED * dt
+            E.y[id] += _vec.y * MOB_SPEED * dt
+            E.dir[id] = E.x[id] < 0 ? Dir.left : Dir.right
 
             // check player collision
             // todo: possible optimization: skip detection if player is invulnerable
             if (
-                aabb(
+                isHittingHero(
                     // we use values from component because we just updated them above
-                    entities.x[id],
-                    entities.y[id],
-                    mobCollisionRect,
-                    mobCollisionRect,
-                    playerPos.x,
-                    playerPos.y,
-                    playerCollisionRect,
-                    playerCollisionRect,
+                    E.x[id],
+                    E.y[id],
+                    SIZE,
+                    SIZE,
                 )
             ) {
-                hitHero(dmg)
+                hitHero(MOB_ATTACK)
             }
         })
     })
@@ -93,19 +91,15 @@ export const loadMob = () => {
     unloadRender = addRenderComp((ctx) => {
         ctx.fillStyle = "red"
         iterMobs((x, y) => {
-            ctx.fillRect(
-                x - width / 2 - cam.x,
-                y - height / 2 - cam.y,
-                width,
-                height,
-            )
+            ctx.fillRect(x - cam.x, y - cam.y, SIZE, SIZE)
             // draw collision rect
             if (DEBUG) {
+                ctx.strokeStyle = "green"
                 ctx.strokeRect(
-                    x - width / 2 - cam.x,
-                    y - height / 2 - cam.y,
-                    mobCollisionRect,
-                    mobCollisionRect,
+                    x - cam.x,
+                    y - cam.y,
+                    SIZE,
+                    SIZE,
                 )
             }
             return false
@@ -113,10 +107,11 @@ export const loadMob = () => {
 
         // draw spawn circle
         if (DEBUG) {
+            ctx.strokeStyle = "green"
             ctx.beginPath()
             ctx.arc(
-                playerPos.x - cam.x,
-                playerPos.y - cam.y,
+                hero.x - cam.x,
+                hero.y - cam.y,
                 SPAWN_RADIUS,
                 0,
                 Math.PI * 2,
@@ -129,31 +124,31 @@ export const loadMob = () => {
 /** returns mob index */
 const spawnMob = () => {
     const spawnPos = angleToVec(rand(0, Math.PI * 2))
-    spawnPos.x = spawnPos.x * SPAWN_RADIUS + playerPos.x
-    spawnPos.y = spawnPos.y * SPAWN_RADIUS + playerPos.y
+    spawnPos.x = spawnPos.x * SPAWN_RADIUS + hero.x
+    spawnPos.y = spawnPos.y * SPAWN_RADIUS + hero.y
     if (freePool.length > 0) {
         const i = freePool.pop()!
-        entities.x[i] = spawnPos.x
-        entities.y[i] = spawnPos.y
-        entities.health[i] = health
-        entities.dir[i] = Dir.left
-        entities.active[i] = true
+        E.x[i] = spawnPos.x
+        E.y[i] = spawnPos.y
+        E.health[i] = MOB_HEALTH
+        E.dir[i] = Dir.left
+        E.active[i] = true
         return i
     }
-    entities.x.push(spawnPos.x)
-    entities.y.push(spawnPos.y)
-    entities.health.push(health)
-    entities.health.push(Dir.left)
-    return entities.active.push(true)
+    E.x.push(spawnPos.x)
+    E.y.push(spawnPos.y)
+    E.health.push(MOB_HEALTH)
+    E.health.push(Dir.left)
+    return E.active.push(true)
 }
 
 export const attackMob = (id: number, dmg: number) => {
-    entities.health[id] -= dmg
-    spawnFloatingText(dmg, entities.x[id], entities.y[id])
-    if (entities.health[id] <= 0) {
-        entities.active[id] = false
+    E.health[id] -= dmg
+    spawnFloatingText(dmg, E.x[id], E.y[id])
+    if (E.health[id] <= 0) {
+        E.active[id] = false
         freePool.push(id)
-        dropCoin(entities.x[id], entities.y[id])
+        dropCoin(E.x[id], E.y[id])
     }
 }
 
@@ -161,14 +156,24 @@ export const attackMob = (id: number, dmg: number) => {
 export const iterMobs = (
     fn: (x: number, y: number, id: number, dir: Dir) => boolean | void,
 ) => {
-    for (let i = 0; i < entities.x.length; i++) {
-        if (entities.active[i]) {
-            const end = fn(entities.x[i], entities.y[i], i, entities.dir[i])
+    for (let i = 0; i < E.x.length; i++) {
+        if (E.active[i]) {
+            const end = fn(E.x[i], E.y[i], i, E.dir[i])
             if (end) {
                 break
             }
         }
     }
+}
+
+export const isHittingMob = (
+    id: number,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+) => {
+    return aabb(x, y, w, h, E.x[id], E.y[id], SIZE, SIZE)
 }
 
 /**
@@ -185,6 +190,6 @@ export const nearestMobPos = (x: number, y: number) => {
         }
     })
     if (id !== undefined) {
-        return { x: entities.x[id], y: entities.y[id] }
+        return { x: E.x[id], y: E.y[id] }
     }
 }

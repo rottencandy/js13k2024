@@ -33,9 +33,9 @@ const unloadGameEntities = () => {
 const loadGameEntities = () => {
     // order matters
     loadCam()
-    loadMob()
-    loadCoin()
     loadHero()
+    loadCoin()
+    loadMob()
     loadWeapon()
     loadText()
     loadHud()

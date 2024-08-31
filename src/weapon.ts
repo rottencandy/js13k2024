@@ -1,9 +1,9 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { MAX_BULLET_AGE } from "./const"
-import { aabb, angleToVec } from "./core/math"
-import { attackMob, iterMobs, mobCollisionRect } from "./mob"
+import { BULLET_SPEED, MAX_BULLET_AGE } from "./const"
+import { angleToVec } from "./core/math"
+import { attackMob, isHittingMob, iterMobs } from "./mob"
 import { stats } from "./stat"
 
 const bullets = {
@@ -16,7 +16,7 @@ const bullets = {
     active: [] as boolean[],
 }
 let freePool: number[] = []
-const bulletCollisionRect = 10
+const SIZE = 10
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -38,8 +38,8 @@ export const loadWeapon = () => {
     unloadPhysics = addPhysicsComp((dt) => {
         iterBullets((_x, _y, dirx, diry, id) => {
             // update existing bullets
-            bullets.x[id] += dirx * stats.bulletSpeed * dt
-            bullets.y[id] += diry * stats.bulletSpeed * dt
+            bullets.x[id] += dirx * BULLET_SPEED * dt
+            bullets.y[id] += diry * BULLET_SPEED * dt
             bullets.age[id] += dt
 
             if (bullets.age[id] > MAX_BULLET_AGE) {
@@ -48,17 +48,14 @@ export const loadWeapon = () => {
             }
 
             // check for impact
-            iterMobs((mobx, moby, mobid) => {
+            iterMobs((_mobx, _moby, mobid) => {
                 if (
-                    aabb(
+                    isHittingMob(
+                        mobid,
                         bullets.x[id],
                         bullets.y[id],
-                        bulletCollisionRect,
-                        bulletCollisionRect,
-                        mobx,
-                        moby,
-                        mobCollisionRect,
-                        mobCollisionRect,
+                        SIZE,
+                        SIZE,
                     )
                 ) {
                     attackMob(mobid, stats.bulletDmg)
@@ -75,8 +72,8 @@ export const loadWeapon = () => {
             ctx.fillRect(
                 x - cam.x,
                 y - cam.y,
-                bulletCollisionRect,
-                bulletCollisionRect,
+                SIZE,
+                SIZE,
             )
         })
     })
