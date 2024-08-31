@@ -351,7 +351,7 @@ export const renderFontTex = (
     let currX = x
     for (let i = 0; i < str.length; i++) {
         const font = letterCache[str[i]]
-        ctx.drawImage(font.i, currX, y)
+        ctx.drawImage(font.i, ~~currX, ~~y)
         currX += font.w + FONT_SIZE
     }
 }

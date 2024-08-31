@@ -57,10 +57,19 @@ export const loadCoin = () => {
 
     unloadRender = addRenderComp((ctx, assets) => {
         iterCoins((x, y) => {
-            ctx.drawImage(assets.coin, x - center - cam.x, y - center - cam.y)
+            ctx.drawImage(
+                assets.coin,
+                ~~(x - center - cam.x),
+                ~~(y - center - cam.y),
+            )
             if (DEBUG) {
                 ctx.strokeStyle = "green"
-                ctx.strokeRect(x - center - cam.x, y - center - cam.y, SIZE, SIZE)
+                ctx.strokeRect(
+                    x - center - cam.x,
+                    y - center - cam.y,
+                    SIZE,
+                    SIZE,
+                )
             }
         })
     })
