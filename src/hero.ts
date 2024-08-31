@@ -37,6 +37,9 @@ const vulnerability = ticker(INIT_VULNERABILITY_MS)
 const fireRate = ticker(INIT_BULLET_FIRE_RATE_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
+let frame = 0
+const maxFrames = 3
+
 let unloadPhysics: () => void
 let unloadRender: () => void
 
@@ -55,6 +58,7 @@ export const loadHero = () => {
 
     vulnerability.clear()
     fireRate.clear()
+    frameChange.clear()
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
         // movement
@@ -64,7 +68,9 @@ export const loadHero = () => {
             hero.state = State.idle
         } else {
             hero.state = State.moving
-            hero.dir = keys.dir.x < 0 ? Dir.left : Dir.right
+            if (keys.dir.x !== 0) {
+                hero.dir = keys.dir.x < 0 ? Dir.left : Dir.right
+            }
         }
 
         // fire weapons
@@ -83,15 +89,20 @@ export const loadHero = () => {
         if (hero.invulnerable) {
             hero.invulnerable = !vulnerability.tick(dt)
         }
+
+        if (frameChange.tick(dt)) {
+            frame = (frame + 1) % maxFrames
+        }
     })
 
-    unloadRender = addRenderComp((ctx) => {
+    unloadRender = addRenderComp((ctx, assets) => {
+        // todo invulnerable frame
         ctx.fillStyle = hero.invulnerable ? "white" : "green"
-        ctx.fillRect(
+        const dirFrame = hero.dir === Dir.right ? 0 : 3
+        ctx.drawImage(
+            assets.hero[frame + dirFrame],
             hero.x - center - cam.x,
             hero.y - center - cam.y,
-            SIZE,
-            SIZE,
         )
 
         if (DEBUG) {
@@ -128,15 +139,6 @@ export const hitHero = (amt: number) => {
     }
 }
 
-export const isHittingHero = (x: number, y: number, w: number, h:number) => {
-    return aabb(
-        hero.x - center,
-        hero.y - center,
-        SIZE,
-        SIZE,
-        x,
-        y,
-        w,
-        h,
-    )
+export const isHittingHero = (x: number, y: number, w: number, h: number) => {
+    return aabb(hero.x - center, hero.y - center, SIZE, SIZE, x, y, w, h)
 }
