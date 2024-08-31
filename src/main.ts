@@ -32,7 +32,7 @@ loadAssets().then((assets) => {
             processInput()
             CompPhysicsRun(dt)
             // we have separate methods for UI because it draws above all entities
-            updateUI()
+            updateUI(dt)
         },
         () => {
             CompRenderRun(ctx, assets)

@@ -13,6 +13,7 @@ export const UI_TEXT_DURATION = 300
 export const UI_HEALTH_BAR_Y = 20
 export const UI_BAR_X = (WIDTH - UI_BAR_WIDTH) / 2
 export const UI_XP_BAR_Y = 40
+export const UI_TRANSITION_DURATION = 900
 
 // gameplay
 export const SPRITE_ANIM_RATE_MS = 200

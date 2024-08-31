@@ -90,6 +90,7 @@ export const loadHero = () => {
             hero.invulnerable = !vulnerability.tick(dt)
         }
 
+        // animation frame
         if (frameChange.tick(dt)) {
             frame = (frame + 1) % maxFrames
         }
