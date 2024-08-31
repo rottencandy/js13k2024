@@ -1,12 +1,12 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { COIN_PICKUP_SPEED } from "./const"
-import { aabb, distance, limitMagnitude } from "./core/math"
-import { playerCollisionRect, playerPos } from "./hero"
+import { COIN_PICKUP_SPEED, DEBUG } from "./const"
+import { distance, limitMagnitude } from "./core/math"
+import { hero, isHittingHero } from "./hero"
 import { increaseXp, stats } from "./stat"
 
-const entities = {
+const E = {
     x: [] as number[],
     y: [] as number[],
     active: [] as boolean[],
@@ -14,7 +14,8 @@ const entities = {
 
 let freePool: number[] = []
 
-const size = 10
+const SIZE = 8
+const center = SIZE / 2
 
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
@@ -28,48 +29,39 @@ export const unloadCoin = () => {
 }
 
 export const loadCoin = () => {
-    entities.x = []
-    entities.y = []
-    entities.active = []
+    E.x = []
+    E.y = []
+    E.active = []
     freePool = []
 
     unloadPhysics = addPhysicsComp((dt) => {
         iterCoins((x, y, id) => {
             // move to player if near
-            const dist = distance(x, y, playerPos.x, playerPos.y)
+            const dist = distance(x, y, hero.x, hero.y)
             if (dist < stats.pickupRadius) {
-                _vec.x = playerPos.x - x
-                _vec.y = playerPos.y - y
+                _vec.x = hero.x - x
+                _vec.y = hero.y - y
                 limitMagnitude(_vec)
-                entities.x[id] += _vec.x * dt * COIN_PICKUP_SPEED
-                entities.y[id] += _vec.y * dt
+                E.x[id] += _vec.x * dt * COIN_PICKUP_SPEED
+                E.y[id] += _vec.y * dt
             }
 
             // check if picked
-            if (
-                aabb(
-                    // we use values from component because we just updated them above
-                    entities.x[id],
-                    entities.y[id],
-                    size,
-                    size,
-                    playerPos.x,
-                    playerPos.y,
-                    playerCollisionRect,
-                    playerCollisionRect,
-                )
-            ) {
+            if (isHittingHero(E.x[id] - center, E.y[id] - center, SIZE, SIZE)) {
                 increaseXp()
-                entities.active[id] = false
+                E.active[id] = false
                 freePool.push(id)
             }
         })
     })
 
-    unloadRender = addRenderComp((ctx) => {
+    unloadRender = addRenderComp((ctx, assets) => {
         iterCoins((x, y) => {
-            ctx.fillStyle = "gold"
-            ctx.fillRect(x - size / 2 - cam.x, y - size / 2 - cam.y, size, size)
+            ctx.drawImage(assets.coin, x - center - cam.x, y - center - cam.y)
+            if (DEBUG) {
+                ctx.strokeStyle = "green"
+                ctx.strokeRect(x - center - cam.x, y - center - cam.y, SIZE, SIZE)
+            }
         })
     })
 }
@@ -77,9 +69,9 @@ export const loadCoin = () => {
 const iterCoins = (
     fn: (x: number, y: number, id: number) => boolean | void,
 ) => {
-    for (let i = 0; i < entities.x.length; i++) {
-        if (entities.active[i]) {
-            const end = fn(entities.x[i], entities.y[i], i)
+    for (let i = 0; i < E.x.length; i++) {
+        if (E.active[i]) {
+            const end = fn(E.x[i], E.y[i], i)
             if (end) {
                 break
             }
@@ -90,12 +82,12 @@ const iterCoins = (
 export const dropCoin = (x: number, y: number) => {
     if (freePool.length > 0) {
         const i = freePool.pop()!
-        entities.x[i] = x
-        entities.y[i] = y
-        entities.active[i] = true
+        E.x[i] = x
+        E.y[i] = y
+        E.active[i] = true
         return i
     }
-    entities.x.push(x)
-    entities.y.push(y)
-    return entities.active.push(true)
+    E.x.push(x)
+    E.y.push(y)
+    return E.active.push(true)
 }

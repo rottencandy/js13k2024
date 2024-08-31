@@ -1,4 +1,5 @@
 import { addPhysicsComp } from "./components/physics"
+import { stats } from "./stat"
 
 export const cam = { x: 0, y: 0 }
 
@@ -12,7 +13,7 @@ export const loadCam = () => {
     cam.x = 0
     cam.y = 0
     unloadPhysics = addPhysicsComp((dt, keys) => {
-        cam.x += keys.dir.x * dt
-        cam.y += keys.dir.y * dt
+        cam.x += keys.dir.x * stats.speed * dt
+        cam.y += keys.dir.y * stats.speed * dt
     })
 }

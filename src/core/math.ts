@@ -95,3 +95,16 @@ export const angleToVec = (a: number): Vec2 => ({
     x: Math.sin(a),
     y: Math.cos(a),
 })
+
+/** Pick a random element from given array and return it */
+export const pickRandom = <T extends unknown>(arr: T[]) => {
+    const i = randInt(0, arr.length - 1)
+    return arr[i]
+}
+
+/** Remove a random element from given array and return it */
+export const extractRandom = <T extends unknown>(arr: T[]) => {
+    const i = randInt(0, arr.length - 1)
+    const [ele] = arr.splice(i, 1)
+    return ele
+}

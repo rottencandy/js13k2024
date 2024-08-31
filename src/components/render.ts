@@ -1,13 +1,14 @@
+import { Assets } from "src/asset"
+import { HEIGHT, WIDTH } from "../const"
 import { CTX } from "../core/canvas"
-import { type Keys, keys } from "../core/input"
 
-type RenderFunc = (ctx: CTX, width: number, height: number, keys: Keys) => void
+type RenderFunc = (ctx: CTX, assets: Assets) => void
 let components: RenderFunc[] = []
 
-export const CompRenderRun = (ctx: CTX, width: number, height: number) => {
-    ctx.clearRect(0, 0, width, height)
+export const CompRenderRun = (ctx: CTX, assets: Assets) => {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT)
     for (let i = 0; i < components.length; i++) {
-        components[i](ctx, width, height, keys)
+        components[i](ctx, assets)
     }
 }
 
