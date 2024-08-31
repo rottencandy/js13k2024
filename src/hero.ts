@@ -4,7 +4,6 @@ import { addRenderComp } from "./components/render"
 import {
     SPRITE_ANIM_RATE_MS,
     DEBUG,
-    Dir,
     HEIGHT,
     INIT_BULLET_FIRE_RATE_MS,
     INIT_VULNERABILITY_MS,
@@ -25,13 +24,13 @@ const enum State {
 const SIZE = 16
 const center = SIZE / 2
 let pendingDamage = 0
+let invulnerable = false
+let flipped = false
+let state = State.idle
 
 export const hero = {
     x: WIDTH / 2,
     y: HEIGHT / 2,
-    state: State.idle,
-    dir: Dir.right,
-    invulnerable: false,
 }
 
 const vulnerability = ticker(INIT_VULNERABILITY_MS)
@@ -53,9 +52,9 @@ export const loadHero = () => {
     hero.x = WIDTH / 2
     hero.y = HEIGHT / 2
     stats.health = 100
-    hero.state = State.idle
-    hero.dir = Dir.right
-    hero.invulnerable = false
+    state = State.idle
+    flipped = false
+    invulnerable = false
 
     vulnerability.clear()
     fireRate.clear()
@@ -66,11 +65,11 @@ export const loadHero = () => {
         hero.x += keys.dir.x * stats.speed * dt
         hero.y += keys.dir.y * stats.speed * dt
         if (keys.dir.x === 0 && keys.dir.y === 0) {
-            hero.state = State.idle
+            state = State.idle
         } else {
-            hero.state = State.moving
+            state = State.moving
             if (keys.dir.x !== 0) {
-                hero.dir = keys.dir.x < 0 ? Dir.left : Dir.right
+                flipped = keys.dir.x < 0
             }
         }
 
@@ -87,8 +86,8 @@ export const loadHero = () => {
         }
 
         // vulnerability
-        if (hero.invulnerable) {
-            hero.invulnerable = !vulnerability.tick(dt)
+        if (invulnerable) {
+            invulnerable = !vulnerability.tick(dt)
         }
         // reduce health and check if dead
         if (pendingDamage > 0) {
@@ -107,8 +106,8 @@ export const loadHero = () => {
 
     unloadRender = addRenderComp((ctx, assets) => {
         // todo invulnerable frame
-        ctx.fillStyle = hero.invulnerable ? "white" : "green"
-        const dirFrame = hero.dir === Dir.right ? 0 : 3
+        ctx.fillStyle = invulnerable ? "white" : "green"
+        const dirFrame = flipped ? 0 : 3
         ctx.drawImage(
             assets.hero[frame + dirFrame],
             hero.x - center - cam.x,
@@ -139,9 +138,9 @@ export const loadHero = () => {
 }
 
 export const hitHero = (amt: number) => {
-    if (!hero.invulnerable) {
+    if (!invulnerable) {
         pendingDamage += amt
-        hero.invulnerable = true
+        invulnerable = true
         vulnerability.reset()
     }
 }
