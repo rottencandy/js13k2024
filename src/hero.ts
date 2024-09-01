@@ -105,14 +105,20 @@ export const loadHero = () => {
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
-        // todo invulnerable frame
-        ctx.fillStyle = invulnerable ? "white" : "green"
-        const dirFrame = flipped ? 0 : 3
-        ctx.drawImage(
-            assets.hero[frame + dirFrame],
-            hero.x - center - cam.x,
-            hero.y - center - cam.y,
-        )
+        // blink if invulnerable
+        if (invulnerable && vulnerability.ticks % 10 === 0) {
+            return
+        }
+        switch (state) {
+            case State.idle:
+            case State.moving:
+                const dirFrame = flipped ? 0 : 3
+                ctx.drawImage(
+                    assets.hero[frame + dirFrame],
+                    hero.x - center - cam.x,
+                    hero.y - center - cam.y,
+                )
+        }
 
         if (DEBUG) {
             // draw collision radius
