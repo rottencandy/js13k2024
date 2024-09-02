@@ -4,7 +4,9 @@ import { renderFont } from "./core/font"
 import { keys } from "./core/input"
 import { ticker } from "./core/interpolation"
 import { pointInRect } from "./core/math"
-import { resumeGame, scene, Scene, startGame } from "./scene"
+import { obsListen } from "./core/observer"
+import { Observable } from "./observables"
+import { resumeGame, Scene, startGame } from "./scene"
 
 const selectPowerup = (power: 1 | 2 | 3) => () => {
     resumeGame()
@@ -15,6 +17,10 @@ const MENU_FONT_SIZE = 5
 const transition = ticker(UI_TRANSITION_DURATION)
 let runTransition = false
 let onTransition: () => void
+let scene: Scene
+obsListen(Observable.scene, (next) => {
+    scene = next as Scene
+})
 
 const transitionAndStart = () => {
     runTransition = true
@@ -91,7 +97,6 @@ export const renderUI = (ctx: CTX) => {
             renderFont(ctx, "TITLE", MENU_FONT_SIZE, 100, 100)
             renderFont(ctx, "START", MENU_FONT_SIZE, 200, 200)
             break
-        // lack of break in this case is intentional
         case Scene.powerup:
             ctx.fillStyle = "pink"
             ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
@@ -103,6 +108,7 @@ export const renderUI = (ctx: CTX) => {
             powerup2btn.render(ctx)
             ctx.fillStyle = "blue"
             powerup3btn.render(ctx)
+            break
         case Scene.gameplay:
             break
         case Scene.gameover:

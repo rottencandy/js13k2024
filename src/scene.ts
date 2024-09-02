@@ -1,9 +1,11 @@
 import { loadCam, unloadCam } from "./cam"
 import { loadCoin, unloadCoin } from "./coin"
 import { physicsPause } from "./components/physics"
+import { obsEmit, obsStart } from "./core/observer"
 import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
+import { Observable } from "./observables"
 import { resetStats } from "./stat"
 import { loadText, unloadText } from "./text"
 import { loadWeapon, unloadWeapon } from "./weapon"
@@ -16,7 +18,8 @@ export const enum Scene {
     gameover,
 }
 
-export let scene: Scene
+let scene: Scene
+obsStart(Observable.scene)
 
 const unloadGameEntities = () => {
     if (scene === Scene.gameplay) {
@@ -44,10 +47,12 @@ const loadGameEntities = () => {
 export const loadTitle = () => {
     unloadGameEntities()
     scene = Scene.title
+    obsEmit(Observable.scene, scene)
 }
 
 export const startGame = () => {
     scene = Scene.gameplay
+    obsEmit(Observable.scene, scene)
     resetStats()
     loadGameEntities()
 }
@@ -55,19 +60,23 @@ export const startGame = () => {
 export const endGame = () => {
     unloadGameEntities()
     scene = Scene.gameover
+    obsEmit(Observable.scene, scene)
 }
 
 export const powerupMenu = () => {
     physicsPause(true)
     scene = Scene.powerup
+    obsEmit(Observable.scene, scene)
 }
 
 export const pauseGame = () => {
     physicsPause(true)
     scene = Scene.pause
+    obsEmit(Observable.scene, scene)
 }
 
 export const resumeGame = () => {
     physicsPause(false)
     scene = Scene.gameplay
+    obsEmit(Observable.scene, scene)
 }
