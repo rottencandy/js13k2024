@@ -13,17 +13,18 @@ export type Assets = Awaited<ReturnType<typeof loadAssets>>
 
 export const loadAssets = async () => {
     const hero = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAA3ElEQVRIS+1WwQ2DQAyDURADVCzA8CyAOkDFKEV5pDJHEpLoikoFr6rCPvuSOLTNxZ+2tv6u698W57K8zDOj+B1ZlADFEvY5T+adPIax0Uxk8BsDGQJW68Hyu5KJLP5jIEtgGSChXJHyd1kF6XwP3jTgIfhrA9owXKaFbgPKDWAFqw0xneUJgp+NURzm7CI72kHMiwm22wOezWwtIsJry4xunx4Jj9XD9EM9/P9hC0UIpBg9Ey/OwJkCyk+RaAXFFsq0AA9xVEDZslYQSAEgfszh+kdBVoJorfRt/ApGCHMgC3NZCQAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAQCAYAAACBSfjBAAABKUlEQVRYR+1Y2w3CMAxsR6kYALEAw7MAYgDUUUD+MDKuX4oTqKX2CwGX+C5n52CejielwJxCC+BlOb2sNdf1ae5ZDb8hkyEA2Mf9Zp7J+XKdNBEr4r8EzBCIYFFZScSq+I+AIwiAUOhI/pq7UNq/At4UsAIBdPW/DmCogNowPFpYuAhGjIAKBzB0BlYQwBoBkfq7CQibRVx4xBgjx6GIrUHay6C4rpQjo1hrjZb6Nzkw8svECsKA18I0uA8eTQAp8tB6MBVwF1Pn0+TAuXhRigoocZC6R2xhrQiNAG/fX+N7CeitIxlgNwJ6pw+few5Gx3kd0NoFpoBZAj3w3kVkXUCR2zSK18aQ2cJSAag4nU2Rf1Po92kxUQIZPD2EyMyjc5K3MHLV3gfsG8E8bS8nViNqAAAAAElFTkSuQmCC",
     )
-        const coin = await img(
-            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgSbHQDgZZJ06wGiupLwyT/avBihhhkuExf8GSASJyYHrDm0dgRXAFIN0gnTBFZZfeMZzNzEdVADMeRB97xgNRQNANyL6AORSkE8UX6F6FSYLEAd24N+ydv2K9AAAAAElFTkSuQmCC",
-        )
+    const coin = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgSbHQDgZZJ06wGiupLwyT/avBihhhkuExf8GSASJyYHrDm0dgRXAFIN0gnTBFZZfeMZzNzEdVADMeRB97xgNRQNANyL6AORSkE8UX6F6FSYLEAd24N+ydv2K9AAAAAElFTkSuQmCC",
+    )
 
-    // include normal and flipped frames if flippable
+    // included normal and flipped versions for asymmetric sprites
     // note: make sure spritesheet frames are always in 1 row
-    const assets = {
+    return {
         coin,
         hero: [
+            // normal
             texture(
                 (ctx) => {
                     drawFrame(ctx, hero, 0, 0, 16, 0)
@@ -47,6 +48,21 @@ export const loadAssets = async () => {
             ),
             texture(
                 (ctx) => {
+                    drawFrame(ctx, hero, 0, 0, 16, 3)
+                },
+                16,
+                16,
+            ),
+            texture(
+                (ctx) => {
+                    drawFrame(ctx, hero, 0, 0, 16, 4)
+                },
+                16,
+                16,
+            ),
+            // flipped
+            texture(
+                (ctx) => {
                     flippedFrame(ctx, hero, 0, 0, 16, 0)
                 },
                 16,
@@ -66,9 +82,22 @@ export const loadAssets = async () => {
                 16,
                 16,
             ),
+            texture(
+                (ctx) => {
+                    flippedFrame(ctx, hero, 0, 0, 16, 3)
+                },
+                16,
+                16,
+            ),
+            texture(
+                (ctx) => {
+                    flippedFrame(ctx, hero, 0, 0, 16, 4)
+                },
+                16,
+                16,
+            ),
         ],
     }
-    return assets
 }
 
 export const drawFrame = (

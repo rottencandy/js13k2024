@@ -2,11 +2,11 @@ import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
-    SPRITE_ANIM_RATE_MS,
     DEBUG,
     HEIGHT,
     INIT_BULLET_FIRE_RATE_MS,
     INIT_VULNERABILITY_MS,
+    SPRITE_ANIM_RATE_MS,
     WIDTH,
 } from "./const"
 import { ticker } from "./core/interpolation"
@@ -37,8 +37,12 @@ const vulnerability = ticker(INIT_VULNERABILITY_MS)
 const fireRate = ticker(INIT_BULLET_FIRE_RATE_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
-let frame = 0
-const maxFrames = 3
+const maxFrames = 4
+let currentFrame = 0
+const frames = {
+    [State.idle]: [0, 1, 2, 0],
+    [State.moving]: [3, 0, 4, 0],
+}
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -77,7 +81,7 @@ export const loadHero = () => {
         if (fireRate.tick(dt)) {
             const aimedMob = nearestMobPos(hero.x, hero.y)
             if (aimedMob) {
-                // translate mob pos to player pos
+                // translate mob pos to hero pos
                 const xpos = aimedMob.x - hero.x
                 const ypos = aimedMob.y - hero.y
                 const angle = Math.atan2(xpos, ypos)
@@ -100,7 +104,7 @@ export const loadHero = () => {
 
         // animation frame
         if (frameChange.tick(dt)) {
-            frame = (frame + 1) % maxFrames
+            currentFrame = (currentFrame + 1) % maxFrames
         }
     })
 
@@ -109,16 +113,13 @@ export const loadHero = () => {
         if (invulnerable && vulnerability.ticks % 10 === 0) {
             return
         }
+        const dirOffset = flipped ? 5 : 0
+        const frame = assets.hero[frames[state][currentFrame] + dirOffset]
         switch (state) {
             case State.idle:
             case State.moving:
-                const dirFrame = flipped ? 0 : 3
-                ctx.drawImage(
-                    assets.hero[frame + dirFrame],
-                    hero.x - center - cam.x,
-                    hero.y - center - cam.y,
-                )
         }
+        ctx.drawImage(frame, hero.x - center - cam.x, hero.y - center - cam.y)
 
         if (DEBUG) {
             // draw collision radius
