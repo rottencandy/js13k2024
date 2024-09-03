@@ -21,10 +21,12 @@ export const SPAWN_RADIUS = HEIGHT / 2
 export const COIN_XP = 50
 export const COIN_PICKUP_SPEED = 0.05
 export const MAX_BULLET_AGE = 3e3
+export const HERO_MOB_COLLISION_PROXIMITY = HEIGHT / 2
 
 export const MOB_SPEED = 0.04
 export const MOB_HEALTH = 5
 export const MOB_ATTACK = 10
+export const MOB_MAX_COLLISION_SNAP_DIST = 4
 
 export const INIT_LEVEL_XP = 100
 export const LEVEL_XP_CAP_MULTIPLIER = 1.5

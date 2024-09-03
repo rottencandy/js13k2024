@@ -36,7 +36,7 @@ export const loadCoin = () => {
 
     unloadPhysics = addPhysicsComp((dt) => {
         iterCoins((x, y, id) => {
-            // move to player if near
+            // move to hero if near
             const dist = distance(x, y, hero.x, hero.y)
             if (dist < stats.pickupRadius) {
                 _vec.x = hero.x - x

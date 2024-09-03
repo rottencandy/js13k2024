@@ -4,6 +4,7 @@ import { addRenderComp } from "./components/render"
 import {
     DEBUG,
     HEIGHT,
+    HERO_MOB_COLLISION_PROXIMITY,
     INIT_BULLET_FIRE_RATE_MS,
     INIT_VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
@@ -23,6 +24,7 @@ const enum State {
 
 const SIZE = 16
 const center = SIZE / 2
+// used for checking hero proximity(for collisions)
 let pendingDamage = 0
 let invulnerable = false
 let flipped = false
@@ -130,6 +132,13 @@ export const loadHero = () => {
                 SIZE,
                 SIZE,
             )
+            // draw rect used for checking hero proximity(for collisions)
+            ctx.strokeRect(
+                hero.x - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.x,
+                hero.y - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.y,
+                HERO_MOB_COLLISION_PROXIMITY,
+                HERO_MOB_COLLISION_PROXIMITY,
+            )
             // draw pickup radius
             ctx.beginPath()
             ctx.arc(
@@ -154,4 +163,17 @@ export const hitHero = (amt: number) => {
 
 export const isHittingHero = (x: number, y: number, w: number, h: number) => {
     return aabb(hero.x - center, hero.y - center, SIZE, SIZE, x, y, w, h)
+}
+
+export const isNearHero = (x: number, y: number, w: number, h: number) => {
+    return aabb(
+        hero.x - HERO_MOB_COLLISION_PROXIMITY / 2,
+        hero.y - HERO_MOB_COLLISION_PROXIMITY / 2,
+        HERO_MOB_COLLISION_PROXIMITY,
+        HERO_MOB_COLLISION_PROXIMITY,
+        x,
+        y,
+        w,
+        h,
+    )
 }
