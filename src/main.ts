@@ -7,6 +7,7 @@ import { initInput } from "./core/input"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
 import { loadTitle } from "./scene"
+import { loadSounds } from "./sound"
 import { renderUI, updateUI } from "./ui"
 
 const canvas = document.getElementById("c") as HTMLCanvasElement
@@ -15,8 +16,10 @@ const offscreenCanvas = document.createElement("canvas")
 const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
 const processInput = initInput(canvas, WIDTH, HEIGHT)
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
+loadSounds()
 
-loadAssets().then((assets) => {
+;(async () => {
+    const assets = await loadAssets()
     // display note if device is in portrait
     if (innerWidth < innerHeight) {
         alert("For best experience play in landscape mode")
@@ -40,4 +43,4 @@ loadAssets().then((assets) => {
             postProcess(ctx)
         },
     )
-})
+})()

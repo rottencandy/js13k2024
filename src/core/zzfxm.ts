@@ -2,6 +2,8 @@
  * ZzFX Music Renderer v2.0.3 by Keith Clark and Frank Force
  */
 
+import { zzfxG, zzfxR } from "./zzfx";
+
 /**
  * @typedef Channel
  * @type {Array.<Number>}
@@ -30,7 +32,7 @@
  * @returns {Array.<Array.<Number>>} Left and right channel sample data.
  */
 
-const zzfxM = (instruments, patterns, sequence, BPM = 125) => {
+export const zzfxM = (instruments, patterns, sequence, BPM = 125) => {
   let instrumentParameters;
   let i;
   let j;
