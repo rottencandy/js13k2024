@@ -6,7 +6,7 @@
 // You can use zzfxV to set volume.
 // Feel free to minify it further for your own needs!
 
-'use strict';
+//'use strict';
 
 ///////////////////////////////////////////////////////////////////////////////
 
