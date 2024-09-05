@@ -1,4 +1,4 @@
-type Callback = <T extends unknown>(arg: T) => void
+type Callback = (arg: any) => void
 
 const CALLBACKS: { [event: number | string]: Callback[] } = {}
 

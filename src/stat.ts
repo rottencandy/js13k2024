@@ -22,6 +22,9 @@ const enum Powerup {
     auraRadius,
     auraDamage,
 
+    lightsaberSize,
+    lightsaberDamage,
+
     maxHealth,
     movementSpeed,
     regeneration,
@@ -29,10 +32,10 @@ const enum Powerup {
 
 const enum Item {
     heal,
-    tempDoubleXp,
     tempCoinMagnet,
     tempFlamethrower,
     tempStopTime,
+    killAllVisibleMobs,
 }
 
 const usePowerup = (power: Powerup) => {

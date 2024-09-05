@@ -122,6 +122,12 @@ export const initInput = (
         gamepad = undefined
     }
 
+    // prevent long touch effect on touch devices
+    // only needed if not preventing on other pointer events
+    oncontextmenu = (e) => {
+        e.preventDefault()
+    }
+
     canvas.onpointerdown = () => (keys.btn.clk = true)
     canvas.onpointerup = () => (keys.btn.clk = false)
     canvas.onpointermove = (e) => {
