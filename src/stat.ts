@@ -14,16 +14,21 @@ const enum Powerup {
     bulletSize,
     bulletDamage,
     bulletFireRate,
-    //bulletPenetration,
+    bulletPenetration,
+
+    bombFireRate,
+    bombDamage,
+
+    auraRadius,
+    auraDamage,
 
     maxHealth,
     movementSpeed,
-    autoHeal,
+    regeneration,
 }
 
 const enum Item {
     heal,
-    fiftyXp,
     tempDoubleXp,
     tempCoinMagnet,
     tempFlamethrower,
@@ -37,11 +42,6 @@ const usePowerup = (power: Powerup) => {
 
 const useItem = (item: Item) => {
     switch (item) {
-    }
-}
-
-const maxedOut = (power: Powerup) => {
-    switch (power) {
     }
 }
 

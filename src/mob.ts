@@ -73,15 +73,7 @@ export const loadMob = () => {
 
             // check hero collision
             // todo: possible optimization: skip detection if hero is invulnerable
-            if (
-                E.near[id] &&
-                isHittingHero(
-                    x,
-                    y,
-                    SIZE,
-                    SIZE,
-                )
-            ) {
+            if (E.near[id] && isHittingHero(x, y, SIZE, SIZE)) {
                 hitHero(MOB_ATTACK)
             } else {
                 // move towards hero
@@ -105,7 +97,7 @@ export const loadMob = () => {
             if (!E.active[i] || !E.near[i]) {
                 continue
             }
-            for (let j = i; j < E.active.length; j++) {
+            for (let j = i + 1; j < E.active.length; j++) {
                 if (!E.active[j] || !E.near[j]) {
                     continue
                 }
