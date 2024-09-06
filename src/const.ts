@@ -25,7 +25,7 @@ export const HERO_MOB_COLLISION_PROXIMITY = HEIGHT / 2
 
 export const MOB_SPEED = 0.04
 export const MOB_HEALTH = 5
-export const MOB_ATTACK = 10
+export const MOB_ATTACK = 50
 export const MOB_MAX_COLLISION_SNAP_DIST = 4
 
 export const INIT_LEVEL_XP = 100

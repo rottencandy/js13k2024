@@ -1,4 +1,10 @@
-import { DEBUG, HEIGHT, UI_TRANSITION_DURATION, WIDTH } from "./const"
+import {
+    DEBUG,
+    FONT_SIZE,
+    HEIGHT,
+    UI_TRANSITION_DURATION,
+    WIDTH,
+} from "./const"
 import { type CTX } from "./core/canvas"
 import { renderFont } from "./core/font"
 import { keys } from "./core/input"
@@ -75,10 +81,35 @@ const btn = (
     return obj
 }
 
-const startBtn = btn(190, 180, 120, 60, startGame)
-const powerup1btn = btn(100, 200, 50, 50, selectPowerup(0))
-const powerup2btn = btn(200, 200, 50, 50, selectPowerup(1))
-const powerup3btn = btn(300, 200, 50, 50, selectPowerup(2))
+const BTN_SIZE = 50
+const startBtn = btn(
+    ~~(WIDTH / 3) - 10,
+    ~~(HEIGHT / 3) * 2 - 10,
+    FONT_SIZE * 4 * 6,
+    BTN_SIZE,
+    startGame,
+)
+const powerup1btn = btn(
+    ~~(WIDTH / 6) * 1,
+    ~~(HEIGHT / 2),
+    BTN_SIZE,
+    BTN_SIZE,
+    selectPowerup(0),
+)
+const powerup2btn = btn(
+    ~~(WIDTH / 6) * 2,
+    ~~(HEIGHT / 2),
+    BTN_SIZE,
+    BTN_SIZE,
+    selectPowerup(1),
+)
+const powerup3btn = btn(
+    ~~(WIDTH / 6) * 3,
+    ~~(HEIGHT / 2),
+    BTN_SIZE,
+    BTN_SIZE,
+    selectPowerup(2),
+)
 
 export const updateUI = (dt: number) => {
     switch (scene) {
@@ -155,14 +186,32 @@ export const renderUI = (ctx: CTX) => {
             ctx.fillStyle = "brown"
             startBtn.render(ctx)
             ctx.fillStyle = "pink"
-            renderFont(ctx, "TITLE", MENU_FONT_SIZE, 100, 100)
-            renderFont(ctx, "START", MENU_FONT_SIZE, 200, 200)
+            renderFont(
+                ctx,
+                "TITLE",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 3),
+                ~~(HEIGHT / 3),
+            )
+            renderFont(
+                ctx,
+                "START",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 3),
+                ~~(HEIGHT / 3) * 2,
+            )
             break
         case Scene.powerup:
             ctx.fillStyle = "pink"
             ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
             ctx.fillStyle = "white"
-            renderFont(ctx, "SELECT POWERUP", MENU_FONT_SIZE, 100, 100)
+            renderFont(
+                ctx,
+                "SELECT POWERUP",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 5),
+                ~~(HEIGHT / 4),
+            )
             ctx.fillStyle = "red"
             powerup1btn.render(ctx)
             ctx.fillStyle = "green"
@@ -170,23 +219,24 @@ export const renderUI = (ctx: CTX) => {
             ctx.fillStyle = "blue"
             powerup3btn.render(ctx)
             ctx.strokeStyle = "white"
-            switch (hoveredPowerup) {
-                case 0:
-                    ctx.strokeRect(90, 190, 70, 70)
-                    break
-                case 1:
-                    ctx.strokeRect(190, 190, 70, 70)
-                    break
-                case 2:
-                    ctx.strokeRect(290, 190, 70, 70)
-                    break
-            }
+            ctx.strokeRect(
+                ~~(WIDTH / 6) * (hoveredPowerup + 1) - 10,
+                ~~(HEIGHT / 2) - 10,
+                BTN_SIZE + 20,
+                BTN_SIZE + 20,
+            )
             break
         case Scene.gameplay:
             break
         case Scene.gameover:
             ctx.fillStyle = "pink"
-            renderFont(ctx, "GAME OVER", MENU_FONT_SIZE, 100, 200)
+            renderFont(
+                ctx,
+                "GAME OVER",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 3),
+                ~~(HEIGHT / 3),
+            )
             break
     }
 }
