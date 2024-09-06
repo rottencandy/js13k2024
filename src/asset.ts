@@ -13,16 +13,19 @@ export type Assets = Awaited<ReturnType<typeof loadAssets>>
 
 export const loadAssets = async () => {
     const hero = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAQCAYAAACBSfjBAAAB70lEQVRYR2NkGAUUhQAjRbqxaFZUVP6Pz8z79+/itXOo6cfwDCUeAOl1X7gBZ/hZSX1hqHeNYcAViINZP8jtx57xMOyMD0BxP0oAUuIBkF6t+OUMsk6ceBM1rkAcCvqxBSI8AIeCB0AxM5ARQPMAzOy3Bae+e0LFJGdjUAQOdv0EA5BaHjh4IQtnVsaXgmD2D7R+XAmA6ACkhgdASRBbeUhsAA60flxuR69IUMpA5BRAiQfw1SIWyhwM8X67MWpi5Cw8WPWD3H7i7g+G6YWH4e7HGoDkeACkBxQIIlzyYO2hrXJYjUG2HF3BYNePLfIxmjGUBgAoUGBmsPKKoYTR85enwXx87cChph8jACnxACwVbqp3ZZByNAMH1tzzhxiSDe3AbBOHVpyBB9MLovHpxxUBoNQLihgQTch+mFpsWYQY/cj6sAYgOR5ADgBdc3UGmwjU1AeSB2VffAEAKoNBavDph6lBTsWw8hNmPiH7sZkBcz9MDlYfIAcWNvdjlIHkeADdclIDAOZIWDeSUABgKwKQUyA+/bBUiq8YIaSfYAqM1xBn4EpXg6cYdD6hMoxc/bCIwKefmMEIeurHOpgAcoC6kSJDZOtSsHyDp9V/EL9q2Qm8ZRhyAAyUfnQ33Dx3H+wXUt2OrB6UumFhgm4OANuhmy/77c3yAAAAAElFTkSuQmCC",
-    )
-    const coin = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgSbHQDgZZJ06wGiupLwyT/avBihhhkuExf8GSASJyYHrDm0dgRXAFIN0gnTBFZZfeMZzNzEdVADMeRB97xgNRQNANyL6AORSkE8UX6F6FSYLEAd24N+ydv2K9AAAAAElFTkSuQmCC",
-    )
-    const bullet = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAQklEQVQYV2NkIAAYYfKKisr/kdXev38XLAcmQJJnDlSjmGXi0MoAUoSigJXfHazo98edDOQpQLYDxQSYO3A6Ep9PASVXKgn1SJ/DAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAQCAYAAACBSfjBAAAB70lEQVRYR2NkGAUUhQAjRbqxaDbVdvqPz8zTV/fhtXOo6cfwDCUeAOk1nj4RZ/hZSX1hmOxfzYArEAezfpDbjz3jYTibmY/ifpQApMQDIL1ioR0Msk6ceBM1rkAcCvqxBSI8AIeCB0AxM5ARQPMADG2VA6e+e0LFJGdjUAQOdv0EA5BaHjh4IQtnVsaXgmD2D7R+XAmA6ACkhgdASRBbeUhsAA60flxuR69IUMpA5BRAiQfw1SIWyhwMxRG3MGpi5Cw8WPWD3H7i7g+G1dWP4O7HGoDkeACkBxQIrLxiYO0BFRxYjUG2HF3BYNePLfIxmjGUBAB6IHLzfEcJow/PP+NsA8IUIgfiUNCPtSENC0RyPTCvVI1BytEMHCZzzx9iSDa0A7M9vJbgDUBYIx6ffpA52BriIL0gcRBNyH6YWmxZhBj9yPowUiBIkhwPwFIfiJbU5WCwiYBkZWQAyr74AgBUBoPU4NMPU4MciLDyE2Y+IfuxmQFzP0wOVh8Qcj9GGUiOB9AtJzUAkLMvJREAS4H47IepwdedJKSfYAr0lvvBwJWuBk4NIIDOx2c5NvXE6odFBD77iRmMoKd+rGUgyAHqRooMka1LwfINnlb/Qfy+Dc+JqgQGUj9yJIDcfPPcfbBfSHU7snpQEQHzE7o5AGAAsC/n6ODmAAAAAElFTkSuQmCC",
     )
     const mob0 = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAA8ElEQVRIS9WWPQ7CMAyF05FDMFTchIWVG/Rs3KArCzdBHXoIRpAruUodxz8NDTRz3ou/l8RyE3a+mp3XH1iAtj29ObBheP4dcFIQFH+59ezF3LtrsEDUDGABIBWPRBpE7QBUACg4vhEJ4BcBiABQLC6E8AJsHYD4ByiA9/nUCEAFgOQxxTUApfr4BXDnm7uQt3iujXk94uAwCNoF1U/8je5j8bA0APChIcwAmoE3Pe8NaOfnQkgAxscrOft4PiTkdBMWwOlhr+ah6XMeE8BaMUJY9BKEVc95zACeoY5+pNzokPMs1YMvemwyzJXOQh79B0hiLyAkBQnxAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAA8UlEQVRIS9WWvRHCMAyFnZIhmCAlxwLZhiqzUGWbLMBRZgKGoIRT7pQzsqyfmBji2u9Z37OtUxN2vpqd1x9YgHPbvTiw2zT+HXBSEBR/Gq7sxdwvfbBA1AzgA0AqHok0iNoBqABQcHwjEsAvAhABoFhcCOEF2DoA8Q9QAO/zqRGACgDJY4prAEr18Qvgzjd3IW/xXBvzesTBYRC0C6qf+Bvdx+JhaQDgQ0NYADQDb3reG9DOz4WQADzGZ3L2sTsk5HQTFsDpYa/moelzHjPAWjFCWPQShFXPeSwAnqGOfqTc6JDzLNWDL3psMsyVzkIe/RvbKi8gvX+8OQAAAABJRU5ErkJggg==",
+    )
+    const coin = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgycAwN4b0BDGwmh9vxRgCYvvAihhhkvG+OmBJXiVDMP353nmwIrgCkG6QTpii3x93Mnh4LUFVADMeRHMIv4IoIOgGZF/AHArSieILdK/CJEHiAPtXOeyz5cSGAAAAAElFTkSuQmCC",
+    )
+    const bullet = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAQ0lEQVQYV2NkIAAYYfKm2k7/kdWevroPLAcmQJI7tsWgmOXhtYQBpAhFASu/O1jR7487GchTgGwHigkwd+B0JD6fAgA0lyoJwxgCagAAAABJRU5ErkJggg==",
+    )
+    const elements = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAICAYAAADjoT9jAAAA1UlEQVQoU2NkIAGYajv9Byk/fXUfI7I2mDg2ObBCdI3YDAKJ7T26mOHY0SsMtWWdcEtA4ju2xcDt8/BaguIARpCCenUBsILGmx/ANDIf5FqY4SA5kAUgALMEZgErvzvD7487GfBagB5aMAubu8oZrKx1wNIwC2CWgGi8PoAFEczVMEtAhsNcHxjmxmBkYgiWglkEYjtbx8LVwPShxw88stCDClkhSA5mCcwCmOHovoY5GKYfa2pAdwVME8wS5EhGtwAWJ7C4QLEAm2uQxXAlU2yWwBwJACNzjQmYk1DiAAAAAElFTkSuQmCC",
     )
 
     // included normal and flipped versions for asymmetric sprites
@@ -31,54 +34,57 @@ export const loadAssets = async () => {
         coin,
         hero: [
             // normal
-            texture((ctx) => drawFrame(ctx, hero, 0, 0, 16, 0), 16, 16),
-            texture((ctx) => drawFrame(ctx, hero, 0, 0, 16, 1), 16, 16),
-            texture((ctx) => drawFrame(ctx, hero, 0, 0, 16, 2), 16, 16),
-            texture((ctx) => drawFrame(ctx, hero, 0, 0, 16, 3), 16, 16),
-            texture((ctx) => drawFrame(ctx, hero, 0, 0, 16, 4), 16, 16),
+            texture((ctx) => frame(ctx, hero, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => frame(ctx, hero, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => frame(ctx, hero, 0, 0, 16, 2), 16, 16),
+            texture((ctx) => frame(ctx, hero, 0, 0, 16, 3), 16, 16),
+            texture((ctx) => frame(ctx, hero, 0, 0, 16, 4), 16, 16),
             // flipped
-            texture((ctx) => flippedFrame(ctx, hero, 0, 0, 16, 0), 16, 16),
-            texture((ctx) => flippedFrame(ctx, hero, 0, 0, 16, 1), 16, 16),
-            texture((ctx) => flippedFrame(ctx, hero, 0, 0, 16, 2), 16, 16),
-            texture((ctx) => flippedFrame(ctx, hero, 0, 0, 16, 3), 16, 16),
-            texture((ctx) => flippedFrame(ctx, hero, 0, 0, 16, 4), 16, 16),
+            texture((ctx) => flipFrame(ctx, hero, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => flipFrame(ctx, hero, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => flipFrame(ctx, hero, 0, 0, 16, 2), 16, 16),
+            texture((ctx) => flipFrame(ctx, hero, 0, 0, 16, 3), 16, 16),
+            texture((ctx) => flipFrame(ctx, hero, 0, 0, 16, 4), 16, 16),
         ],
         mob0: [
             // normal
-            texture((ctx) => drawFrame(ctx, mob0, 0, 0, 16, 0), 16, 16),
-            texture((ctx) => drawFrame(ctx, mob0, 0, 0, 16, 1), 16, 16),
-            texture((ctx) => drawFrame(ctx, mob0, 0, 0, 16, 2), 16, 16),
+            texture((ctx) => frame(ctx, mob0, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => frame(ctx, mob0, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => frame(ctx, mob0, 0, 0, 16, 2), 16, 16),
             //flipped
-            texture((ctx) => flippedFrame(ctx, mob0, 0, 0, 16, 0), 16, 16),
-            texture((ctx) => flippedFrame(ctx, mob0, 0, 0, 16, 1), 16, 16),
-            texture((ctx) => flippedFrame(ctx, mob0, 0, 0, 16, 2), 16, 16),
+            texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 2), 16, 16),
         ],
         bullet,
+        eHeart: texture((ctx) => frame(ctx, elements, 0, 0, 16, 0), 16, 16),
+        eXp: texture((ctx) => frame(ctx, elements, 0, 0, 16, 1), 16, 16),
+        eBullet: texture((ctx) => frame(ctx, elements, 0, 0, 16, 2), 16, 16),
     }
 }
 
-export const drawFrame = (
+const frame = (
     ctx: CTX,
     img: CanvasImageSource,
     x: number,
     y: number,
     size: number,
-    frame: number,
+    idx: number,
 ) => {
-    ctx.drawImage(img, size * frame, 0, size, size, ~~x, ~~y, size, size)
+    ctx.drawImage(img, size * idx, 0, size, size, ~~x, ~~y, size, size)
 }
 
-export const flippedFrame = (
+const flipFrame = (
     ctx: CTX,
     img: CanvasImageSource,
     x: number,
     y: number,
     size: number,
-    frame: number,
+    idx: number,
 ) => {
     ctx.save()
     ctx.translate(x, y)
     ctx.scale(-1, 1)
-    drawFrame(ctx, img, -size, 0, size, frame)
+    frame(ctx, img, -size, 0, size, idx)
     ctx.restore()
 }
