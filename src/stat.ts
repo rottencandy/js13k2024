@@ -34,7 +34,8 @@ export const enum Powerup {
     regeneration,
 }
 
-export const powerupSprite = (powerup: Powerup, assets: Assets) => {}
+export const powerupSprite = (powerup: Powerup, assets: Assets) => {
+}
 
 export const enum Item {
     heal,

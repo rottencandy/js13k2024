@@ -35,12 +35,12 @@ export const hero = {
 const vulnerability = ticker(INIT_VULNERABILITY_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
-const maxFrames = 4
 let currentFrame = 0
 const frames = {
     [State.idle]: [0, 1, 2, 0],
     [State.moving]: [3, 0, 4, 0],
 }
+const maxFrames = frames[State.idle].length
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -104,7 +104,11 @@ export const loadHero = () => {
             case State.idle:
             case State.moving:
         }
-        ctx.drawImage(frame, hero.x - center - cam.x, hero.y - center - cam.y)
+        ctx.drawImage(
+            frame,
+            ~~(hero.x - center - cam.x),
+            ~~(hero.y - center - cam.y),
+        )
 
         if (DEBUG) {
             // draw collision radius

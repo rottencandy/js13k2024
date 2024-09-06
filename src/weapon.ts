@@ -18,7 +18,7 @@ const bullets = {
     active: [] as boolean[],
 }
 let freePool: number[] = []
-const SIZE = 10
+const SIZE = 8
 const bulletFireRate = ticker(INIT_BULLET_FIRE_RATE)
 
 let unloadPhysics: () => void
@@ -82,10 +82,15 @@ export const loadWeapon = () => {
         })
     })
 
-    unloadRender = addRenderComp((ctx) => {
+    unloadRender = addRenderComp((ctx, asset) => {
         iterBullets((x, y, _dirx, _diry, _id) => {
-            ctx.fillStyle = "orange"
-            ctx.fillRect(x - cam.x, y - cam.y, SIZE, SIZE)
+            ctx.drawImage(
+                asset.bullet,
+                ~~(x - cam.x),
+                ~~(y - cam.y),
+                SIZE,
+                SIZE,
+            )
         })
     })
 }

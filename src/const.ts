@@ -16,7 +16,7 @@ export const UI_XP_BAR_Y = 40
 export const UI_TRANSITION_DURATION = 900
 
 // gameplay
-export const SPRITE_ANIM_RATE_MS = 300
+export const SPRITE_ANIM_RATE_MS = 200
 export const SPAWN_RADIUS = HEIGHT / 2
 export const COIN_XP = 50
 export const COIN_PICKUP_SPEED = 0.05

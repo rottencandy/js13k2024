@@ -3,33 +3,30 @@ import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
-    SPRITE_ANIM_RATE_MS,
     DEBUG,
     INIT_SPAWN_RATE,
-    SPAWN_RADIUS,
-    MOB_SPEED,
-    MOB_HEALTH,
     MOB_ATTACK,
+    MOB_HEALTH,
     MOB_MAX_COLLISION_SNAP_DIST,
+    MOB_SPEED,
+    SPAWN_RADIUS,
+    SPRITE_ANIM_RATE_MS,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
-import { hitHero, hero, isHittingHero, isNearHero } from "./hero"
+import { hero, hitHero, isHittingHero, isNearHero } from "./hero"
 import { spawnFloatingText } from "./text"
-
-const enum Dir {
-    left,
-    right,
-}
 
 // poor man's ecs
 const E = {
     x: [] as number[],
     y: [] as number[],
     health: [] as number[],
-    dir: [] as Dir[],
+    flipped: [] as boolean[],
     // is close to hero
     near: [] as boolean[],
+    frame: [] as number[],
+    frameTicker: [] as number[],
     active: [] as boolean[],
 }
 
@@ -39,7 +36,8 @@ let freePool: number[] = []
 const SIZE = 16
 
 const spawnTimer = ticker(INIT_SPAWN_RATE)
-const frameChange = ticker(SPRITE_ANIM_RATE_MS)
+const frames = [0, 1, 2, 1]
+const maxFrames = frames.length
 
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
@@ -56,8 +54,10 @@ export const loadMob = () => {
     E.x = []
     E.y = []
     E.health = []
-    E.dir = []
+    E.flipped = []
     E.near = []
+    E.frame = []
+    E.frameTicker = []
     E.active = []
     freePool = []
     spawnTimer.clear()
@@ -83,7 +83,13 @@ export const loadMob = () => {
                 limitMagnitude(_vec)
                 E.x[id] += _vec.x * MOB_SPEED * dt
                 E.y[id] += _vec.y * MOB_SPEED * dt
-                E.dir[id] = E.x[id] < 0 ? Dir.left : Dir.right
+                E.flipped[id] = _vec.x < 0
+            }
+
+            // sprite animation
+            if ((E.frameTicker[id] += dt) > SPRITE_ANIM_RATE_MS) {
+                E.frameTicker[id] = 0
+                E.frame[id] = (E.frame[id] + 1) % maxFrames
             }
         })
 
@@ -124,10 +130,12 @@ export const loadMob = () => {
         }
     })
 
-    unloadRender = addRenderComp((ctx) => {
+    unloadRender = addRenderComp((ctx, assets) => {
         ctx.fillStyle = "red"
-        iterMobs((x, y) => {
-            ctx.fillRect(x - cam.x, y - cam.y, SIZE, SIZE)
+        iterMobs((x, y, _id, flipped, _near, currentFrame) => {
+            const dirOffset = flipped ? 3 : 0
+            const frame = assets.mob0[frames[currentFrame] + dirOffset]
+            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), SIZE, SIZE)
             // draw collision rect
             if (DEBUG) {
                 ctx.strokeStyle = "green"
@@ -162,7 +170,9 @@ const spawnMob = () => {
         E.x[i] = spawnPos.x
         E.y[i] = spawnPos.y
         E.health[i] = MOB_HEALTH
-        E.dir[i] = Dir.left
+        E.flipped[i] = false
+        E.frame[i] = 0
+        E.frameTicker[i] = 0
         E.near[i] = false
         E.active[i] = true
         return i
@@ -170,7 +180,9 @@ const spawnMob = () => {
     E.x.push(spawnPos.x)
     E.y.push(spawnPos.y)
     E.health.push(MOB_HEALTH)
-    E.health.push(Dir.left)
+    E.flipped.push(false)
+    E.frame.push(0)
+    E.frameTicker.push(0)
     E.near.push(false)
     return E.active.push(true)
 }
@@ -191,13 +203,23 @@ export const iterMobs = (
         x: number,
         y: number,
         id: number,
-        dir: Dir,
+        flipped: boolean,
         near: boolean,
+        frame: number,
+        frameTicker: number,
     ) => boolean | void,
 ) => {
     for (let i = 0; i < E.x.length; i++) {
         if (E.active[i]) {
-            const end = fn(E.x[i], E.y[i], i, E.dir[i], E.near[i])
+            const end = fn(
+                E.x[i],
+                E.y[i],
+                i,
+                E.flipped[i],
+                E.near[i],
+                E.frame[i],
+                E.frameTicker[i],
+            )
             if (end) {
                 break
             }
