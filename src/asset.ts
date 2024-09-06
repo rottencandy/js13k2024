@@ -18,6 +18,9 @@ export const loadAssets = async () => {
     const mob0 = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAAA8UlEQVRIS9WWvRHCMAyFnZIhmCAlxwLZhiqzUGWbLMBRZgKGoIRT7pQzsqyfmBji2u9Z37OtUxN2vpqd1x9YgHPbvTiw2zT+HXBSEBR/Gq7sxdwvfbBA1AzgA0AqHok0iNoBqABQcHwjEsAvAhABoFhcCOEF2DoA8Q9QAO/zqRGACgDJY4prAEr18Qvgzjd3IW/xXBvzesTBYRC0C6qf+Bvdx+JhaQDgQ0NYADQDb3reG9DOz4WQADzGZ3L2sTsk5HQTFsDpYa/moelzHjPAWjFCWPQShFXPeSwAnqGOfqTc6JDzLNWDL3psMsyVzkIe/RvbKi8gvX+8OQAAAABJRU5ErkJggg==",
     )
+    const mob2 = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAABJklEQVRIS72VLQ7CQBCFtwKJxXABEhCYGurgHJyDA+C4BucAh6pBQMIFMLVIBGRoJpndbDs/y3ZN06Zv533bmdfCZVrlfP2JbV3fz8U/S3ZulmIAtPvDzq2qhed1U22dFEBaPwqQaoDqwfTpcnRwhSUB0NRnAVIN5NZnB6A9JG0hzRdkAawGUAftA2vwFkoxQKFxGCW9jzo6wNwBsJFmMQBGYimigQhhurSqGJUaAPOj8cSL0PerESVQ7Cvgs1j9zhlIMYAAy2kLcX02TgOgOYBegFQDQ+izAOAMlLP2T1w/bur2gQ6QHEDvDFgNUABt+9AZkNRnASwGoIehuEUbAnB7eABQGCbdYoBqafxIkgu1WvPw/g+AbhDmN2cgLO5lp/LG8u/4AmmZYSCJrToFAAAAAElFTkSuQmCC",
+    )
     const coin = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgycAwN4b0BDGwmh9vxRgCYvvAihhhkvG+OmBJXiVDMP353nmwIrgCkG6QTpii3x93Mnh4LUFVADMeRHMIv4IoIOgGZF/AHArSieILdK/CJEHiAPtXOeyz5cSGAAAAAElFTkSuQmCC",
     )
@@ -55,6 +58,16 @@ export const loadAssets = async () => {
             texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 0), 16, 16),
             texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 1), 16, 16),
             texture((ctx) => flipFrame(ctx, mob0, 0, 0, 16, 2), 16, 16),
+        ],
+        mob2: [
+            // normal
+            texture((ctx) => frame(ctx, mob2, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => frame(ctx, mob2, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => frame(ctx, mob2, 0, 0, 16, 2), 16, 16),
+            //flipped
+            texture((ctx) => flipFrame(ctx, mob2, 0, 0, 16, 0), 16, 16),
+            texture((ctx) => flipFrame(ctx, mob2, 0, 0, 16, 1), 16, 16),
+            texture((ctx) => flipFrame(ctx, mob2, 0, 0, 16, 2), 16, 16),
         ],
         bullet,
         eHeart: texture((ctx) => frame(ctx, elements, 0, 0, 16, 0), 16, 16),

@@ -17,6 +17,12 @@ import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hero, hitHero, isHittingHero, isNearHero } from "./hero"
 import { spawnFloatingText } from "./text"
 
+export const enum MobType {
+    blob,
+    zombie,
+    ghost,
+}
+
 // poor man's ecs
 const E = {
     x: [] as number[],
@@ -27,6 +33,7 @@ const E = {
     near: [] as boolean[],
     frame: [] as number[],
     frameTicker: [] as number[],
+    type: [] as MobType[],
     active: [] as boolean[],
 }
 
@@ -58,13 +65,14 @@ export const loadMob = () => {
     E.near = []
     E.frame = []
     E.frameTicker = []
+    E.type = []
     E.active = []
     freePool = []
     spawnTimer.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
         if (spawnTimer.tick(dt)) {
-            spawnMob()
+            spawnMob(MobType.blob)
         }
         // todo optimize out offscreen mobs?
         iterMobs((x, y, id) => {
@@ -132,9 +140,10 @@ export const loadMob = () => {
 
     unloadRender = addRenderComp((ctx, assets) => {
         ctx.fillStyle = "red"
-        iterMobs((x, y, _id, flipped, _near, currentFrame) => {
+        iterMobs((x, y, _id, flipped, _near, currentFrame, _ticker, type) => {
             const dirOffset = flipped ? 3 : 0
-            const frame = assets.mob0[frames[currentFrame] + dirOffset]
+            const asset = type === MobType.blob ? assets.mob0 : assets.mob2
+            const frame = asset[frames[currentFrame] + dirOffset]
             ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), SIZE, SIZE)
             // draw collision rect
             if (DEBUG) {
@@ -161,7 +170,7 @@ export const loadMob = () => {
 }
 
 /** returns mob index */
-const spawnMob = () => {
+const spawnMob = (type: MobType) => {
     const spawnPos = angleToVec(rand(0, Math.PI * 2))
     spawnPos.x = spawnPos.x * SPAWN_RADIUS + hero.x
     spawnPos.y = spawnPos.y * SPAWN_RADIUS + hero.y
@@ -174,6 +183,7 @@ const spawnMob = () => {
         E.frame[i] = 0
         E.frameTicker[i] = 0
         E.near[i] = false
+        E.type[i] = type
         E.active[i] = true
         return i
     }
@@ -184,6 +194,7 @@ const spawnMob = () => {
     E.frame.push(0)
     E.frameTicker.push(0)
     E.near.push(false)
+    E.type.push(type)
     return E.active.push(true)
 }
 
@@ -207,6 +218,7 @@ export const iterMobs = (
         near: boolean,
         frame: number,
         frameTicker: number,
+        type: MobType,
     ) => boolean | void,
 ) => {
     for (let i = 0; i < E.x.length; i++) {
@@ -219,6 +231,7 @@ export const iterMobs = (
                 E.near[i],
                 E.frame[i],
                 E.frameTicker[i],
+                E.type[i],
             )
             if (end) {
                 break
