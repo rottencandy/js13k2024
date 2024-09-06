@@ -19,6 +19,7 @@ import { spawnFloatingText } from "./text"
 
 export const enum MobType {
     blob,
+    fly,
     zombie,
     ghost,
 }
@@ -142,7 +143,14 @@ export const loadMob = () => {
         ctx.fillStyle = "red"
         iterMobs((x, y, _id, flipped, _near, currentFrame, _ticker, type) => {
             const dirOffset = flipped ? 3 : 0
-            const asset = type === MobType.blob ? assets.mob0 : assets.mob2
+            const asset =
+                type === MobType.blob
+                    ? assets.mob0
+                    : type === MobType.fly
+                      ? assets.mob1
+                      : type === MobType.zombie
+                        ? assets.mob2
+                        : assets.mob3
             const frame = asset[frames[currentFrame] + dirOffset]
             ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), SIZE, SIZE)
             // draw collision rect
