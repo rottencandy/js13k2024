@@ -218,11 +218,11 @@ export const isHittingMob = (
 /**
  * This returns undefined if there are no mobs alive
  */
-export const nearestMobPos = (x: number, y: number) => {
+export const nearestMobPos = () => {
     let smallestDist = 1e3
     let id: number | undefined = undefined
     iterMobs((mobx, moby, mobid) => {
-        const dist = distance(x, y, mobx, moby)
+        const dist = distance(hero.x, hero.y, mobx, moby)
         if (dist < smallestDist) {
             smallestDist = dist
             id = mobid

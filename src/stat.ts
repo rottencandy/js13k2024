@@ -1,3 +1,4 @@
+import { Assets } from "./asset"
 import {
     COIN_XP,
     INIT_BULLET_DMG,
@@ -6,12 +7,15 @@ import {
     INIT_PICKUP_RADIUS,
     INIT_HERO_SPEED,
     LEVEL_XP_CAP_MULTIPLIER,
+    BULLET_DMG_INC,
+    INIT_BULLET_FIRE_RATE,
+    BULLET_FIRE_RATE_DEC,
 } from "./const"
 import { pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
+import { updateBulletFireRate } from "./weapon"
 
-const enum Powerup {
-    bulletSize,
+export const enum Powerup {
     bulletDamage,
     bulletFireRate,
     bulletPenetration,
@@ -30,7 +34,9 @@ const enum Powerup {
     regeneration,
 }
 
-const enum Item {
+export const powerupSprite = (powerup: Powerup, assets: Assets) => {}
+
+export const enum Item {
     heal,
     tempCoinMagnet,
     tempFlamethrower,
@@ -38,8 +44,15 @@ const enum Item {
     killAllVisibleMobs,
 }
 
-const usePowerup = (power: Powerup) => {
+export const usePowerup = (power: Powerup) => {
     switch (power) {
+        case Powerup.bulletDamage:
+            stats.bulletDmg += BULLET_DMG_INC
+            break
+        case Powerup.bulletFireRate:
+            stats.bulletRate -= BULLET_FIRE_RATE_DEC
+            updateBulletFireRate()
+            break
     }
 }
 
@@ -48,8 +61,8 @@ const useItem = (item: Item) => {
     }
 }
 
-const randomPowerup = () => {
-    return pickRandom([Powerup.bulletSize])
+export const randomPowerup = () => {
+    return pickRandom([Powerup.bulletDamage, Powerup.bulletFireRate])
 }
 
 const randomItem = () => {
@@ -67,7 +80,10 @@ export const stats = {
     xp: 0,
     levelXp: 0,
     speed: 0,
+
     bulletDmg: 0,
+    bulletRate: 0,
+
     pickupRadius: 0,
 }
 
@@ -77,7 +93,9 @@ export const resetStats = () => {
     stats.xp = 0
     stats.levelXp = INIT_LEVEL_XP
     stats.speed = INIT_HERO_SPEED
+
     stats.bulletDmg = INIT_BULLET_DMG
+    stats.bulletRate = INIT_BULLET_FIRE_RATE
     stats.pickupRadius = INIT_PICKUP_RADIUS
 }
 

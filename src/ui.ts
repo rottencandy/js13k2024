@@ -7,10 +7,13 @@ import { clamp, lerp, pointInRect } from "./core/math"
 import { obsListen } from "./core/observer"
 import { Observable } from "./observables"
 import { resumeGame, Scene, startGame } from "./scene"
+import { Powerup, randomPowerup, usePowerup } from "./stat"
 
 type PowerupId = 0 | 1 | 2
 let hoveredPowerup: PowerupId = 0
-const selectPowerup = (power: PowerupId) => () => {
+const powerups: Powerup[] = []
+const selectPowerup = (id: PowerupId) => () => {
+    usePowerup(powerups[id])
     resumeGame()
 }
 
@@ -28,7 +31,13 @@ obsListen(Observable.scene, (next: Scene) => {
         transition.reset()
         runTransition = true
     }
+    if (next === Scene.powerup) {
+    }
     scene = next
+    powerups.splice(0)
+    powerups.push(randomPowerup())
+    powerups.push(randomPowerup())
+    powerups.push(randomPowerup())
 })
 
 const btn = (

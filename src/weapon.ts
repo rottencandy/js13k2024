@@ -1,9 +1,11 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { BULLET_SPEED, MAX_BULLET_AGE } from "./const"
+import { BULLET_SPEED, INIT_BULLET_FIRE_RATE, MAX_BULLET_AGE } from "./const"
+import { ticker } from "./core/interpolation"
 import { angleToVec } from "./core/math"
-import { attackMob, isHittingMob, iterMobs } from "./mob"
+import { hero } from "./hero"
+import { attackMob, isHittingMob, iterMobs, nearestMobPos } from "./mob"
 import { stats } from "./stat"
 
 const bullets = {
@@ -17,6 +19,7 @@ const bullets = {
 }
 let freePool: number[] = []
 const SIZE = 10
+const bulletFireRate = ticker(INIT_BULLET_FIRE_RATE)
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -34,8 +37,21 @@ export const loadWeapon = () => {
     bullets.age = []
     bullets.active = []
     freePool = []
+    bulletFireRate.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
+        // fire bullets
+        if (bulletFireRate.tick(dt)) {
+            const aimedMob = nearestMobPos()
+            if (aimedMob) {
+                // translate mob pos to hero pos
+                const xpos = aimedMob.x - hero.x
+                const ypos = aimedMob.y - hero.y
+                const angle = Math.atan2(xpos, ypos)
+                fireBullet(hero.x, hero.y, angle)
+            }
+        }
+
         iterBullets((_x, _y, dirx, diry, id) => {
             // update existing bullets
             bullets.x[id] += dirx * BULLET_SPEED * dt
@@ -69,12 +85,7 @@ export const loadWeapon = () => {
     unloadRender = addRenderComp((ctx) => {
         iterBullets((x, y, _dirx, _diry, _id) => {
             ctx.fillStyle = "orange"
-            ctx.fillRect(
-                x - cam.x,
-                y - cam.y,
-                SIZE,
-                SIZE,
-            )
+            ctx.fillRect(x - cam.x, y - cam.y, SIZE, SIZE)
         })
     })
 }
@@ -127,4 +138,8 @@ const iterBullets = (
             }
         }
     }
+}
+
+export const updateBulletFireRate = () => {
+    bulletFireRate.interval(stats.bulletRate)
 }

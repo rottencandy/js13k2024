@@ -32,12 +32,15 @@ export const INIT_LEVEL_XP = 100
 export const LEVEL_XP_CAP_MULTIPLIER = 1.5
 
 // powerups
-export const BULLET_SPEED = 0.2
 export const INIT_BULLET_DMG = 10
-export const BULLET_DMG_MULTIPLIER = 1.5
-export const MAX_BULLET_DMG = 50
-export const INIT_BULLET_FIRE_RATE_MS = 2e3
-export const MAX_BULLET_FIRE_RATE_MS = 200
+export const MAX_BULLET_DMG = 30
+export const BULLET_DMG_INC = 5
+
+export const BULLET_SPEED = 0.2
+
+export const INIT_BULLET_FIRE_RATE = 2e3
+export const BULLET_FIRE_RATE_DEC = 500
+export const MAX_BULLET_FIRE_RATE = 200
 
 export const INIT_HERO_SPEED = 0.25
 export const INIT_HEALTH_CAP = 100

@@ -5,17 +5,14 @@ import {
     DEBUG,
     HEIGHT,
     HERO_MOB_COLLISION_PROXIMITY,
-    INIT_BULLET_FIRE_RATE_MS,
     INIT_VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
     WIDTH,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb } from "./core/math"
-import { nearestMobPos } from "./mob"
 import { endGame } from "./scene"
 import { stats } from "./stat"
-import { fireBullet } from "./weapon"
 
 const enum State {
     idle,
@@ -36,7 +33,6 @@ export const hero = {
 }
 
 const vulnerability = ticker(INIT_VULNERABILITY_MS)
-const fireRate = ticker(INIT_BULLET_FIRE_RATE_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
 const maxFrames = 4
@@ -63,7 +59,6 @@ export const loadHero = () => {
     invulnerable = false
 
     vulnerability.clear()
-    fireRate.clear()
     frameChange.clear()
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
@@ -76,18 +71,6 @@ export const loadHero = () => {
             state = State.moving
             if (keys.dir.x !== 0) {
                 flipped = keys.dir.x < 0
-            }
-        }
-
-        // fire weapons
-        if (fireRate.tick(dt)) {
-            const aimedMob = nearestMobPos(hero.x, hero.y)
-            if (aimedMob) {
-                // translate mob pos to hero pos
-                const xpos = aimedMob.x - hero.x
-                const ypos = aimedMob.y - hero.y
-                const angle = Math.atan2(xpos, ypos)
-                fireBullet(hero.x, hero.y, angle)
             }
         }
 
