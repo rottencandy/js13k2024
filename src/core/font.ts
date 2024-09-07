@@ -1,4 +1,4 @@
-import { FONT_SIZE } from "src/const"
+import { FONT_SIZE, WHITE } from "../const"
 import { texture } from "./canvas"
 
 // source: https://github.com/PaulBGD/PixelFont
@@ -325,7 +325,7 @@ for (const letter in letters) {
         Math.max(...letters[letter].map((v) => v.length)) * FONT_SIZE
     const tex = texture(
         (ctx) => {
-            ctx.fillStyle = "white"
+            ctx.fillStyle = WHITE
             renderFont(ctx, letter, FONT_SIZE, 0, 0)
         },
         fontWidth,

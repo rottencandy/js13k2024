@@ -1,7 +1,8 @@
 import {
+    BLACK0,
     DEBUG,
-    FONT_SIZE,
     HEIGHT,
+    MENU_FONT_SIZE,
     UI_TRANSITION_DURATION,
     WIDTH,
 } from "./const"
@@ -22,8 +23,6 @@ const selectPowerup = (id: PowerupId) => () => {
     usePowerup(powerups[id])
     resumeGame()
 }
-
-const MENU_FONT_SIZE = 5
 
 const transition = ticker(UI_TRANSITION_DURATION)
 let runTransition = false
@@ -81,11 +80,11 @@ const btn = (
     return obj
 }
 
-const BTN_SIZE = 50
+const BTN_SIZE = 30
 const startBtn = btn(
     ~~(WIDTH / 3) - 10,
     ~~(HEIGHT / 3) * 2 - 10,
-    FONT_SIZE * 4 * 6,
+    MENU_FONT_SIZE * 4 * 6,
     BTN_SIZE,
     startGame,
 )
@@ -218,7 +217,7 @@ export const renderUI = (ctx: CTX) => {
             powerup2btn.render(ctx)
             ctx.fillStyle = "blue"
             powerup3btn.render(ctx)
-            ctx.strokeStyle = "white"
+            ctx.strokeStyle = BLACK0
             ctx.strokeRect(
                 ~~(WIDTH / 6) * (hoveredPowerup + 1) - 10,
                 ~~(HEIGHT / 2) - 10,

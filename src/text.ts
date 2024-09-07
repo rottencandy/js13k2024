@@ -1,7 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { UI_TEXT_DURATION } from "./const"
+import { UI_TEXT_DURATION, WHITE } from "./const"
 import { renderFontTex } from "./core/font"
 
 const entities = {
@@ -34,7 +34,7 @@ export const loadText = () => {
 
     unloadRender = addRenderComp((ctx) => {
         iterEnts((_id, x, y, str, dur) => {
-            ctx.fillStyle = "white"
+            ctx.fillStyle = WHITE
             renderFontTex(ctx, str + "", x - cam.x, y - cam.y - dur / 10)
         })
     })

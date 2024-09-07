@@ -2,6 +2,7 @@ import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
+    BLACK0,
     DEBUG,
     HEIGHT,
     HERO_MOB_COLLISION_PROXIMITY,
@@ -112,7 +113,7 @@ export const loadHero = () => {
 
         if (DEBUG) {
             // draw collision radius
-            ctx.strokeStyle = "green"
+            ctx.strokeStyle = BLACK0
             ctx.strokeRect(
                 hero.x - center - cam.x,
                 hero.y - center - cam.y,

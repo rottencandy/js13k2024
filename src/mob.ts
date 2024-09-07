@@ -3,6 +3,7 @@ import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
+    BLACK0,
     DEBUG,
     INIT_SPAWN_RATE,
     MOB_ATTACK,
@@ -140,7 +141,6 @@ export const loadMob = () => {
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
-        ctx.fillStyle = "red"
         iterMobs((x, y, _id, flipped, _near, currentFrame, _ticker, type) => {
             const dirOffset = flipped ? 3 : 0
             const asset =
@@ -155,7 +155,7 @@ export const loadMob = () => {
             ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), SIZE, SIZE)
             // draw collision rect
             if (DEBUG) {
-                ctx.strokeStyle = "green"
+                ctx.strokeStyle = BLACK0
                 ctx.strokeRect(x - cam.x, y - cam.y, SIZE, SIZE)
             }
             return false
@@ -163,7 +163,7 @@ export const loadMob = () => {
 
         // draw spawn circle
         if (DEBUG) {
-            ctx.strokeStyle = "green"
+            ctx.strokeStyle = BLACK0
             ctx.beginPath()
             ctx.arc(
                 hero.x - cam.x,

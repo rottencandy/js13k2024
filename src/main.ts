@@ -2,7 +2,7 @@ import { loadAssets } from "./asset"
 import { CompPhysicsRun } from "./components/physics"
 import { CompRenderRun } from "./components/render"
 import { HEIGHT, WIDTH } from "./const"
-import { createCtx, resize } from "./core/canvas"
+import { resize } from "./core/canvas"
 import { initInput } from "./core/input"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
@@ -13,7 +13,7 @@ import { renderUI, updateUI } from "./ui"
 const canvas = document.getElementById("c") as HTMLCanvasElement
 const offscreenCanvas = document.createElement("canvas")
 
-const ctx = createCtx(offscreenCanvas, WIDTH, HEIGHT)
+const ctx = offscreenCanvas.getContext("2d")!
 const processInput = initInput(canvas, WIDTH, HEIGHT)
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 loadSounds()
