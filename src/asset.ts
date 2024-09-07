@@ -28,13 +28,13 @@ export const loadAssets = async () => {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAQCAYAAABQrvyxAAABJklEQVRIS72VLQ7CQBCFtwKJxXABEhCYGurgHJyDA+C4BucAh6pBQMIFMLVIBGRoJpndbDs/y3ZN06Zv533bmdfCZVrlfP2JbV3fz8U/S3ZulmIAtPvDzq2qhed1U22dFEBaPwqQaoDqwfTpcnRwhSUB0NRnAVIN5NZnB6A9JG0hzRdkAawGUAftA2vwFkoxQKFxGCW9jzo6wNwBsJFmMQBGYimigQhhurSqGJUaAPOj8cSL0PerESVQ7Cvgs1j9zhlIMYAAy2kLcX02TgOgOYBegFQDQ+izAOAMlLP2T1w/bur2gQ6QHEDvDFgNUABt+9AZkNRnASwGoIehuEUbAnB7eABQGCbdYoBqafxIkgu1WvPw/g+AbhDmN2cgLO5lp/LG8u/4AmmZYSCJrToFAAAAAElFTkSuQmCC",
     )
     const coin = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAbElEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgycAwN4b0BDGwmh9vxRgCYvvAihhhkvG+OmBJXiVDMP353nmwIrgCkG6QTpii3x93Mnh4LUFVADMeRHMIv4IoIOgGZF/AHArSieILdK/CJEHiAPtXOeyz5cSGAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAVklEQVQYV2NkQAKm2k7/QdzTV/cxwoThDJBkc1c5g5W1DoOzdSxcEVgBTBLEBikAAZgiKioIDHMDG21kYgima8s6we5AcSRIEUgBTBKkEK4A5lh0bwIASnsyCb4xmwAAAAAASUVORK5CYII=",
     )
     const bullet = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAQ0lEQVQYV2NkIAAYYfKm2k7/kdWevroPLAcmQJI7tsWgmOXhtYQBpAhFASu/O1jR7487GchTgGwHigkwd+B0JD6fAgA0lyoJwxgCagAAAABJRU5ErkJggg==",
     )
     const elements = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAICAYAAADjoT9jAAAA1UlEQVQoU2NkIAGYajv9Byk/fXUfI7I2mDg2ObBCdI3YDAKJ7T26mOHY0SsMtWWdcEtA4ju2xcDt8/BaguIARpCCenUBsILGmx/ANDIf5FqY4SA5kAUgALMEZgErvzvD7487GfBagB5aMAubu8oZrKx1wNIwC2CWgGi8PoAFEczVMEtAhsNcHxjmxmBkYgiWglkEYjtbx8LVwPShxw88stCDClkhSA5mCcwCmOHovoY5GKYfa2pAdwVME8wS5EhGtwAWJ7C4QLEAm2uQxXAlU2yWwBwJACNzjQmYk1DiAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAgElEQVQoU2NkIAKYajv9hyk7fXUfI7IWMAemACaJzAexd2yLgevx8FrCgGwII0hBvboAWEHjzQ9gGp0PMoCV353h98edDHgNQPcNzEC8LoB5AWYrzBCQZnQvgeSwhgG6IciasYUxyNswg1BCFD0wcWkGeQkWFigGEBGjYCXILgAAuJpSCeZAMNUAAAAASUVORK5CYII=",
     )
     const rocks = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAX0lEQVQoU2NkIAI0eFr9hylr2H6MEVkLCgemEFkRsmZshsANMNV2+u8t9wNuOMwQbAaAFMHkwQaANGPzyemr+8Dy6IYguxDFC9gMIWQ4QQPQXQhzFcwyogzAF1EUGwAAF/QlCaIb4tMAAAAASUVORK5CYII=",
@@ -104,8 +104,8 @@ export const loadAssets = async () => {
         bullet,
         crate,
         eHeart: texture((ctx) => frame(ctx, elements, 0, 0, 8, 0), 8, 8),
-        eXp: texture((ctx) => frame(ctx, elements, 0, 0, 8, 1), 8, 8),
-        eBullet: texture((ctx) => frame(ctx, elements, 0, 0, 8, 2), 8, 8),
+        eBullet: texture((ctx) => frame(ctx, elements, 0, 0, 8, 1), 8, 8),
+        eXp: coin,
         rocks: [
             texture((ctx) => frame(ctx, rocks, 0, 0, 8, 0), 8, 8),
             texture((ctx) => frame(ctx, rocks, 0, 0, 8, 1), 8, 8),

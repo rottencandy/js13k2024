@@ -201,6 +201,8 @@ export const renderUI = (ctx: CTX) => {
             )
             break
         case Scene.powerup:
+            ctx.fillStyle = BLACK0 + "77"
+            ctx.fillRect(0, 0, WIDTH, HEIGHT)
             ctx.fillStyle = "pink"
             ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
             ctx.fillStyle = "white"
