@@ -34,13 +34,16 @@ export const loadAssets = async () => {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAQ0lEQVQYV2NkIAAYYfKm2k7/kdWevroPLAcmQJI7tsWgmOXhtYQBpAhFASu/O1jR7487GchTgGwHigkwd+B0JD6fAgA0lyoJwxgCagAAAABJRU5ErkJggg==",
     )
     const elements = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAICAYAAACYhf2vAAAA0klEQVQ4T2NkIAKYajv9hyk7fXUfIy4tMHXoatoaO+D6kfVW1Vcwgg1D14jMB7F3bIuB6/PwWsKAzREgdc1d5QxW1joMztaxcDW4LIcZyAjSWK8uAOY33vwAptH5IAew8rsz/P64kwGbA5AthxkMcwRJDkAPWpiD8IUANsuRHREY5oY3kuFRAPM1TDXIclhQE0oDyPLItoH0pySnYo1/eBTAGOhRQSix4ZNHdgTRDsCWGLGFHSxR4kqM6HpIcgARORKsBOQIYkMApB6XI+bMnc0IADqJgTTWJV4mAAAAAElFTkSuQmCC",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAICAYAAACs/DyzAAABhElEQVQ4T2NkIAKYajv9hyk7fXUfIy4tMHXoatoaO+D6kfVW1VegmIVLP0gPshtAfFzuAKlDlgNbgG4wMh/E3rEtBu4uD68lWA0HqWvuKmewstZhcLaOhavB5TmYgTBPgvTnbmxlOPaMh+FsZj6KHSA5xQBzBhPT5wxnTkuCtd7fcBKuBt1TyIHICJKsVxcAizXe/ACm0fkgD7LyuzP8/riTAZsHkT0HMxzmSUo9CPPcj7sXGTiU9VESD8iTIAAKmMn+1RgBD9KL4kH0pAfzML4YxOY5ZE8GhrnhzQTIMQhKASBQW9aJEjug2EMHIA8/v/wDrA5bDMJSBDyJwmINZhDIc7C0TCgPoucPmBkg/SnJqVjzH0zNnLmz4W6ABcb6VbtwehBXMsUWiuAYhEmgJ1VChQk+eWTLSPEgtjwIS6IgM9GTKTH5kOhSDDkgQEkWV2GDHpKUehBkHrInYeajew49H8KSLc4iH1/GwVdqYdOHy5Ow5IkceCA2ttRBqJpAdhMyGwBdjDKeyx/ieQAAAABJRU5ErkJggg==",
     )
     const rocks = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAWklEQVQoU2NkoBAwIutv8LT6D+I3bD9GlDhILVyhqbbTf2+5H3DzYIbADIVJoBsONgCkGZtPTl/dx4huALoLUZyKzRB8hqN4AV9YIhsCchWyWoIuIBRJFBsAAMlEIQkNy0rpAAAAAElFTkSuQmCC",
     )
     const crate = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA+0lEQVQ4T2NkoBAwUqifAWyAqbbTf3IMOn11HyMjSHNgmBuDkYkhSWacO3OeYf2qXQxgA5q7ysGaQYLI4MT1Q2CuhaYdijjMstqyToQBIM3Irrj0ezmKJj3WSDgfphbFAGzuhxmCrBlZHdwA5DBAdwmyBmQ5lDAAGQAC+w8fZyguzMIIC5ghIC/29k9jcLS1BAvBAxHZAJAETAG6t0AWIMvDDRCQ5AVrQlcAC1RY7CDLg9gfnn+GxIK+hTLDw4evMMJRXl4MLIZL7uKJuwgDlOSUMVyAzwv3Ht1lgBsAUojsCpjN6AbAXAKSB2kGAcrzAswWUjMUKCOB9AIA8X2M/BEdxqQAAAAASUVORK5CYII=",
+    )
+    const saber = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAArUlEQVQ4T2NkIAOYajv9h2ljJFU/SHPuxlawtsn+1QwkGYCs+dgzHoazmfnEG4BN8+mr+xiJcgEuzSBvEDQAn2aCBoA0N3eVM7xS52OA+RnkbOSAx+kCkGYBSV6G4sIshnNnzjOsX7WLAV0zThfAbO7tnwa27MPzz1g1YzUA5mexm5/w2ow1IREKMGyJDh4G5GiGe4FczWADKNGMYgCueCaU2cAugCnCFs+EDAAA6iGC9K9ePj0AAAAASUVORK5CYII=",
     )
 
     // included normal and flipped versions for asymmetric sprites
@@ -103,10 +106,14 @@ export const loadAssets = async () => {
         ],
         bullet,
         crate,
+        saber,
         eHeart: texture((ctx) => frame(ctx, elements, 0, 0, 8, 0), 8, 8),
         eBullet: texture((ctx) => frame(ctx, elements, 0, 0, 8, 1), 8, 8),
         eArrow: texture((ctx) => frame(ctx, elements, 0, 0, 8, 2), 8, 8),
         eBg: texture((ctx) => frame(ctx, elements, 0, 0, 8, 3), 8, 8),
+        eSaber: texture((ctx) => frame(ctx, elements, 0, 0, 8, 4), 8, 8),
+        ePlasma: texture((ctx) => frame(ctx, elements, 0, 0, 8, 5), 8, 8),
+        eOrbs: texture((ctx) => frame(ctx, elements, 0, 0, 8, 6), 8, 8),
         eXp: coin,
         rocks: [
             texture((ctx) => frame(ctx, rocks, 0, 0, 8, 0), 8, 8),
