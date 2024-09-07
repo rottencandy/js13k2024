@@ -50,12 +50,12 @@ obsListen(Observable.scene, (next: Scene) => {
         runTransition = true
     }
     if (next === Scene.powerup) {
+        powerups.splice(0)
+        powerups.push(randomPowerup())
+        powerups.push(randomPowerup())
+        powerups.push(randomPowerup())
     }
     scene = next
-    powerups.splice(0)
-    powerups.push(randomPowerup())
-    powerups.push(randomPowerup())
-    powerups.push(randomPowerup())
 })
 
 const btn = (
@@ -87,6 +87,7 @@ const btn = (
                 onClick()
             }
         },
+        click: onClick,
         render: (ctx: CTX) => {
             if (DEBUG && obj.hovered) {
                 ctx.fillStyle = WHITE
@@ -151,6 +152,17 @@ export const updateUI = (dt: number) => {
             }
             if (keys.btnp.lf) {
                 hoveredPowerup = clamp(hoveredPowerup - 1, 0, 2) as PowerupId
+            }
+            if (keys.btnp.spc) {
+                if (hoveredPowerup === 0) {
+                    powerup1btn.click()
+                }
+                if (hoveredPowerup === 1) {
+                    powerup2btn.click()
+                }
+                if (hoveredPowerup === 2) {
+                    powerup3btn.click()
+                }
             }
             break
         case Scene.gameover:
@@ -243,6 +255,27 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 powerup3btn.render(ctx)
             }
 
+            ctx.drawImage(
+                assets.eBg,
+                powerup1btn.x,
+                powerup1btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+            ctx.drawImage(
+                assets.eBg,
+                powerup2btn.x,
+                powerup2btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+            ctx.drawImage(
+                assets.eBg,
+                powerup3btn.x,
+                powerup3btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
             ctx.drawImage(
                 powerupSprite(powerups[0], assets),
                 powerup1btn.x,

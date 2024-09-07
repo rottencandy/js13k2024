@@ -23,6 +23,7 @@ export type Keys = {
         dn: boolean
         lf: boolean
         rt: boolean
+        spc: boolean
         clk: boolean
         esc: boolean
     }
@@ -46,6 +47,7 @@ export const keys: Keys = {
         lf: false,
         dn: false,
         rt: false,
+        spc: false,
         clk: false,
         esc: false,
     },
@@ -73,6 +75,7 @@ export const initInput = (
         lf: false,
         dn: false,
         rt: false,
+        spc: false,
         clk: false,
         esc: false,
     }
@@ -208,12 +211,14 @@ export const initInput = (
         keys.btnp.rt = dirPressed.rt && !lastFrame.rt
         keys.btnp.clk = keys.btn.clk && !lastFrame.clk
         keys.btnp.esc = keys.btn.esc && !lastFrame.esc
+        keys.btnp.spc = keys.btn.spc && !lastFrame.spc
 
         lastFrame.up = dirPressed.up
         lastFrame.dn = dirPressed.dn
         lastFrame.lf = dirPressed.lf
         lastFrame.rt = dirPressed.rt
         lastFrame.clk = keys.btn.clk
-        lastFrame.clk = keys.btn.clk
+        lastFrame.esc = keys.btn.esc
+        lastFrame.spc = keys.btn.spc
     }
 }
