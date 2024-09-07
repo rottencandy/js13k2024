@@ -28,7 +28,6 @@ loadSounds()
         resize(offscreenCanvas, WIDTH, HEIGHT)
         resize(canvas, WIDTH * 4, HEIGHT * 4)
     })()
-    ctx.imageSmoothingEnabled = false
 
     loop(
         (dt) => {

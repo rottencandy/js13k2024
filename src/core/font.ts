@@ -298,6 +298,13 @@ const letters: Record<string, number[][]> = {
         [0, 1, 0],
         [1, 0, 1],
     ],
+    '+':[
+        [],
+        [],
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 1, 0],
+    ],
     ':':[
         [],
         [1],
@@ -357,7 +364,7 @@ for (const letter in letters) {
 /**
  * This is faster as it uses cached bitmap fonts generated at init time
  * But has a fixed font size.
- * WARNING: ONLY ALPHANUMERIC, '. -_%:x' ALLOWED!!
+ * WARNING: ONLY ALPHANUMERIC, '. -_%:+x' ALLOWED!!
  * this will not check if string contains invalid chars.
  */
 export const renderFontTex = (

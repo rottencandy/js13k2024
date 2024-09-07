@@ -6,7 +6,7 @@ import {
     DEBUG,
     HEIGHT,
     HERO_MOB_COLLISION_PROXIMITY,
-    INIT_VULNERABILITY_MS,
+    VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
     WIDTH,
 } from "./const"
@@ -33,7 +33,7 @@ export const hero = {
     y: HEIGHT / 2,
 }
 
-const vulnerability = ticker(INIT_VULNERABILITY_MS)
+const vulnerability = ticker(VULNERABILITY_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 
 let currentFrame = 0

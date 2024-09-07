@@ -11,29 +11,31 @@ import {
     INIT_BULLET_FIRE_RATE,
     BULLET_FIRE_RATE_DEC,
     MAX_BULLET_DMG,
-    MAX_BULLET_FIRE_RATE,
+    MIN_BULLET_FIRE_RATE,
+    HEAL_AMT,
+    INC_HEALTH_CAP,
+    MAX_HEALTH_CAP,
 } from "./const"
-import { pickRandom } from "./core/math"
+import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
 import { updateBulletFireRate } from "./weapon"
 
 export const enum Powerup {
     bulletDamage,
     bulletFireRate,
-    bulletPenetration,
-
-    bombFireRate,
-    bombDamage,
-
-    auraRadius,
-    auraDamage,
-
-    lightsaberSize,
-    lightsaberDamage,
 
     maxHealth,
     movementSpeed,
     regeneration,
+
+    auraRadius,
+    auraDamage,
+
+    bombFireRate,
+    bombDamage,
+
+    lightsaberSize,
+    lightsaberDamage,
 
     // non-exhaustible , single-use items
     heal,
@@ -47,8 +49,9 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
     switch (powerup) {
         case Powerup.bulletDamage:
         case Powerup.bulletFireRate:
-        case Powerup.bulletPenetration:
             return assets.eBullet
+        case Powerup.maxHealth:
+            return assets.eHeart
         case Powerup.bombFireRate:
         case Powerup.bombDamage:
         case Powerup.auraRadius:
@@ -58,8 +61,9 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
         case Powerup.movementSpeed:
         case Powerup.regeneration:
             return assets.eXp
-        case Powerup.maxHealth:
+
         case Powerup.heal:
+            return assets.eHeart
         case Powerup.tempCoinMagnet:
         case Powerup.tempFlamethrower:
         case Powerup.tempStopTime:
@@ -71,18 +75,22 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
 export const powerupText = (powerup: Powerup) => {
     switch (powerup) {
         case Powerup.bulletDamage:
+            return "+DAMAGE"
         case Powerup.bulletFireRate:
-        case Powerup.bulletPenetration:
+            return "+FIRE RATE"
+        case Powerup.maxHealth:
+            return "+MAX HEALTH"
+        case Powerup.movementSpeed:
+        case Powerup.regeneration:
         case Powerup.bombFireRate:
         case Powerup.bombDamage:
         case Powerup.auraRadius:
         case Powerup.auraDamage:
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
-        case Powerup.maxHealth:
-        case Powerup.movementSpeed:
-        case Powerup.regeneration:
+
         case Powerup.heal:
+            return "HEAL"
         case Powerup.tempCoinMagnet:
         case Powerup.tempFlamethrower:
         case Powerup.tempStopTime:
@@ -100,44 +108,53 @@ export const usePowerup = (power: Powerup) => {
             stats.bulletRate -= BULLET_FIRE_RATE_DEC
             updateBulletFireRate()
             break
+        case Powerup.maxHealth:
+            stats.maxHealth += INC_HEALTH_CAP
+
+        case Powerup.heal:
+            stats.health = clamp(stats.health + HEAL_AMT, 0, stats.maxHealth)
+            break
     }
 }
 
 export const randomPowerup = () => {
     return pickRandom(
-        [Powerup.bulletDamage, Powerup.bulletFireRate].filter(notMaxedOut),
+        [
+            Powerup.bulletDamage,
+            Powerup.bulletFireRate,
+            Powerup.maxHealth,
+
+            Powerup.heal,
+        ].filter(unlockable),
     )
 }
 
-const notMaxedOut = (powerup: Powerup) => {
+const unlockable = (powerup: Powerup) => {
     switch (powerup) {
         case Powerup.bulletDamage:
-            return stats.bulletDmg >= MAX_BULLET_DMG
+            return stats.bulletDmg < MAX_BULLET_DMG
         case Powerup.bulletFireRate:
-            return stats.bulletRate >= MAX_BULLET_FIRE_RATE
-        case Powerup.bulletPenetration:
+            return stats.bulletRate > MIN_BULLET_FIRE_RATE
+        case Powerup.maxHealth:
+            return stats.maxHealth < MAX_HEALTH_CAP
         case Powerup.bombFireRate:
         case Powerup.bombDamage:
         case Powerup.auraRadius:
         case Powerup.auraDamage:
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
-        case Powerup.maxHealth:
         case Powerup.movementSpeed:
         case Powerup.regeneration:
             return false
+
+        // these are consumables and do not max out
         case Powerup.heal:
         case Powerup.tempCoinMagnet:
         case Powerup.tempFlamethrower:
         case Powerup.tempStopTime:
         case Powerup.killAllVisibleMobs:
-            return false
+            return true
     }
-}
-
-export const increaseMaxHealth = (amt: number) => {
-    stats.health += amt
-    stats.maxHealth += amt
 }
 
 export const stats = {

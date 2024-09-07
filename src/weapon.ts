@@ -1,7 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { BULLET_SPEED, INIT_BULLET_FIRE_RATE, MAX_BULLET_AGE } from "./const"
+import { BULLET_SPEED, INIT_BULLET_FIRE_RATE, BULLET_AGE } from "./const"
 import { ticker } from "./core/interpolation"
 import { angleToVec } from "./core/math"
 import { hero } from "./hero"
@@ -58,7 +58,7 @@ export const loadWeapon = () => {
             bullets.y[id] += diry * BULLET_SPEED * dt
             bullets.age[id] += dt
 
-            if (bullets.age[id] > MAX_BULLET_AGE) {
+            if (bullets.age[id] > BULLET_AGE) {
                 removeBullet(id)
                 return
             }
