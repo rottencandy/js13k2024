@@ -1,7 +1,10 @@
 import { Assets } from "./asset"
 import {
     BLACK0,
+    BLACK1,
+    DDGREEN,
     DEBUG,
+    DGREEN,
     GREY,
     HEIGHT,
     MENU_FONT_SIZE,
@@ -90,7 +93,7 @@ const btn = (
         click: onClick,
         render: (ctx: CTX) => {
             if (DEBUG && obj.hovered) {
-                ctx.fillStyle = WHITE
+                ctx.fillStyle = BLACK1
             }
             ctx.fillRect(x, y, w, h)
         },
@@ -108,21 +111,21 @@ const startBtn = btn(
 )
 const powerup1btn = btn(
     ~~(WIDTH / 7) * 1,
-    ~~(HEIGHT / 2),
+    ~~(HEIGHT / 2) - 10,
     BTN_SIZE,
     BTN_SIZE,
     selectPowerup(0),
 )
 const powerup2btn = btn(
     ~~(WIDTH / 7) * 3,
-    ~~(HEIGHT / 2),
+    ~~(HEIGHT / 2) - 10,
     BTN_SIZE,
     BTN_SIZE,
     selectPowerup(1),
 )
 const powerup3btn = btn(
     ~~(WIDTH / 7) * 5,
-    ~~(HEIGHT / 2),
+    ~~(HEIGHT / 2) - 10,
     BTN_SIZE,
     BTN_SIZE,
     selectPowerup(2),
@@ -183,10 +186,12 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
         switch (scene) {
             case Scene.gameplay:
                 // 0 -> 1 -> 0
-                const norm2 = norm * 2
-                const lerpval = norm2 < 1 ? norm2 : 2 - norm2
+                //const norm2 = norm * 2
+                //const lerpval = norm2 < 1 ? norm2 : 2 - norm2
 
-                ctx.fillStyle = "#212123"
+                // 1 -> 0
+                const lerpval = 1 - norm
+                ctx.fillStyle = BLACK0
                 ctx.beginPath()
                 ctx.arc(
                     WIDTH / 2,
@@ -197,17 +202,19 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 )
                 ctx.fill()
                 break
+
             case Scene.powerup:
-                ctx.fillStyle = "pink"
-                ctx.beginPath()
-                ctx.arc(
-                    WIDTH / 2,
-                    HEIGHT / 2,
-                    lerp(0, WIDTH, norm),
+                ctx.fillStyle = BLACK0 + "77"
+                ctx.fillRect(0, 0, WIDTH, HEIGHT)
+                ctx.fillStyle = DDGREEN
+                ctx.fillRect(
                     0,
-                    Math.PI * 2,
+                    HEIGHT / 3 - 8,
+                    ~~(WIDTH * norm) + 32,
+                    HEIGHT / 3,
                 )
-                ctx.fill()
+                ctx.fillStyle = DGREEN
+                ctx.fillRect(0, HEIGHT / 3, ~~(WIDTH * norm), HEIGHT / 3)
                 // we don't want to render buttons until transition is done
                 return
         }
@@ -235,9 +242,12 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             }
             break
         case Scene.powerup:
+            // bg
             ctx.fillStyle = BLACK0 + "77"
             ctx.fillRect(0, 0, WIDTH, HEIGHT)
-            ctx.fillStyle = "pink"
+            ctx.fillStyle = DDGREEN
+            ctx.fillRect(0, HEIGHT / 3 - 8, WIDTH, HEIGHT / 3)
+            ctx.fillStyle = DGREEN
             ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
             ctx.fillStyle = WHITE
             renderFont(
@@ -257,6 +267,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 powerup3btn.render(ctx)
             }
 
+            // icons
             ctx.drawImage(
                 assets.eBg,
                 powerup1btn.x,
@@ -300,6 +311,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 BTN_SIZE,
             )
 
+            // text
             ctx.fillStyle = WHITE
             renderFontTex(
                 ctx,
@@ -324,14 +336,14 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.strokeStyle = WHITE
             ctx.strokeRect(
                 ~~(WIDTH / 7) * (hoveredPowerup * 2 + 1),
-                ~~(HEIGHT / 2),
+                powerup1btn.y,
                 BTN_SIZE,
                 BTN_SIZE,
             )
             ctx.drawImage(
                 assets.eArrow,
                 ~~(WIDTH / 7) * (hoveredPowerup * 2 + 1) + 6,
-                ~~(HEIGHT / 3) * 2 + BTN_SIZE / 2 + (isHalfSecond ? 2 : 0),
+                powerup1btn.y + 48 + (isHalfSecond ? 2 : 0),
                 BTN_SIZE / 2,
                 BTN_SIZE / 2,
             )

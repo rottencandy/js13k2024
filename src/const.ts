@@ -21,6 +21,8 @@ export const WHITE = "#f2f0e5"
 export const RED = "#b45252"
 export const BLUE = "#4b80ca"
 export const GREEN = "#7b7243"
+export const DGREEN = "#567b79"
+export const DDGREEN = "#4e584a"
 
 // gameplay
 export const SPRITE_ANIM_RATE_MS = 200
