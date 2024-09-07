@@ -1,3 +1,4 @@
+import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
     BLACK1,
@@ -12,20 +13,29 @@ import {
     UI_BAR_Y,
     WIDTH,
 } from "./const"
+import { renderFontTex } from "./core/font"
 import { keys } from "./core/input"
 import { stats } from "./stat"
 
+let time = 0
+let unloadPhysics: () => void
 let unloadRender: () => void
 
 export const unloadHud = () => {
+    unloadPhysics()
     unloadRender()
+    time = 0
 }
 
 const element_offset = 8
 
 export const loadHud = () => {
+    unloadPhysics = addPhysicsComp((dt) => {
+        time += dt / 1e3
+    })
+
     unloadRender = addRenderComp((ctx, assets) => {
-        // fill
+        // bars fill
         ctx.fillStyle = RED
         ctx.fillRect(
             UI_BAR_X + element_offset,
@@ -41,7 +51,7 @@ export const loadHud = () => {
             UI_BAR_HEIGHT,
         )
 
-        // border
+        // bars border
         ctx.strokeStyle = BLACK1
         ctx.strokeRect(
             UI_BAR_X + element_offset,
@@ -55,7 +65,7 @@ export const loadHud = () => {
             UI_BAR_WIDTH,
             UI_BAR_HEIGHT,
         )
-        // logo
+        // bars logo
         ctx.drawImage(assets.eHeart, UI_BAR_X - 2, UI_BAR_Y - 2, 8, 8)
         ctx.drawImage(
             assets.eXp,
@@ -65,6 +75,13 @@ export const loadHud = () => {
             8,
         )
 
+        // time
+        const abstime = ~~time
+        const mins = ~~(abstime / 60)
+        const secs = abstime % 60
+        renderFontTex(ctx, mins + ":" + secs, ~~(WIDTH / 7) * 6, UI_BAR_Y)
+
+        // virtual joystick
         if (keys.touchStartPos) {
             ctx.fillStyle = "#ffe7"
             ctx.beginPath()

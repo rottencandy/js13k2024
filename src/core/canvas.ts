@@ -52,6 +52,19 @@ export const texture = (
     return tex
 }
 
+export const silhoutte = (ctx: CTX, w: number, h: number) => {
+    const data = ctx.getImageData(0, 0, w, h)
+    for (let x = 0; x < data.data.length; x += 4) {
+        if (data.data[x + 3] > 0) {
+            data.data[x + 0] = 150
+            data.data[x + 1] = 150
+            data.data[x + 2] = 150
+            data.data[x + 3] = 255
+        }
+    }
+    ctx.putImageData(data, 0, 0)
+}
+
 export const sprite = (spr: number[][], palette: Color[]) => {
     const width = spr[0].length
     const height = spr.length

@@ -291,6 +291,21 @@ const letters: Record<string, number[][]> = {
         [0, 1, 0, 0, 0],
         [1, 0, 0, 0, 1],
     ],
+    'x':[
+        [],
+        [],
+        [1, 0, 1],
+        [0, 1, 0],
+        [1, 0, 1],
+    ],
+    ':':[
+        [],
+        [1],
+        [],
+        [1],
+        [],
+        [],
+    ],
 };
 
 export const renderFont = (
@@ -319,6 +334,7 @@ export const renderFont = (
     }
 }
 
+// build cache
 const letterCache: Record<string, { i: HTMLCanvasElement; w: number }> = {}
 for (const letter in letters) {
     const fontWidth =
@@ -339,8 +355,10 @@ for (const letter in letters) {
 }
 
 /**
- * WARNING: ONLY ALPHANUMERIC, '. -_%' ALLOWED!!
- * this does not check if string contains invalid chars.
+ * This is faster as it uses cached bitmap fonts generated at init time
+ * But has a fixed font size.
+ * WARNING: ONLY ALPHANUMERIC, '. -_%:x' ALLOWED!!
+ * this will not check if string contains invalid chars.
  */
 export const renderFontTex = (
     ctx: CanvasRenderingContext2D,

@@ -17,18 +17,18 @@ const ctx = offscreenCanvas.getContext("2d")!
 const processInput = initInput(canvas, WIDTH, HEIGHT)
 const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
 loadSounds()
-
 ;(async () => {
     const assets = await loadAssets()
     // display note if device is in portrait
     if (innerWidth < innerHeight) {
-        alert("For best experience play in landscape mode")
+        alert("for best experience use landscape mode.")
     }
     loadTitle()
     ;(onresize = () => {
         resize(offscreenCanvas, WIDTH, HEIGHT)
         resize(canvas, WIDTH, HEIGHT)
     })()
+    ctx.imageSmoothingEnabled = false
 
     loop(
         (dt) => {
@@ -39,7 +39,7 @@ loadSounds()
         },
         () => {
             CompRenderRun(ctx, assets)
-            renderUI(ctx)
+            renderUI(ctx, assets)
             postProcess(ctx)
         },
     )

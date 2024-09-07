@@ -1,20 +1,29 @@
+import { Assets } from "./asset"
 import {
     BLACK0,
     DEBUG,
+    GREY,
     HEIGHT,
     MENU_FONT_SIZE,
     UI_TRANSITION_DURATION,
+    WHITE,
     WIDTH,
 } from "./const"
 import { type CTX } from "./core/canvas"
-import { renderFont } from "./core/font"
+import { renderFont, renderFontTex } from "./core/font"
 import { keys } from "./core/input"
 import { ticker } from "./core/interpolation"
 import { clamp, lerp, pointInRect } from "./core/math"
 import { obsListen } from "./core/observer"
 import { Observable } from "./observables"
 import { resumeGame, Scene, startGame } from "./scene"
-import { Powerup, randomPowerup, usePowerup } from "./stat"
+import {
+    Powerup,
+    powerupSprite,
+    powerupText,
+    randomPowerup,
+    usePowerup,
+} from "./stat"
 
 type PowerupId = 0 | 1 | 2
 let hoveredPowerup: PowerupId = 0
@@ -25,6 +34,10 @@ const selectPowerup = (id: PowerupId) => () => {
 }
 
 const transition = ticker(UI_TRANSITION_DURATION)
+
+const halfSecond = ticker(500)
+let isHalfSecond = false
+
 let runTransition = false
 let scene: Scene
 obsListen(Observable.scene, (next: Scene) => {
@@ -53,6 +66,10 @@ const btn = (
     onClick: () => void,
 ) => {
     const obj = {
+        x,
+        y,
+        w,
+        h,
         hovered: false,
         update: () => {
             if (runTransition) {
@@ -72,7 +89,7 @@ const btn = (
         },
         render: (ctx: CTX) => {
             if (DEBUG && obj.hovered) {
-                ctx.fillStyle = "black"
+                ctx.fillStyle = WHITE
             }
             ctx.fillRect(x, y, w, h)
         },
@@ -80,7 +97,7 @@ const btn = (
     return obj
 }
 
-const BTN_SIZE = 30
+const BTN_SIZE = 32
 const startBtn = btn(
     ~~(WIDTH / 3) - 10,
     ~~(HEIGHT / 3) * 2 - 10,
@@ -89,21 +106,21 @@ const startBtn = btn(
     startGame,
 )
 const powerup1btn = btn(
-    ~~(WIDTH / 6) * 1,
+    ~~(WIDTH / 7) * 1,
     ~~(HEIGHT / 2),
     BTN_SIZE,
     BTN_SIZE,
     selectPowerup(0),
 )
 const powerup2btn = btn(
-    ~~(WIDTH / 6) * 2,
+    ~~(WIDTH / 7) * 3,
     ~~(HEIGHT / 2),
     BTN_SIZE,
     BTN_SIZE,
     selectPowerup(1),
 )
 const powerup3btn = btn(
-    ~~(WIDTH / 6) * 3,
+    ~~(WIDTH / 7) * 5,
     ~~(HEIGHT / 2),
     BTN_SIZE,
     BTN_SIZE,
@@ -111,6 +128,9 @@ const powerup3btn = btn(
 )
 
 export const updateUI = (dt: number) => {
+    if (halfSecond.tick(dt)) {
+        isHalfSecond = !isHalfSecond
+    }
     switch (scene) {
         case Scene.title:
             startBtn.update()
@@ -144,7 +164,7 @@ export const updateUI = (dt: number) => {
     }
 }
 
-export const renderUI = (ctx: CTX) => {
+export const renderUI = (ctx: CTX, assets: Assets) => {
     if (runTransition) {
         // normalized, 0 -> 1
         const norm = transition.ticks / UI_TRANSITION_DURATION
@@ -205,30 +225,86 @@ export const renderUI = (ctx: CTX) => {
             ctx.fillRect(0, 0, WIDTH, HEIGHT)
             ctx.fillStyle = "pink"
             ctx.fillRect(0, HEIGHT / 3, WIDTH, HEIGHT / 3)
-            ctx.fillStyle = "white"
+            ctx.fillStyle = WHITE
             renderFont(
                 ctx,
                 "SELECT POWERUP",
                 MENU_FONT_SIZE,
-                ~~(WIDTH / 5),
-                ~~(HEIGHT / 4),
+                ~~(WIDTH / 7),
+                ~~(HEIGHT / 7),
             )
-            ctx.fillStyle = "red"
-            powerup1btn.render(ctx)
-            ctx.fillStyle = "green"
-            powerup2btn.render(ctx)
-            ctx.fillStyle = "blue"
-            powerup3btn.render(ctx)
-            ctx.strokeStyle = BLACK0
+
+            if (DEBUG) {
+                ctx.fillStyle = GREY
+                powerup1btn.render(ctx)
+                ctx.fillStyle = GREY
+                powerup2btn.render(ctx)
+                ctx.fillStyle = GREY
+                powerup3btn.render(ctx)
+            }
+
+            ctx.drawImage(
+                powerupSprite(powerups[0], assets),
+                powerup1btn.x,
+                powerup1btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+            ctx.drawImage(
+                powerupSprite(powerups[1], assets),
+                powerup2btn.x,
+                powerup2btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+            ctx.drawImage(
+                powerupSprite(powerups[2], assets),
+                powerup3btn.x,
+                powerup3btn.y,
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+
+            ctx.fillStyle = WHITE
+            renderFontTex(
+                ctx,
+                powerupText(powerups[0]),
+                powerup1btn.x,
+                powerup1btn.y + BTN_SIZE + 5,
+            )
+            renderFontTex(
+                ctx,
+                powerupText(powerups[1]),
+                powerup2btn.x,
+                powerup2btn.y + BTN_SIZE + 5,
+            )
+            renderFontTex(
+                ctx,
+                powerupText(powerups[2]),
+                powerup3btn.x,
+                powerup3btn.y + BTN_SIZE + 5,
+            )
+
+            // highlight selected
+            ctx.strokeStyle = WHITE
             ctx.strokeRect(
-                ~~(WIDTH / 6) * (hoveredPowerup + 1) - 10,
-                ~~(HEIGHT / 2) - 10,
-                BTN_SIZE + 20,
-                BTN_SIZE + 20,
+                ~~(WIDTH / 7) * (hoveredPowerup * 2 + 1),
+                ~~(HEIGHT / 2),
+                BTN_SIZE,
+                BTN_SIZE,
+            )
+            ctx.drawImage(
+                assets.eArrow,
+                ~~(WIDTH / 7) * (hoveredPowerup * 2 + 1) + 6,
+                ~~(HEIGHT / 3) * 2 + BTN_SIZE / 2 + (isHalfSecond ? 2 : 0),
+                BTN_SIZE / 2,
+                BTN_SIZE / 2,
             )
             break
+
         case Scene.gameplay:
             break
+
         case Scene.gameover:
             ctx.fillStyle = "pink"
             renderFont(

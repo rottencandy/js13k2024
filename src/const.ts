@@ -16,6 +16,7 @@ export const UI_BAR_Y = 10
 export const UI_TRANSITION_DURATION = 900
 export const BLACK0 = "#212123"
 export const BLACK1 = "#352b42"
+export const GREY = "#868188"
 export const WHITE = "#f2f0e5"
 export const RED = "#b45252"
 export const BLUE = "#4b80ca"
@@ -23,14 +24,14 @@ export const BLUE = "#4b80ca"
 // gameplay
 export const SPRITE_ANIM_RATE_MS = 200
 export const SPAWN_RADIUS = HEIGHT / 2
-export const COIN_XP = 50
+export const COIN_XP = 101
 export const COIN_PICKUP_SPEED = 0.05
 export const MAX_BULLET_AGE = 3e3
 export const HERO_MOB_COLLISION_PROXIMITY = HEIGHT / 2
 
 export const MOB_SPEED = 0.04
 export const MOB_HEALTH = 5
-export const MOB_ATTACK = 50
+export const MOB_ATTACK = 5
 export const MOB_MAX_COLLISION_SNAP_DIST = 4
 
 export const INIT_LEVEL_XP = 100

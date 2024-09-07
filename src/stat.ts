@@ -10,6 +10,8 @@ import {
     BULLET_DMG_INC,
     INIT_BULLET_FIRE_RATE,
     BULLET_FIRE_RATE_DEC,
+    MAX_BULLET_DMG,
+    MAX_BULLET_FIRE_RATE,
 } from "./const"
 import { pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
@@ -32,17 +34,61 @@ export const enum Powerup {
     maxHealth,
     movementSpeed,
     regeneration,
-}
 
-export const powerupSprite = (powerup: Powerup, assets: Assets) => {
-}
-
-export const enum Item {
+    // non-exhaustible , single-use items
     heal,
     tempCoinMagnet,
     tempFlamethrower,
     tempStopTime,
     killAllVisibleMobs,
+}
+
+export const powerupSprite = (powerup: Powerup, assets: Assets) => {
+    switch (powerup) {
+        case Powerup.bulletDamage:
+        case Powerup.bulletFireRate:
+        case Powerup.bulletPenetration:
+            return assets.eBullet
+        case Powerup.bombFireRate:
+        case Powerup.bombDamage:
+        case Powerup.auraRadius:
+        case Powerup.auraDamage:
+        case Powerup.lightsaberSize:
+        case Powerup.lightsaberDamage:
+        case Powerup.movementSpeed:
+        case Powerup.regeneration:
+            return assets.eXp
+        case Powerup.maxHealth:
+        case Powerup.heal:
+        case Powerup.tempCoinMagnet:
+        case Powerup.tempFlamethrower:
+        case Powerup.tempStopTime:
+        case Powerup.killAllVisibleMobs:
+            return assets.eHeart
+    }
+}
+
+export const powerupText = (powerup: Powerup) => {
+    switch (powerup) {
+        case Powerup.bulletDamage:
+        case Powerup.bulletFireRate:
+        case Powerup.bulletPenetration:
+        case Powerup.bombFireRate:
+        case Powerup.bombDamage:
+        case Powerup.auraRadius:
+        case Powerup.auraDamage:
+        case Powerup.lightsaberSize:
+        case Powerup.lightsaberDamage:
+        case Powerup.maxHealth:
+        case Powerup.movementSpeed:
+        case Powerup.regeneration:
+        case Powerup.heal:
+        case Powerup.tempCoinMagnet:
+        case Powerup.tempFlamethrower:
+        case Powerup.tempStopTime:
+        case Powerup.killAllVisibleMobs:
+            return "2x"
+    }
 }
 
 export const usePowerup = (power: Powerup) => {
@@ -57,17 +103,36 @@ export const usePowerup = (power: Powerup) => {
     }
 }
 
-const useItem = (item: Item) => {
-    switch (item) {
-    }
-}
-
 export const randomPowerup = () => {
-    return pickRandom([Powerup.bulletDamage, Powerup.bulletFireRate])
+    return pickRandom(
+        [Powerup.bulletDamage, Powerup.bulletFireRate].filter(notMaxedOut),
+    )
 }
 
-const randomItem = () => {
-    return pickRandom([Item.heal])
+const notMaxedOut = (powerup: Powerup) => {
+    switch (powerup) {
+        case Powerup.bulletDamage:
+            return stats.bulletDmg >= MAX_BULLET_DMG
+        case Powerup.bulletFireRate:
+            return stats.bulletRate >= MAX_BULLET_FIRE_RATE
+        case Powerup.bulletPenetration:
+        case Powerup.bombFireRate:
+        case Powerup.bombDamage:
+        case Powerup.auraRadius:
+        case Powerup.auraDamage:
+        case Powerup.lightsaberSize:
+        case Powerup.lightsaberDamage:
+        case Powerup.maxHealth:
+        case Powerup.movementSpeed:
+        case Powerup.regeneration:
+            return false
+        case Powerup.heal:
+        case Powerup.tempCoinMagnet:
+        case Powerup.tempFlamethrower:
+        case Powerup.tempStopTime:
+        case Powerup.killAllVisibleMobs:
+            return false
+    }
 }
 
 export const increaseMaxHealth = (amt: number) => {
@@ -107,9 +172,4 @@ export const increaseXp = () => {
         stats.levelXp *= LEVEL_XP_CAP_MULTIPLIER
         powerupMenu()
     }
-}
-
-export const heal = (amt: number) => {
-    stats.health += amt
-    stats.maxHealth += amt
 }
