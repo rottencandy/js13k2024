@@ -214,7 +214,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
     }
     switch (scene) {
         case Scene.title:
-            ctx.fillStyle = "brown"
+            ctx.fillStyle = BLACK0
             startBtn.render(ctx)
             ctx.fillStyle = "pink"
             renderFont(
@@ -224,13 +224,15 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 ~~(WIDTH / 3),
                 ~~(HEIGHT / 3),
             )
-            renderFont(
-                ctx,
-                "START",
-                MENU_FONT_SIZE,
-                ~~(WIDTH / 3),
-                ~~(HEIGHT / 3) * 2,
-            )
+            if (isHalfSecond) {
+                renderFont(
+                    ctx,
+                    "START",
+                    MENU_FONT_SIZE,
+                    ~~(WIDTH / 3),
+                    ~~(HEIGHT / 3) * 2,
+                )
+            }
             break
         case Scene.powerup:
             ctx.fillStyle = BLACK0 + "77"
