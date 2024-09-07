@@ -19,6 +19,12 @@ import {
     GL_VERTEX_SHADER,
 } from "./gl-constants"
 
+// source: https://www.shadertoy.com/view/WsVSzV
+
+const WARP = 0.25
+const SCAN = 0.25
+const SCANLINE_RES = 720
+
 // prettier-ignore
 const vertShader = `#version 300 es
 precision lowp float;`+
@@ -39,7 +45,21 @@ precision lowp float;`+
 "uniform sampler2D uTex;"+
 
 "void main() {"+
-    "outColor = texture(uTex, vTex);"+
+    "vec2 uv = vTex;"+
+    "vec2 dc = abs(0.5-uv);"+
+    "dc *= dc;"+
+
+    "uv.x -= 0.5; uv.x *= 1.0+(dc.y*(0.3*"+WARP+")); uv.x += 0.5;"+
+    "uv.y -= 0.5; uv.y *= 1.0+(dc.x*(0.4*"+WARP+")); uv.y += 0.5;"+
+
+    "if(uv.y > 1.0 || uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0)"+
+        "outColor = vec4(0.0,0.0,0.0,1.0);"+
+    "else{"+
+        "float apply = abs(sin(vTex.y*"+SCANLINE_RES+".)*0.5*"+SCAN+");"+
+        "outColor = vec4(mix(texture(uTex,uv).rgb,vec3(0.0),apply),1.0);"+
+    "}"+
+
+    //"outColor = texture(uTex, vTex);"+
 "}"
 
 export const setupPostProcess = (

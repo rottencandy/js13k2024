@@ -15,7 +15,7 @@ const offscreenCanvas = document.createElement("canvas")
 
 const ctx = offscreenCanvas.getContext("2d")!
 const processInput = initInput(canvas, WIDTH, HEIGHT)
-const postProcess = setupPostProcess(canvas, WIDTH, HEIGHT)
+const postProcess = setupPostProcess(canvas, WIDTH * 4, HEIGHT * 4)
 loadSounds()
 ;(async () => {
     const assets = await loadAssets()
@@ -26,7 +26,7 @@ loadSounds()
     loadTitle()
     ;(onresize = () => {
         resize(offscreenCanvas, WIDTH, HEIGHT)
-        resize(canvas, WIDTH, HEIGHT)
+        resize(canvas, WIDTH * 4, HEIGHT * 4)
     })()
     ctx.imageSmoothingEnabled = false
 

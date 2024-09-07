@@ -43,6 +43,7 @@ let isHalfSecond = false
 
 let runTransition = false
 let scene: Scene
+let prevScene: Scene
 obsListen(Observable.scene, (next: Scene) => {
     if (
         next === Scene.powerup ||
@@ -58,6 +59,7 @@ obsListen(Observable.scene, (next: Scene) => {
         powerups.push(randomPowerup())
         powerups.push(randomPowerup())
     }
+    prevScene = scene
     scene = next
 })
 
@@ -185,22 +187,24 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
         const norm = transition.ticks / UI_TRANSITION_DURATION
         switch (scene) {
             case Scene.gameplay:
-                // 0 -> 1 -> 0
-                //const norm2 = norm * 2
-                //const lerpval = norm2 < 1 ? norm2 : 2 - norm2
+                if (prevScene === Scene.title) {
+                    // 0 -> 1 -> 0
+                    //const norm2 = norm * 2
+                    //const lerpval = norm2 < 1 ? norm2 : 2 - norm2
 
-                // 1 -> 0
-                const lerpval = 1 - norm
-                ctx.fillStyle = BLACK0
-                ctx.beginPath()
-                ctx.arc(
-                    WIDTH / 2,
-                    HEIGHT / 2,
-                    lerp(0, WIDTH, lerpval),
-                    0,
-                    Math.PI * 2,
-                )
-                ctx.fill()
+                    // 1 -> 0
+                    const lerpval = 1 - norm
+                    ctx.fillStyle = BLACK0
+                    ctx.beginPath()
+                    ctx.arc(
+                        WIDTH / 2,
+                        HEIGHT / 2,
+                        lerp(0, WIDTH, lerpval),
+                        0,
+                        Math.PI * 2,
+                    )
+                    ctx.fill()
+                }
                 break
 
             case Scene.powerup:
@@ -268,6 +272,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             }
 
             // icons
+            ctx.imageSmoothingEnabled = false
             ctx.drawImage(
                 assets.eBg,
                 powerup1btn.x,
