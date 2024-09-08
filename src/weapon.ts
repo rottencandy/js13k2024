@@ -13,9 +13,12 @@ import {
     SABER_SPEED,
     SABER_AGE,
     SABER_CHARGE_TIME,
+    ORB_CHARGE_TIME,
+    WIDTH,
+    HEIGHT,
 } from "./const"
 import { ticker } from "./core/interpolation"
-import { angleToVec, distance, rand, randInt } from "./core/math"
+import { aabb, angleToVec, distance, rand, randInt } from "./core/math"
 import { hero } from "./hero"
 import {
     attackMob,
@@ -65,7 +68,6 @@ const orbs = {
     y: Array(MAX_ORBS_NUM).fill(0),
     charge: Array(MAX_ORBS_NUM).fill(0),
 }
-const ORB_CHARGE_TIME = 400
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -312,12 +314,15 @@ export const loadWeapon = () => {
                 if (sabers.active[i]) {
                     const x = sabers.x[i] - cam.x
                     const y = sabers.y[i] - cam.y
-                    ctx.save()
-                    ctx.translate(x + 8, y + 8)
-                    ctx.rotate(stats.time * 20)
-                    ctx.translate(-(x + 8), -(y + 8))
-                    ctx.drawImage(asset.saber, ~~x, ~~y)
-                    ctx.restore()
+                    // only render if in screen
+                    if (aabb(x, y, 16, 16, 0, 0, WIDTH, HEIGHT)) {
+                        ctx.save()
+                        ctx.translate(x + 8, y + 8)
+                        ctx.rotate(stats.time * 20)
+                        ctx.translate(-(x + 8), -(y + 8))
+                        ctx.drawImage(asset.saber, ~~x, ~~y)
+                        ctx.restore()
+                    }
                 }
             }
         }

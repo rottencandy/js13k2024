@@ -1,43 +1,45 @@
 import { Assets } from "./asset"
 import {
-    COIN_XP,
-    INIT_BULLET_DMG,
-    INIT_LEVEL_XP,
-    INIT_HEALTH_CAP,
-    INIT_PICKUP_RADIUS,
-    INIT_HERO_SPEED,
-    LEVEL_XP_CAP_MULTIPLIER,
     BULLET_DMG_INC,
-    INIT_BULLET_FIRE_RATE,
     BULLET_FIRE_RATE_DEC,
-    MAX_BULLET_DMG,
-    MIN_BULLET_FIRE_RATE,
-    HEAL_AMT,
-    INC_HEALTH_CAP,
-    MAX_HEALTH_CAP,
-    INC_AURA_RADIUS,
-    INIT_AURA_DAMAGE,
-    INC_AURA_DAMAGE,
-    MAX_AURA_RADIUS,
-    MAX_AURA_DAMAGE,
-    INIT_AURA_DAMAGE_RATE,
+    COIN_XP,
     DEC_AURA_DAMAGE_RATE,
-    MIN_AURA_DAMAGE_RATE,
+    DEC_SABER_FIRE_RATE,
+    HEAL_AMT,
+    INC_AURA_DAMAGE,
+    INC_AURA_RADIUS,
+    INC_HEALTH_CAP,
+    INC_HERO_SPEED,
+    INC_ORBS_DMG,
+    INC_ORBS_RADIUS,
+    INC_PICKUP_RADIUS,
+    INIT_AURA_DAMAGE,
+    INIT_AURA_DAMAGE_RATE,
+    INIT_BULLET_DMG,
+    INIT_BULLET_FIRE_RATE,
+    INIT_HEALTH_CAP,
+    INIT_HERO_SPEED,
+    INIT_LEVEL_XP,
     INIT_ORBS_DMG,
     INIT_ORBS_RADIUS,
-    INC_ORBS_RADIUS,
-    INC_ORBS_DMG,
+    INIT_PICKUP_RADIUS,
+    INIT_SABER_DMG,
+    INIT_SABER_FIRE_RATE,
+    LEVEL_XP_CAP_MULTIPLIER,
+    MAX_AURA_DAMAGE,
+    MAX_AURA_RADIUS,
+    MAX_BULLET_DMG,
+    MAX_HEALTH_CAP,
+    MAX_HERO_SPEED,
+    MAX_ORBS_DMG,
     MAX_ORBS_NUM,
     MAX_ORBS_RADIUS,
-    MAX_ORBS_DMG,
-    MAX_HERO_SPEED,
-    INC_HERO_SPEED,
-    DEC_SABER_FIRE_RATE,
-    INIT_SABER_FIRE_RATE,
-    SABER_DMG_INC,
+    MAX_PICKUP_RADIUS,
+    MIN_AURA_DAMAGE_RATE,
+    MIN_BULLET_FIRE_RATE,
     MIN_SABER_FIRE_RATE,
+    SABER_DMG_INC,
     SABER_MAX_DMG,
-    INIT_SABER_DMG,
 } from "./const"
 import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
@@ -65,12 +67,13 @@ export const enum Powerup {
     lightsaberFireRate,
     lightsaberDamage,
 
+    magnet,
+
     // non-exhaustible , single-use items
     heal,
-    tempCoinMagnet,
-    tempFlamethrower,
-    tempStopTime,
-    killAllVisibleMobs,
+    //tempFlamethrower,
+    //tempStopTime,
+    //killAllVisibleMobs,
 }
 
 export const powerupSprite = (powerup: Powerup, assets: Assets) => {
@@ -93,13 +96,9 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
         case Powerup.lightsaberFireRate:
         case Powerup.lightsaberDamage:
             return assets.eSaber
-
+        case Powerup.magnet:
+            return assets.eMagnet
         case Powerup.heal:
-            return assets.eHeart
-        case Powerup.tempCoinMagnet:
-        case Powerup.tempFlamethrower:
-        case Powerup.tempStopTime:
-        case Powerup.killAllVisibleMobs:
             return assets.eHeart
     }
 }
@@ -107,37 +106,33 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
 export const powerupText = (powerup: Powerup) => {
     switch (powerup) {
         case Powerup.bulletDamage:
-            return "+DAMAGE"
+            return "+ DAMAGE"
         case Powerup.bulletFireRate:
-            return "+FIRE RATE"
+            return "+ FIRE RATE"
         case Powerup.maxHealth:
-            return "+MAX HEALTH"
+            return "+ TOTAL HEALTH"
         case Powerup.auraRadius:
-            return stats.auraRadius > 0 ? "+SIZE" : "PLASMA FIELD"
+            return stats.auraRadius > 0 ? "+ SIZE" : "PLASMA FIELD"
         case Powerup.auraDamage:
-            return "+DAMAGE"
+            return "+ DAMAGE"
         case Powerup.auraDamageRate:
-            return "+POWER"
+            return "+ POWER"
         case Powerup.orbNum:
             return stats.orbs > 0 ? "+1 ORB" : "ORB"
         case Powerup.orbRadius:
-            return "+RADIUS"
+            return "+ RADIUS"
         case Powerup.orbDamage:
-            return "+DAMAGE"
+            return "+ DAMAGE"
         case Powerup.movementSpeed:
-            return "+MOVE SPEED"
+            return "+ MOVE SPEED"
         case Powerup.lightsaberFireRate:
-            return "+FIRE RATE"
+            return "+ FIRE RATE"
         case Powerup.lightsaberDamage:
-            return stats.saber ? "+FIRE RATE" : "LIGHTSABER"
-
+            return stats.saber ? "+ FIRE RATE" : "LIGHTSABER"
+        case Powerup.magnet:
+            return "+ PICKUP RADIUS"
         case Powerup.heal:
             return "HEAL"
-        case Powerup.tempCoinMagnet:
-        case Powerup.tempFlamethrower:
-        case Powerup.tempStopTime:
-        case Powerup.killAllVisibleMobs:
-            return "2x"
     }
 }
 
@@ -183,7 +178,9 @@ export const usePowerup = (power: Powerup) => {
         case Powerup.lightsaberDamage:
             stats.saberDmg += SABER_DMG_INC
             break
-
+        case Powerup.magnet:
+            stats.pickupRadius += INC_PICKUP_RADIUS
+            break
         case Powerup.heal:
             stats.health = clamp(stats.health + HEAL_AMT, 0, stats.maxHealth)
             break
@@ -191,27 +188,30 @@ export const usePowerup = (power: Powerup) => {
 }
 
 export const randomPowerup = () => {
-    return pickRandom(
-        [
-            Powerup.bulletDamage,
-            Powerup.bulletFireRate,
-            Powerup.maxHealth,
-            Powerup.auraRadius,
-            Powerup.auraDamage,
-            Powerup.auraDamageRate,
-            Powerup.orbNum,
-            Powerup.orbRadius,
-            Powerup.orbDamage,
-            Powerup.movementSpeed,
-            Powerup.lightsaberDamage,
-            Powerup.lightsaberFireRate,
-
-            Powerup.heal,
-        ].filter(unlockable),
-    )
+    const powers = [
+        Powerup.bulletDamage,
+        Powerup.bulletFireRate,
+        Powerup.maxHealth,
+        Powerup.movementSpeed,
+        Powerup.auraRadius,
+        Powerup.auraDamage,
+        Powerup.auraDamageRate,
+        Powerup.orbNum,
+        Powerup.orbRadius,
+        Powerup.orbDamage,
+        Powerup.lightsaberDamage,
+        Powerup.lightsaberFireRate,
+        Powerup.magnet,
+        Powerup.heal,
+    ].filter(isAvailable)
+    // use non-exhaustible items if all powers are maxed out
+    if (powers.length < 3) {
+        powers.push(Powerup.heal, Powerup.heal)
+    }
+    return pickRandom(powers)
 }
 
-const unlockable = (powerup: Powerup) => {
+const isAvailable = (powerup: Powerup) => {
     switch (powerup) {
         case Powerup.bulletDamage:
             return stats.bulletDmg < MAX_BULLET_DMG
@@ -241,12 +241,11 @@ const unlockable = (powerup: Powerup) => {
         case Powerup.lightsaberDamage:
             return stats.saber && stats.saberDmg < SABER_MAX_DMG
 
+        case Powerup.magnet:
+            return stats.pickupRadius < MAX_PICKUP_RADIUS
+
         // these are consumables and do not max out
         case Powerup.heal:
-        case Powerup.tempCoinMagnet:
-        case Powerup.tempFlamethrower:
-        case Powerup.tempStopTime:
-        case Powerup.killAllVisibleMobs:
             return true
     }
 }

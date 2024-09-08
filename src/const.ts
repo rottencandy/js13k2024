@@ -54,7 +54,7 @@ export const INIT_BULLET_DMG = 10
 export const MAX_BULLET_DMG = 30
 export const BULLET_DMG_INC = 5
 
-export const INIT_BULLET_FIRE_RATE = 5e3
+export const INIT_BULLET_FIRE_RATE = 1e3
 export const BULLET_FIRE_RATE_DEC = 500
 export const MIN_BULLET_FIRE_RATE = 200
 
@@ -80,6 +80,7 @@ export const INC_PICKUP_RADIUS = 10
 export const MAX_PICKUP_RADIUS = 60
 
 export const MAX_ORBS_NUM = 7
+export const ORB_CHARGE_TIME = 400
 
 export const INIT_ORBS_RADIUS = 20
 export const INC_ORBS_RADIUS = 1
