@@ -5,18 +5,27 @@ import { addRenderComp } from "./components/render"
 import {
     BLACK0,
     DEBUG,
-    INIT_SPAWN_RATE,
-    MOB_ATTACK,
-    MOB_HEALTH,
+    MOB0_ATTACK,
+    MOB0_HEALTH,
     MOB_MAX_COLLISION_SNAP_DIST,
-    MOB_SPEED,
+    MOB0_SPEED,
     RED,
     SPAWN_RADIUS,
     SPRITE_ANIM_RATE_MS,
+    MOB1_HEALTH,
+    MOB2_HEALTH,
+    MOB3_HEALTH,
+    MOB1_SPEED,
+    MOB2_SPEED,
+    MOB3_SPEED,
+    MOB3_ATTACK,
+    MOB2_ATTACK,
+    MOB1_ATTACK,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hero, hitHero, isHittingHero, isNearHero } from "./hero"
+import { stats } from "./stat"
 import { spawnFloatingText } from "./text"
 
 export const enum MobType {
@@ -45,9 +54,34 @@ let freePool: number[] = []
 
 export const MOB_SIZE = 16
 
-const spawnTimer = ticker(INIT_SPAWN_RATE)
+const twoSeconds = ticker(2000)
+const seconds = ticker(1000)
+const halfSeconds = ticker(500)
+const quraterSeconds = ticker(250)
+
 const frames = [0, 1, 2, 1]
 const maxFrames = frames.length
+
+const healths = {
+    [MobType.blob]: MOB0_HEALTH,
+    [MobType.fly]: MOB1_HEALTH,
+    [MobType.zombie]: MOB2_HEALTH,
+    [MobType.ghost]: MOB3_HEALTH,
+}
+
+const speeds = {
+    [MobType.blob]: MOB0_SPEED,
+    [MobType.fly]: MOB1_SPEED,
+    [MobType.zombie]: MOB2_SPEED,
+    [MobType.ghost]: MOB3_SPEED,
+}
+
+const attacks = {
+    [MobType.blob]: MOB0_ATTACK,
+    [MobType.fly]: MOB1_ATTACK,
+    [MobType.zombie]: MOB2_ATTACK,
+    [MobType.ghost]: MOB3_ATTACK,
+}
 
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
@@ -71,29 +105,48 @@ export const loadMob = () => {
     E.type = []
     E.active = []
     freePool = []
-    spawnTimer.clear()
+    twoSeconds.clear()
+    seconds.clear()
+    halfSeconds.clear()
+    quraterSeconds.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
-        if (spawnTimer.tick(dt)) {
-            spawnMob(MobType.blob)
+        // mob spawn manager
+        if (stats.time < 30) {
+            if (seconds.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+        } else if (stats.time < 60) {
+            if (halfSeconds.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+        } else if (stats.time < 90) {
+            if (twoSeconds.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+            if (seconds.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
         }
+
         // todo optimize out offscreen mobs?
-        iterMobs((x, y, id) => {
+        iterMobs((x, y, id, _flip, _near, _frame, _framet, type) => {
             // check proximity to hero
             E.near[id] = isNearHero(x, y, MOB_SIZE, MOB_SIZE)
 
             // check hero collision
             // todo: possible optimization: skip detection if hero is invulnerable
             if (E.near[id] && isHittingHero(x, y, MOB_SIZE, MOB_SIZE)) {
-                hitHero(MOB_ATTACK)
+                hitHero(attacks[type])
             } else {
                 // move towards hero
                 // note that we only move if not hitting hero
                 _vec.x = hero.x - x
                 _vec.y = hero.y - y
                 limitMagnitude(_vec)
-                E.x[id] += _vec.x * MOB_SPEED * dt
-                E.y[id] += _vec.y * MOB_SPEED * dt
+                const speed = speeds[type]
+                E.x[id] += _vec.x * speed * dt
+                E.y[id] += _vec.y * speed * dt
                 E.flipped[id] = _vec.x < 0
             }
 
@@ -119,7 +172,16 @@ export const loadMob = () => {
                     continue
                 }
                 if (
-                    aabb(E.x[i], E.y[i], MOB_SIZE, MOB_SIZE, E.x[j], E.y[j], MOB_SIZE, MOB_SIZE)
+                    aabb(
+                        E.x[i],
+                        E.y[i],
+                        MOB_SIZE,
+                        MOB_SIZE,
+                        E.x[j],
+                        E.y[j],
+                        MOB_SIZE,
+                        MOB_SIZE,
+                    )
                 ) {
                     const xOffset = Math.max(
                         E.x[i] + MOB_SIZE - E.x[j],
@@ -153,12 +215,18 @@ export const loadMob = () => {
                         ? assets.mob2
                         : assets.mob3
             const frame = asset[frames[currentFrame] + dirOffset]
-            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), MOB_SIZE, MOB_SIZE)
+            ctx.drawImage(
+                frame,
+                ~~(x - cam.x),
+                ~~(y - cam.y),
+                MOB_SIZE,
+                MOB_SIZE,
+            )
             // draw collision rect
             if (DEBUG) {
                 ctx.strokeStyle = BLACK0
                 ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
-                ctx.strokeStyle=RED
+                ctx.strokeStyle = RED
                 ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
             }
             return false
@@ -189,7 +257,7 @@ const spawnMob = (type: MobType) => {
         const i = freePool.pop()!
         E.x[i] = spawnPos.x
         E.y[i] = spawnPos.y
-        E.health[i] = MOB_HEALTH
+        E.health[i] = healths[type]
         E.flipped[i] = false
         E.frame[i] = 0
         E.frameTicker[i] = 0
@@ -200,7 +268,7 @@ const spawnMob = (type: MobType) => {
     }
     E.x.push(spawnPos.x)
     E.y.push(spawnPos.y)
-    E.health.push(MOB_HEALTH)
+    E.health.push(healths[type])
     E.flipped.push(false)
     E.frame.push(0)
     E.frameTicker.push(0)
@@ -219,7 +287,6 @@ export const attackMob = (id: number, dmg: number) => {
     }
 }
 
-// TODO: check if using this instead of for-looping saves space
 export const iterMobs = (
     fn: (
         x: number,

@@ -251,6 +251,7 @@ const isAvailable = (powerup: Powerup) => {
 }
 
 export const stats = {
+    /** Time passed since game session start, in seconds */
     time: 0,
     health: 0,
     maxHealth: 0,

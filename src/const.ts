@@ -30,18 +30,33 @@ export const SPRITE_ANIM_RATE_MS = 200
 export const SPAWN_RADIUS = HEIGHT / 2
 export const COIN_XP = 101
 export const COIN_PICKUP_SPEED = 0.05
-export const HERO_MOB_COLLISION_PROXIMITY = HEIGHT / 2
 export const VULNERABILITY_MS = 1e3
 export const HEAL_AMT = 10
 
 export const INIT_LEVEL_XP = 100
 export const LEVEL_XP_CAP_MULTIPLIER = 1.5
 
-export const MOB_SPEED = 0.04
-export const MOB_HEALTH = 5
-export const MOB_ATTACK = 5
+// distance inside which mobs are collision tested
+export const HERO_MOB_COLLISION_PROXIMITY = WIDTH
+// max distance to push if colliding with another mob
 export const MOB_MAX_COLLISION_SNAP_DIST = 4
-export const INIT_SPAWN_RATE = 1e3
+
+// blob
+export const MOB0_SPEED = 0.04
+export const MOB0_HEALTH = 5
+export const MOB0_ATTACK = 5
+// fly
+export const MOB1_SPEED = 0.04
+export const MOB1_HEALTH = 5
+export const MOB1_ATTACK = 5
+// zombie
+export const MOB2_SPEED = 0.04
+export const MOB2_HEALTH = 5
+export const MOB2_ATTACK = 5
+// ghost
+export const MOB3_SPEED = 0.04
+export const MOB3_HEALTH = 5
+export const MOB3_ATTACK = 5
 
 // gameplay
 export const BULLET_SPEED = 0.2
