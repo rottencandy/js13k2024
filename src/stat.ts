@@ -30,6 +30,8 @@ import {
     MAX_ORBS_NUM,
     MAX_ORBS_RADIUS,
     MAX_ORBS_DMG,
+    MAX_HERO_SPEED,
+    INC_HERO_SPEED,
 } from "./const"
 import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
@@ -73,15 +75,16 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
         case Powerup.auraDamage:
         case Powerup.auraDamageRate:
             return assets.ePlasma
-        case Powerup.lightsaberSize:
-        case Powerup.lightsaberDamage:
-        case Powerup.movementSpeed:
-        case Powerup.regeneration:
-            return assets.eXp
         case Powerup.orbNum:
         case Powerup.orbRadius:
         case Powerup.orbDamage:
             return assets.eOrbs
+        case Powerup.movementSpeed:
+            return assets.eShoes
+        case Powerup.lightsaberSize:
+        case Powerup.lightsaberDamage:
+        case Powerup.regeneration:
+            return assets.eXp
 
         case Powerup.heal:
             return assets.eHeart
@@ -114,6 +117,7 @@ export const powerupText = (powerup: Powerup) => {
         case Powerup.orbDamage:
             return "+DAMAGE"
         case Powerup.movementSpeed:
+            return "+MOVE SPEED"
         case Powerup.regeneration:
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
@@ -156,6 +160,8 @@ export const usePowerup = (power: Powerup) => {
             stats.orbRadius += INC_ORBS_RADIUS
         case Powerup.orbDamage:
             stats.orbsDmg += INC_ORBS_DMG
+        case Powerup.movementSpeed:
+            stats.speed += INC_HERO_SPEED
 
         case Powerup.heal:
             stats.health = clamp(stats.health + HEAL_AMT, 0, stats.maxHealth)
@@ -175,6 +181,7 @@ export const randomPowerup = () => {
             Powerup.orbNum,
             Powerup.orbRadius,
             Powerup.orbDamage,
+            Powerup.movementSpeed,
 
             Powerup.heal,
         ].filter(unlockable),
@@ -203,10 +210,11 @@ const unlockable = (powerup: Powerup) => {
             return stats.orbs > 0 && stats.orbRadius < MAX_ORBS_RADIUS
         case Powerup.orbDamage:
             return stats.orbs > 0 && stats.orbsDmg < MAX_ORBS_DMG
+        case Powerup.movementSpeed:
+            return stats.speed < MAX_HERO_SPEED
 
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
-        case Powerup.movementSpeed:
         case Powerup.regeneration:
             return false
 

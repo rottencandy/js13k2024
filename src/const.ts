@@ -65,7 +65,7 @@ export const DEC_AURA_DAMAGE_RATE = 100
 export const MIN_AURA_DAMAGE_RATE = 500
 
 export const INIT_HERO_SPEED = 0.25
-export const INC_HERO_SPEED = 0.5
+export const INC_HERO_SPEED = 0.1
 export const MAX_HERO_SPEED = 0.5
 
 export const INIT_HEALTH_CAP = 100

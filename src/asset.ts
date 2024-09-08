@@ -34,7 +34,7 @@ export const loadAssets = async () => {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAQ0lEQVQYV2NkIAAYYfKm2k7/kdWevroPLAcmQJI7tsWgmOXhtYQBpAhFASu/O1jR7487GchTgGwHigkwd+B0JD6fAgA0lyoJwxgCagAAAABJRU5ErkJggg==",
     )
     const elements = await img(
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAICAYAAACs/DyzAAABhElEQVQ4T2NkIAKYajv9hyk7fXUfIy4tMHXoatoaO+D6kfVW1VegmIVLP0gPshtAfFzuAKlDlgNbgG4wMh/E3rEtBu4uD68lWA0HqWvuKmewstZhcLaOhavB5TmYgTBPgvTnbmxlOPaMh+FsZj6KHSA5xQBzBhPT5wxnTkuCtd7fcBKuBt1TyIHICJKsVxcAizXe/ACm0fkgD7LyuzP8/riTAZsHkT0HMxzmSUo9CPPcj7sXGTiU9VESD8iTIAAKmMn+1RgBD9KL4kH0pAfzML4YxOY5ZE8GhrnhzQTIMQhKASBQW9aJEjug2EMHIA8/v/wDrA5bDMJSBDyJwmINZhDIc7C0TCgPoucPmBkg/SnJqVjzH0zNnLmz4W6ABcb6VbtwehBXMsUWiuAYhEmgJ1VChQk+eWTLSPEgtjwIS6IgM9GTKTH5kOhSDDkgQEkWV2GDHpKUehBkHrInYeajew49H8KSLc4iH1/GwVdqYdOHy5Ow5IkceCA2ttRBqJpAdhMyGwBdjDKeyx/ieQAAAABJRU5ErkJggg==",
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAICAYAAABatbkrAAAB6UlEQVRIS6VVMSxEQRDdKyQKCa1SFAoSjYtwUSBBNGhUVCgUokOIXC5C0CpRUWnQCBIUcoccxQWF4kgUrqW7REHeJrOZP3b+/3Lb3O3uzO7bN+/NT5gYI9nc80Nh+efLhJZCcTJmLbPu8nnuYnohcJaWjxyOAXMNB+L4ng972HvkPRagBMbn+H96MubeNTC47wWHuJXNedOZajG9qXEXo5FDBxJJyJ85XjW5jxrzMD0buAN7DcPtpi1ZMvf5epv6dnTnYiQpvAiEa3luIxAPrHyNchA/Mtpnp4cH5yaBhXRTnV3IvHzaXzkHQVW1/eb768z4COLk0EVEUqUEETnlYsFUN7YGxAuSMEDs1tDSn8JRoSUZPtIkQa/vRVO4LQYJktYhwsIU5COHk0TV0GzJFYSHYMhqQz1ygLDSY9mS4lMQKRLEoeB4C1mPRCHX6I6AgrDIVURBWrLP+9K3dAZiJyemvP2HYnZ2t53NOTD+GE6QZjNfAQhXFEFkq6vrG9Pd1WGPcgri0uLWimrGYfsc7H8I8vUgshjOlDaL04fitBCfyv8QRErCbxQ5sJzWrGUlKyWIcEmbSXJkH+K2C3MI9i6yewHYueyTs7r6ydZ6BgGOqyDEaySRvbiKtQJFfeYlIRKflq+1B8L0C2GZriA+26fSAAAAAElFTkSuQmCC",
     )
     const rocks = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAWklEQVQoU2NkoBAwIutv8LT6D+I3bD9GlDhILVyhqbbTf2+5H3DzYIbADIVJoBsONgCkGZtPTl/dx4huALoLUZyKzRB8hqN4AV9YIhsCchWyWoIuIBRJFBsAAMlEIQkNy0rpAAAAAElFTkSuQmCC",
@@ -118,6 +118,8 @@ export const loadAssets = async () => {
         eSaber: texture((ctx) => frame(ctx, elements, 0, 0, 8, 4), 8, 8),
         ePlasma: texture((ctx) => frame(ctx, elements, 0, 0, 8, 5), 8, 8),
         eOrbs: texture((ctx) => frame(ctx, elements, 0, 0, 8, 6), 8, 8),
+        eMagnet: texture((ctx) => frame(ctx, elements, 0, 0, 8, 7), 8, 8),
+        eShoes: texture((ctx) => frame(ctx, elements, 0, 0, 8, 8), 8, 8),
         eXp: coin,
         rocks: [
             texture((ctx) => frame(ctx, rocks, 0, 0, 8, 0), 8, 8),
