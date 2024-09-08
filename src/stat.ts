@@ -23,6 +23,13 @@ import {
     INIT_AURA_DAMAGE_RATE,
     DEC_AURA_DAMAGE_RATE,
     MIN_AURA_DAMAGE_RATE,
+    INIT_ORBS_DMG,
+    INIT_ORBS_RADIUS,
+    INC_ORBS_RADIUS,
+    INC_ORBS_DMG,
+    MAX_ORBS_NUM,
+    MAX_ORBS_RADIUS,
+    MAX_ORBS_DMG,
 } from "./const"
 import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
@@ -39,6 +46,10 @@ export const enum Powerup {
     auraRadius,
     auraDamage,
     auraDamageRate,
+
+    orbNum,
+    orbRadius,
+    orbDamage,
 
     lightsaberSize,
     lightsaberDamage,
@@ -67,6 +78,10 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
         case Powerup.movementSpeed:
         case Powerup.regeneration:
             return assets.eXp
+        case Powerup.orbNum:
+        case Powerup.orbRadius:
+        case Powerup.orbDamage:
+            return assets.eOrbs
 
         case Powerup.heal:
             return assets.eHeart
@@ -91,7 +106,13 @@ export const powerupText = (powerup: Powerup) => {
         case Powerup.auraDamage:
             return "+DAMAGE"
         case Powerup.auraDamageRate:
-            return "+DAMAGE RATE"
+            return "+POWER"
+        case Powerup.orbNum:
+            return stats.orbs > 0 ? "+1 ORB" : "ORB"
+        case Powerup.orbRadius:
+            return "+RADIUS"
+        case Powerup.orbDamage:
+            return "+DAMAGE"
         case Powerup.movementSpeed:
         case Powerup.regeneration:
         case Powerup.lightsaberSize:
@@ -129,6 +150,12 @@ export const usePowerup = (power: Powerup) => {
             stats.auraDmgRate -= DEC_AURA_DAMAGE_RATE
             updateAuraDmgRate()
             break
+        case Powerup.orbNum:
+            stats.orbs += 1
+        case Powerup.orbRadius:
+            stats.orbRadius += INC_ORBS_RADIUS
+        case Powerup.orbDamage:
+            stats.orbsDmg += INC_ORBS_DMG
 
         case Powerup.heal:
             stats.health = clamp(stats.health + HEAL_AMT, 0, stats.maxHealth)
@@ -145,6 +172,9 @@ export const randomPowerup = () => {
             Powerup.auraRadius,
             Powerup.auraDamage,
             Powerup.auraDamageRate,
+            Powerup.orbNum,
+            Powerup.orbRadius,
+            Powerup.orbDamage,
 
             Powerup.heal,
         ].filter(unlockable),
@@ -167,6 +197,13 @@ const unlockable = (powerup: Powerup) => {
             return (
                 stats.auraRadius > 0 && stats.auraDmgRate > MIN_AURA_DAMAGE_RATE
             )
+        case Powerup.orbNum:
+            return stats.orbs < MAX_ORBS_NUM
+        case Powerup.orbRadius:
+            return stats.orbs > 0 && stats.orbRadius < MAX_ORBS_RADIUS
+        case Powerup.orbDamage:
+            return stats.orbs > 0 && stats.orbsDmg < MAX_ORBS_DMG
+
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
         case Powerup.movementSpeed:
@@ -184,6 +221,7 @@ const unlockable = (powerup: Powerup) => {
 }
 
 export const stats = {
+    time: 0,
     health: 0,
     maxHealth: 0,
     xp: 0,
@@ -197,10 +235,15 @@ export const stats = {
     auraDmg: 0,
     auraDmgRate: 0,
 
+    orbs: 0,
+    orbRadius: 0,
+    orbsDmg: 0,
+
     pickupRadius: 0,
 }
 
 export const resetStats = () => {
+    stats.time = 0
     stats.health = INIT_HEALTH_CAP
     stats.maxHealth = INIT_HEALTH_CAP
     stats.xp = 0
@@ -213,6 +256,10 @@ export const resetStats = () => {
     stats.auraRadius = 0
     stats.auraDmg = INIT_AURA_DAMAGE
     stats.auraDmgRate = INIT_AURA_DAMAGE_RATE
+
+    stats.orbs = 0
+    stats.orbRadius = INIT_ORBS_RADIUS
+    stats.orbsDmg = INIT_ORBS_DMG
 
     stats.pickupRadius = INIT_PICKUP_RADIUS
 }

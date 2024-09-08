@@ -45,6 +45,9 @@ export const loadAssets = async () => {
     const saber = await img(
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAArUlEQVQ4T2NkIAOYajv9h2ljJFU/SHPuxlawtsn+1QwkGYCs+dgzHoazmfnEG4BN8+mr+xiJcgEuzSBvEDQAn2aCBoA0N3eVM7xS52OA+RnkbOSAx+kCkGYBSV6G4sIshnNnzjOsX7WLAV0zThfAbO7tnwa27MPzz1g1YzUA5mexm5/w2ow1IREKMGyJDh4G5GiGe4FczWADKNGMYgCueCaU2cAugCnCFs+EDAAA6iGC9K9ePj0AAAAASUVORK5CYII=",
     )
+    const orb = await img(
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAXklEQVQYV2NkgAJTbaf/MDaIPn11HyOIBhMgSePpExmspL6A1Rx7xsNwNjMfrIgRJtmlJ8Sw4c0jsIIAETmGskvvwIrACnI3tsIlQAyYwsn+1UQqANmP0wqCjiTkTQAGCUCN2E8zpwAAAABJRU5ErkJggg==",
+    )
 
     // included normal and flipped versions for asymmetric sprites
     // note: make sure spritesheet frames are always in 1 row
@@ -107,6 +110,7 @@ export const loadAssets = async () => {
         bullet,
         crate,
         saber,
+        orb,
         eHeart: texture((ctx) => frame(ctx, elements, 0, 0, 8, 0), 8, 8),
         eBullet: texture((ctx) => frame(ctx, elements, 0, 0, 8, 1), 8, 8),
         eArrow: texture((ctx) => frame(ctx, elements, 0, 0, 8, 2), 8, 8),

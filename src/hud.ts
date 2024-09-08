@@ -17,21 +17,20 @@ import { renderFontTex } from "./core/font"
 import { keys } from "./core/input"
 import { stats } from "./stat"
 
-let time = 0
 let unloadPhysics: () => void
 let unloadRender: () => void
 
 export const unloadHud = () => {
     unloadPhysics()
     unloadRender()
-    time = 0
 }
 
 const element_offset = 8
 
 export const loadHud = () => {
     unloadPhysics = addPhysicsComp((dt) => {
-        time += dt / 1e3
+        // this may not be the best place to update this
+        stats.time += dt / 1e3
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
@@ -76,7 +75,7 @@ export const loadHud = () => {
         )
 
         // time
-        const abstime = ~~time
+        const abstime = ~~stats.time
         const mins = ~~(abstime / 60)
         const secs = abstime % 60
         renderFontTex(ctx, mins + ":" + secs, ~~(WIDTH / 7) * 6, UI_BAR_Y)

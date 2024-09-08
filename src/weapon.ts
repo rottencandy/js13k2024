@@ -6,11 +6,9 @@ import {
     INIT_BULLET_FIRE_RATE,
     BULLET_AGE,
     LGREEN,
-    INIT_AURA_DAMAGE,
     INIT_AURA_DAMAGE_RATE,
     MAX_AURA_RADIUS,
-    DEBUG,
-    BLACK0,
+    MAX_ORBS_NUM,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { angleToVec, distance, rand, randInt } from "./core/math"
@@ -44,6 +42,13 @@ const auraParticles = {
     y: Array(~~MAX_AURA_RADIUS).fill(0),
     age: Array(~~MAX_AURA_RADIUS).fill(0),
 }
+
+const orbs = {
+    x: Array(MAX_ORBS_NUM).fill(0),
+    y: Array(MAX_ORBS_NUM).fill(0),
+    charge: Array(MAX_ORBS_NUM).fill(0),
+}
+const ORB_CHARGE_TIME = 400
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -114,8 +119,8 @@ export const loadWeapon = () => {
                     auraParticles.age[i] = randInt(0, AURA_PARTICLES_AGE / 2)
                     const angle = rand(0, 2 * Math.PI)
                     const dist = rand(0, stats.auraRadius)
-                    auraParticles.x[i] = ~~(hero.x + Math.sin(angle) * dist)
-                    auraParticles.y[i] = ~~(hero.y + Math.cos(angle) * dist)
+                    auraParticles.x[i] = hero.x + Math.sin(angle) * dist
+                    auraParticles.y[i] = hero.y + Math.cos(angle) * dist
                 }
             }
 
@@ -133,6 +138,32 @@ export const loadWeapon = () => {
                         attackMob(mobid, stats.auraDmg)
                     }
                 })
+            }
+        }
+
+        // spinny orbs
+        if (stats.orbs > 0) {
+            for (let i = 0; i < stats.orbs; i++) {
+                const angle = (i / stats.orbs) * 2 * Math.PI - stats.time * 2.5
+                orbs.x[i] = hero.x + Math.sin(angle) * stats.orbRadius
+                orbs.y[i] = hero.y + Math.cos(angle) * stats.orbRadius
+                orbs.charge[i] += dt
+                if (orbs.charge[i] >= ORB_CHARGE_TIME) {
+                    orbs.charge[i] = 0
+                    iterMobs((_mobx, _moby, mobid) => {
+                        if (
+                            isHittingMob(
+                                mobid,
+                                orbs.x[i] - 4,
+                                orbs.y[i] - 4,
+                                SIZE,
+                                SIZE,
+                            )
+                        ) {
+                            attackMob(mobid, stats.orbsDmg)
+                        }
+                    })
+                }
             }
         }
     })
@@ -165,24 +196,23 @@ export const loadWeapon = () => {
             ctx.fillStyle = LGREEN
             for (let i = 0; i < ~~(stats.auraRadius / 2); i++) {
                 ctx.fillRect(
-                    auraParticles.x[i] - cam.x,
-                    auraParticles.y[i] - cam.y,
+                    ~~(auraParticles.x[i] - cam.x),
+                    ~~(auraParticles.y[i] - cam.y),
                     //- (auraParticles.age[i] * 0.002),
                     1,
                     1,
                 )
             }
-            if (DEBUG) {
-                ctx.strokeStyle = BLACK0
-                ctx.beginPath()
-                ctx.arc(
-                    hero.x - cam.x,
-                    hero.y - cam.y,
-                    stats.auraRadius,
-                    0,
-                    Math.PI * 2,
+        }
+
+        // render orbs
+        if (stats.orbs > 0) {
+            for (let i = 0; i < stats.orbs; i++) {
+                ctx.drawImage(
+                    asset.orb,
+                    ~~(orbs.x[i] - 4 - cam.x),
+                    ~~(orbs.y[i] - 4 - cam.y),
                 )
-                ctx.stroke()
             }
         }
     })

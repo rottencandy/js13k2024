@@ -76,13 +76,15 @@ export const INIT_PICKUP_RADIUS = 30
 export const INC_PICKUP_RADIUS = 10
 export const MAX_PICKUP_RADIUS = 60
 
-export const INIT_ORBS_NUM = 0
-export const INC_ORBS_NUM = 1
-export const MAX_ORBS_NUM = 5
+export const MAX_ORBS_NUM = 7
 
-export const INIT_ORBS_RADIUS = 0
-export const INC_ORBS_RADIUS = 5
-export const MAX_ORBS_RADIUS = 30
+export const INIT_ORBS_RADIUS = 20
+export const INC_ORBS_RADIUS = 1
+export const MAX_ORBS_RADIUS = 50
+
+export const INIT_ORBS_DMG = 0
+export const INC_ORBS_DMG = 5
+export const MAX_ORBS_DMG = 30
 
 export const INIT_SABER_NUM = 0
 export const INC_SABER_NUM = 1
