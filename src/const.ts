@@ -46,12 +46,15 @@ export const INIT_SPAWN_RATE = 1e3
 // gameplay
 export const BULLET_SPEED = 0.2
 export const BULLET_AGE = 3e3
+export const SABER_SPEED = 0.09
+export const SABER_AGE = 3e3
+export const SABER_CHARGE_TIME = 200
 
 export const INIT_BULLET_DMG = 10
 export const MAX_BULLET_DMG = 30
 export const BULLET_DMG_INC = 5
 
-export const INIT_BULLET_FIRE_RATE = 2e3
+export const INIT_BULLET_FIRE_RATE = 5e3
 export const BULLET_FIRE_RATE_DEC = 500
 export const MIN_BULLET_FIRE_RATE = 200
 
@@ -86,10 +89,9 @@ export const INIT_ORBS_DMG = 0
 export const INC_ORBS_DMG = 5
 export const MAX_ORBS_DMG = 30
 
-export const INIT_SABER_NUM = 0
-export const INC_SABER_NUM = 1
-export const MAX_SABER_NUM = 5
-
-export const INIT_SABER_RADIUS = 0
-export const INC_SABER_RADIUS = 5
-export const MAX_SABER_RADIUS = 30
+export const INIT_SABER_DMG = 5
+export const SABER_DMG_INC = 5
+export const SABER_MAX_DMG = 30
+export const INIT_SABER_FIRE_RATE=1e3
+export const DEC_SABER_FIRE_RATE=500
+export const MIN_SABER_FIRE_RATE=500

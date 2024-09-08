@@ -9,6 +9,10 @@ import {
     INIT_AURA_DAMAGE_RATE,
     MAX_AURA_RADIUS,
     MAX_ORBS_NUM,
+    INIT_SABER_FIRE_RATE,
+    SABER_SPEED,
+    SABER_AGE,
+    SABER_CHARGE_TIME,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { angleToVec, distance, rand, randInt } from "./core/math"
@@ -35,6 +39,19 @@ let bulletFreePool: number[] = []
 const SIZE = 8
 const bulletFireRate = ticker(INIT_BULLET_FIRE_RATE)
 const auraDmgRate = ticker(INIT_AURA_DAMAGE_RATE)
+
+const sabers = {
+    x: [] as number[],
+    y: [] as number[],
+    // direction vector(angle)
+    dirx: [] as number[],
+    diry: [] as number[],
+    age: [] as number[],
+    charge: [] as number[],
+    active: [] as boolean[],
+}
+let saberFreePool: number[] = []
+const saberFireRate = ticker(INIT_SABER_FIRE_RATE)
 
 const AURA_PARTICLES_AGE = 1000
 const auraParticles = {
@@ -67,7 +84,18 @@ export const loadWeapon = () => {
     bullets.active = []
     bulletFreePool = []
     bulletFireRate.clear()
+
     auraDmgRate.clear()
+
+    sabers.x = []
+    sabers.y = []
+    sabers.dirx = []
+    sabers.diry = []
+    sabers.age = []
+    sabers.charge = []
+    sabers.active = []
+    saberFreePool = []
+    saberFireRate.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
         // fire bullets
@@ -166,6 +194,68 @@ export const loadWeapon = () => {
                 }
             }
         }
+
+        // lightsabers
+        if (stats.saber) {
+            // fire saber
+            if (saberFireRate.tick(dt)) {
+                const aimedMob = nearestMobPos()
+                if (aimedMob) {
+                    // translate mob pos to hero pos
+                    const xpos = aimedMob.x - hero.x
+                    const ypos = aimedMob.y - hero.y
+                    const dir = Math.atan2(xpos, ypos)
+                    const angle = angleToVec(dir)
+                    if (saberFreePool.length > 0) {
+                        const i = saberFreePool.pop()!
+                        sabers.x[i] = hero.x
+                        sabers.y[i] = hero.y
+                        sabers.dirx[i] = angle.x
+                        sabers.diry[i] = angle.y
+                        sabers.age[i] = 0
+                        sabers.charge[i] = 0
+                        sabers.active[i] = true
+                    } else {
+                        sabers.x.push(hero.x)
+                        sabers.y.push(hero.y)
+                        sabers.dirx.push(angle.x)
+                        sabers.diry.push(angle.y)
+                        sabers.age.push(0)
+                        sabers.charge.push(0)
+                        sabers.active.push(true)
+                    }
+                }
+            }
+            for (let i = 0; i < sabers.x.length; i++) {
+                if (sabers.active[i]) {
+                    sabers.x[i] += sabers.dirx[i] * SABER_SPEED * dt
+                    sabers.y[i] += sabers.diry[i] * SABER_SPEED * dt
+                    sabers.age[i] += dt
+                    sabers.charge[i] += dt
+
+                    if (sabers.age[i] > SABER_AGE) {
+                        sabers.active[i] = false
+                        saberFreePool.push(i)
+                    } else if (sabers.charge[i] >= SABER_CHARGE_TIME) {
+                        sabers.charge[i] = 0
+                        iterMobs((_mobx, _moby, mobid) => {
+                            if (
+                                isHittingMob(
+                                    mobid,
+                                    sabers.x[i],
+                                    sabers.y[i],
+                                    16,
+                                    16,
+                                )
+                            ) {
+                                attackMob(mobid, stats.saberDmg)
+                                return true
+                            }
+                        })
+                    }
+                }
+            }
+        }
     })
 
     unloadRender = addRenderComp((ctx, asset) => {
@@ -213,6 +303,22 @@ export const loadWeapon = () => {
                     ~~(orbs.x[i] - 4 - cam.x),
                     ~~(orbs.y[i] - 4 - cam.y),
                 )
+            }
+        }
+
+        if (stats.saber) {
+            // render sabers
+            for (let i = 0; i < sabers.x.length; i++) {
+                if (sabers.active[i]) {
+                    const x = sabers.x[i] - cam.x
+                    const y = sabers.y[i] - cam.y
+                    ctx.save()
+                    ctx.translate(x + 8, y + 8)
+                    ctx.rotate(stats.time * 20)
+                    ctx.translate(-(x + 8), -(y + 8))
+                    ctx.drawImage(asset.saber, ~~x, ~~y)
+                    ctx.restore()
+                }
             }
         }
     })
@@ -274,4 +380,8 @@ export const updateBulletFireRate = () => {
 
 export const updateAuraDmgRate = () => {
     auraDmgRate.interval(stats.auraDmgRate)
+}
+
+export const updateSaberFireRate = () => {
+    saberFireRate.interval(stats.saberRate)
 }

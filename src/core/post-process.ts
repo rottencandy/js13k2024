@@ -127,7 +127,7 @@ export const setupPostProcess = (
             GL_UNSIGNED_BYTE,
             ctx.canvas,
         )
-        gl.clearColor(0.3, 0.3, 0.3, 1)
+        gl.clearColor(0, 0, 0, 1)
         gl.clear(GL_COLOR_BUFFER_BIT)
         gl.drawArrays(GL_TRIANGLES, 0, 6)
     }
