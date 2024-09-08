@@ -13,6 +13,7 @@ import { loadText, unloadText } from "./text"
 import { loadWeapon, unloadWeapon } from "./weapon"
 
 export const enum Scene {
+    intro,
     title,
     gameplay,
     pause,
@@ -46,6 +47,12 @@ const loadGameEntities = () => {
     loadWeapon()
     loadText()
     loadHud()
+}
+
+export const loadIntro = () => {
+    unloadGameEntities()
+    scene = Scene.intro
+    obsEmit(Observable.scene, scene)
 }
 
 export const loadTitle = () => {

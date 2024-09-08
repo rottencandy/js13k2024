@@ -6,7 +6,7 @@ import { resize } from "./core/canvas"
 import { initInput } from "./core/input"
 import { loop } from "./core/loop"
 import { setupPostProcess } from "./core/post-process"
-import { loadTitle } from "./scene"
+import { loadIntro } from "./scene"
 import { loadSounds } from "./sound"
 import { renderUI, updateUI } from "./ui"
 
@@ -23,7 +23,7 @@ loadSounds()
     if (innerWidth < innerHeight) {
         alert("for best experience use landscape mode.")
     }
-    loadTitle()
+    loadIntro()
     ;(onresize = () => {
         resize(offscreenCanvas, WIDTH, HEIGHT)
         resize(canvas, WIDTH * 4, HEIGHT * 4)

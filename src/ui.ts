@@ -19,7 +19,7 @@ import { ticker } from "./core/interpolation"
 import { clamp, lerp, pointInRect } from "./core/math"
 import { obsListen } from "./core/observer"
 import { Observable } from "./observables"
-import { resumeGame, Scene, startGame } from "./scene"
+import { loadTitle, resumeGame, Scene, startGame } from "./scene"
 import {
     Powerup,
     powerupSprite,
@@ -39,7 +39,9 @@ const selectPowerup = (id: PowerupId) => () => {
 const transition = ticker(UI_TRANSITION_DURATION)
 
 const halfSecond = ticker(500)
-let isHalfSecond = false
+// this ticker is only used once, no need to bother with resetting
+const threeSeconds = ticker(3e3, false)
+let buttonBlink = false
 
 let runTransition = false
 let scene: Scene
@@ -135,9 +137,14 @@ const powerup3btn = btn(
 
 export const updateUI = (dt: number) => {
     if (halfSecond.tick(dt)) {
-        isHalfSecond = !isHalfSecond
+        buttonBlink = !buttonBlink
     }
     switch (scene) {
+        case Scene.intro:
+            if (threeSeconds.tick(dt)) {
+                loadTitle()
+            }
+            break
         case Scene.title:
             startBtn.update()
             break
@@ -194,16 +201,8 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
 
                     // 1 -> 0
                     const lerpval = 1 - norm
-                    ctx.fillStyle = BLACK0
-                    ctx.beginPath()
-                    ctx.arc(
-                        WIDTH / 2,
-                        HEIGHT / 2,
-                        lerp(0, WIDTH, lerpval),
-                        0,
-                        Math.PI * 2,
-                    )
-                    ctx.fill()
+                    ctx.fillStyle = "#000"
+                    ctx.fillRect(0, 0, WIDTH, lerp(0, HEIGHT, lerpval))
                 }
                 break
 
@@ -224,6 +223,15 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
         }
     }
     switch (scene) {
+        case Scene.intro:
+            ctx.fillStyle = WHITE
+            renderFontTex(
+                ctx,
+                "TITLE VERSION 1.0.0\nA JS13K 2024 GAME\n\nLOADING...",
+                20,
+                20,
+            )
+            break
         case Scene.title:
             ctx.fillStyle = BLACK0
             startBtn.render(ctx)
@@ -235,7 +243,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 ~~(WIDTH / 3),
                 ~~(HEIGHT / 3),
             )
-            if (isHalfSecond) {
+            if (buttonBlink) {
                 renderFont(
                     ctx,
                     "START",
@@ -256,7 +264,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.fillStyle = WHITE
             renderFont(
                 ctx,
-                "SELECT POWERUP",
+                "SELECT UPGRADE",
                 MENU_FONT_SIZE,
                 ~~(WIDTH / 7),
                 ~~(HEIGHT / 7),
@@ -348,7 +356,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.drawImage(
                 assets.eArrow,
                 ~~(WIDTH / 7) * (hoveredPowerup * 2 + 1) + 6,
-                powerup1btn.y + 48 + (isHalfSecond ? 2 : 0),
+                powerup1btn.y + 48 + (buttonBlink ? 2 : 0),
                 BTN_SIZE / 2,
                 BTN_SIZE / 2,
             )

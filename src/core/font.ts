@@ -286,24 +286,31 @@ const letters: Record<string, number[][]> = {
     ],
     '%':[
         [1, 0, 0, 0, 1],
-        [0, 0, 0, 1, 0],
-        [0, 0, 1, 0, 0],
-        [0, 1, 0, 0, 0],
+        [0, 0, 0, 1],
+        [0, 0, 1],
+        [0, 1],
         [1, 0, 0, 0, 1],
+    ],
+    '/':[
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 1],
+        [0, 0, 1],
+        [0, 1],
+        [1],
     ],
     'x':[
         [],
         [],
         [1, 0, 1],
-        [0, 1, 0],
+        [0, 1],
         [1, 0, 1],
     ],
     '+':[
         [],
         [],
-        [0, 1, 0],
+        [0, 1],
         [1, 1, 1],
-        [0, 1, 0],
+        [0, 1],
     ],
     ':':[
         [],
@@ -364,7 +371,7 @@ for (const letter in letters) {
 /**
  * This is faster as it uses cached bitmap fonts generated at init time
  * But has a fixed font size.
- * WARNING: ONLY ALPHANUMERIC, '. -_%:+x' ALLOWED!!
+ * WARNING: ONLY ALPHANUMERIC, '. -_%/:+x' ALLOWED!!
  * this will not check if string contains invalid chars.
  */
 export const renderFontTex = (
@@ -374,9 +381,17 @@ export const renderFontTex = (
     y: number,
 ) => {
     let currX = x
+    let currY = y
     for (let i = 0; i < str.length; i++) {
-        const font = letterCache[str[i]]
-        ctx.drawImage(font.i, ~~currX, ~~y)
-        currX += font.w + FONT_SIZE
+        const chr = str[i]
+        if (chr === "\n") {
+            // height is always 5
+            currY += FONT_SIZE * 5 + 1
+            currX = x
+        } else {
+            const font = letterCache[chr]
+            ctx.drawImage(font.i, ~~currX, ~~currY)
+            currX += font.w + FONT_SIZE
+        }
     }
 }
