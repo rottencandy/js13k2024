@@ -1,11 +1,27 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { BULLET_SPEED, INIT_BULLET_FIRE_RATE, BULLET_AGE } from "./const"
+import {
+    BULLET_SPEED,
+    INIT_BULLET_FIRE_RATE,
+    BULLET_AGE,
+    LGREEN,
+    INIT_AURA_DAMAGE,
+    INIT_AURA_DAMAGE_RATE,
+    MAX_AURA_RADIUS,
+    DEBUG,
+    BLACK0,
+} from "./const"
 import { ticker } from "./core/interpolation"
-import { angleToVec } from "./core/math"
+import { angleToVec, distance, rand, randInt } from "./core/math"
 import { hero } from "./hero"
-import { attackMob, isHittingMob, iterMobs, nearestMobPos } from "./mob"
+import {
+    attackMob,
+    isHittingMob,
+    iterMobs,
+    MOB_SIZE,
+    nearestMobPos,
+} from "./mob"
 import { stats } from "./stat"
 
 const bullets = {
@@ -17,9 +33,17 @@ const bullets = {
     age: [] as number[],
     active: [] as boolean[],
 }
-let freePool: number[] = []
+let bulletFreePool: number[] = []
 const SIZE = 8
 const bulletFireRate = ticker(INIT_BULLET_FIRE_RATE)
+const auraDmgRate = ticker(INIT_AURA_DAMAGE_RATE)
+
+const AURA_PARTICLES_AGE = 1000
+const auraParticles = {
+    x: Array(~~MAX_AURA_RADIUS).fill(0),
+    y: Array(~~MAX_AURA_RADIUS).fill(0),
+    age: Array(~~MAX_AURA_RADIUS).fill(0),
+}
 
 let unloadPhysics: () => void
 let unloadRender: () => void
@@ -36,8 +60,9 @@ export const loadWeapon = () => {
     bullets.diry = []
     bullets.age = []
     bullets.active = []
-    freePool = []
+    bulletFreePool = []
     bulletFireRate.clear()
+    auraDmgRate.clear()
 
     unloadPhysics = addPhysicsComp((dt) => {
         // fire bullets
@@ -80,9 +105,40 @@ export const loadWeapon = () => {
                 }
             })
         })
+
+        if (stats.auraRadius > 0) {
+            // aura particles
+            for (let i = 0; i < ~~(stats.auraRadius / 2); i++) {
+                const age = (auraParticles.age[i] += dt)
+                if (age >= AURA_PARTICLES_AGE) {
+                    auraParticles.age[i] = randInt(0, AURA_PARTICLES_AGE / 2)
+                    const angle = rand(0, 2 * Math.PI)
+                    const dist = rand(0, stats.auraRadius)
+                    auraParticles.x[i] = ~~(hero.x + Math.sin(angle) * dist)
+                    auraParticles.y[i] = ~~(hero.y + Math.cos(angle) * dist)
+                }
+            }
+
+            // aura damage
+            if (auraDmgRate.tick(dt)) {
+                iterMobs((mobx, moby, mobid) => {
+                    if (
+                        distance(
+                            hero.x,
+                            hero.y,
+                            mobx + MOB_SIZE / 2,
+                            moby + MOB_SIZE / 2,
+                        ) < stats.auraRadius
+                    ) {
+                        attackMob(mobid, stats.auraDmg)
+                    }
+                })
+            }
+        }
     })
 
     unloadRender = addRenderComp((ctx, asset) => {
+        // render bullets
         iterBullets((x, y, _dirx, _diry, _id) => {
             ctx.drawImage(
                 asset.bullet,
@@ -92,13 +148,50 @@ export const loadWeapon = () => {
                 SIZE,
             )
         })
+        // render aura
+        if (stats.auraRadius > 0) {
+            ctx.fillStyle = LGREEN + "33"
+            ctx.beginPath()
+            ctx.arc(
+                hero.x - cam.x,
+                hero.y - cam.y,
+                stats.auraRadius,
+                0,
+                Math.PI * 2,
+            )
+            ctx.fill()
+
+            // particles
+            ctx.fillStyle = LGREEN
+            for (let i = 0; i < ~~(stats.auraRadius / 2); i++) {
+                ctx.fillRect(
+                    auraParticles.x[i] - cam.x,
+                    auraParticles.y[i] - cam.y,
+                    //- (auraParticles.age[i] * 0.002),
+                    1,
+                    1,
+                )
+            }
+            if (DEBUG) {
+                ctx.strokeStyle = BLACK0
+                ctx.beginPath()
+                ctx.arc(
+                    hero.x - cam.x,
+                    hero.y - cam.y,
+                    stats.auraRadius,
+                    0,
+                    Math.PI * 2,
+                )
+                ctx.stroke()
+            }
+        }
     })
 }
 
 export const fireBullet = (x: number, y: number, dir: number) => {
     const angle = angleToVec(dir)
-    if (freePool.length > 0) {
-        const i = freePool.pop()!
+    if (bulletFreePool.length > 0) {
+        const i = bulletFreePool.pop()!
         bullets.x[i] = x
         bullets.y[i] = y
         bullets.dirx[i] = angle.x
@@ -117,7 +210,7 @@ export const fireBullet = (x: number, y: number, dir: number) => {
 
 const removeBullet = (i: number) => {
     bullets.active[i] = false
-    freePool.push(i)
+    bulletFreePool.push(i)
 }
 
 const iterBullets = (
@@ -147,4 +240,8 @@ const iterBullets = (
 
 export const updateBulletFireRate = () => {
     bulletFireRate.interval(stats.bulletRate)
+}
+
+export const updateAuraDmgRate = () => {
+    auraDmgRate.interval(stats.auraDmgRate)
 }

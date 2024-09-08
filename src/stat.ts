@@ -15,10 +15,18 @@ import {
     HEAL_AMT,
     INC_HEALTH_CAP,
     MAX_HEALTH_CAP,
+    INC_AURA_RADIUS,
+    INIT_AURA_DAMAGE,
+    INC_AURA_DAMAGE,
+    MAX_AURA_RADIUS,
+    MAX_AURA_DAMAGE,
+    INIT_AURA_DAMAGE_RATE,
+    DEC_AURA_DAMAGE_RATE,
+    MIN_AURA_DAMAGE_RATE,
 } from "./const"
 import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
-import { updateBulletFireRate } from "./weapon"
+import { updateAuraDmgRate, updateBulletFireRate } from "./weapon"
 
 export const enum Powerup {
     bulletDamage,
@@ -30,9 +38,7 @@ export const enum Powerup {
 
     auraRadius,
     auraDamage,
-
-    bombFireRate,
-    bombDamage,
+    auraDamageRate,
 
     lightsaberSize,
     lightsaberDamage,
@@ -52,10 +58,10 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
             return assets.eBullet
         case Powerup.maxHealth:
             return assets.eHeart
-        case Powerup.bombFireRate:
-        case Powerup.bombDamage:
         case Powerup.auraRadius:
         case Powerup.auraDamage:
+        case Powerup.auraDamageRate:
+            return assets.ePlasma
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
         case Powerup.movementSpeed:
@@ -80,12 +86,14 @@ export const powerupText = (powerup: Powerup) => {
             return "+FIRE RATE"
         case Powerup.maxHealth:
             return "+MAX HEALTH"
+        case Powerup.auraRadius:
+            return stats.auraRadius > 0 ? "+SIZE" : "PLASMA FIELD"
+        case Powerup.auraDamage:
+            return "+DAMAGE"
+        case Powerup.auraDamageRate:
+            return "+DAMAGE RATE"
         case Powerup.movementSpeed:
         case Powerup.regeneration:
-        case Powerup.bombFireRate:
-        case Powerup.bombDamage:
-        case Powerup.auraRadius:
-        case Powerup.auraDamage:
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
 
@@ -110,6 +118,17 @@ export const usePowerup = (power: Powerup) => {
             break
         case Powerup.maxHealth:
             stats.maxHealth += INC_HEALTH_CAP
+            break
+        case Powerup.auraRadius:
+            stats.auraRadius += INC_AURA_RADIUS
+            break
+        case Powerup.auraDamage:
+            stats.auraDmg += INC_AURA_DAMAGE
+            break
+        case Powerup.auraDamageRate:
+            stats.auraDmgRate -= DEC_AURA_DAMAGE_RATE
+            updateAuraDmgRate()
+            break
 
         case Powerup.heal:
             stats.health = clamp(stats.health + HEAL_AMT, 0, stats.maxHealth)
@@ -123,6 +142,9 @@ export const randomPowerup = () => {
             Powerup.bulletDamage,
             Powerup.bulletFireRate,
             Powerup.maxHealth,
+            Powerup.auraRadius,
+            Powerup.auraDamage,
+            Powerup.auraDamageRate,
 
             Powerup.heal,
         ].filter(unlockable),
@@ -137,10 +159,14 @@ const unlockable = (powerup: Powerup) => {
             return stats.bulletRate > MIN_BULLET_FIRE_RATE
         case Powerup.maxHealth:
             return stats.maxHealth < MAX_HEALTH_CAP
-        case Powerup.bombFireRate:
-        case Powerup.bombDamage:
         case Powerup.auraRadius:
+            return stats.auraRadius < MAX_AURA_RADIUS
         case Powerup.auraDamage:
+            return stats.auraRadius > 0 && stats.auraDmg < MAX_AURA_DAMAGE
+        case Powerup.auraDamageRate:
+            return (
+                stats.auraRadius > 0 && stats.auraDmgRate > MIN_AURA_DAMAGE_RATE
+            )
         case Powerup.lightsaberSize:
         case Powerup.lightsaberDamage:
         case Powerup.movementSpeed:
@@ -167,6 +193,10 @@ export const stats = {
     bulletDmg: 0,
     bulletRate: 0,
 
+    auraRadius: 0,
+    auraDmg: 0,
+    auraDmgRate: 0,
+
     pickupRadius: 0,
 }
 
@@ -179,6 +209,11 @@ export const resetStats = () => {
 
     stats.bulletDmg = INIT_BULLET_DMG
     stats.bulletRate = INIT_BULLET_FIRE_RATE
+
+    stats.auraRadius = 0
+    stats.auraDmg = INIT_AURA_DAMAGE
+    stats.auraDmgRate = INIT_AURA_DAMAGE_RATE
+
     stats.pickupRadius = INIT_PICKUP_RADIUS
 }
 

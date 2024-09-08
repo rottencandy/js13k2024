@@ -9,6 +9,7 @@ import {
     VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
     WIDTH,
+    RED,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb } from "./core/math"
@@ -112,7 +113,10 @@ export const loadHero = () => {
         )
 
         if (DEBUG) {
-            // draw collision radius
+            // center
+            ctx.strokeStyle = RED
+            ctx.strokeRect(hero.x - cam.x, hero.y - cam.y, 1, 1)
+            // collision radius
             ctx.strokeStyle = BLACK0
             ctx.strokeRect(
                 hero.x - center - cam.x,
@@ -120,14 +124,14 @@ export const loadHero = () => {
                 SIZE,
                 SIZE,
             )
-            // draw rect used for checking hero proximity(for collisions)
+            // rect used for checking hero proximity(for collisions)
             ctx.strokeRect(
                 hero.x - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.x,
                 hero.y - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.y,
                 HERO_MOB_COLLISION_PROXIMITY,
                 HERO_MOB_COLLISION_PROXIMITY,
             )
-            // draw pickup radius
+            // pickup radius
             ctx.beginPath()
             ctx.arc(
                 hero.x - cam.x,

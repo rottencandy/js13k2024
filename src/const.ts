@@ -21,6 +21,7 @@ export const WHITE = "#f2f0e5"
 export const RED = "#b45252"
 export const BLUE = "#4b80ca"
 export const GREEN = "#7b7243"
+export const LGREEN = "#a2dcc7"
 export const DGREEN = "#567b79"
 export const DDGREEN = "#4e584a"
 
@@ -53,6 +54,15 @@ export const BULLET_DMG_INC = 5
 export const INIT_BULLET_FIRE_RATE = 2e3
 export const BULLET_FIRE_RATE_DEC = 500
 export const MIN_BULLET_FIRE_RATE = 200
+
+export const INC_AURA_RADIUS = 10
+export const MAX_AURA_RADIUS = 90
+export const INIT_AURA_DAMAGE = 5
+export const INC_AURA_DAMAGE = 5
+export const MAX_AURA_DAMAGE = 20
+export const INIT_AURA_DAMAGE_RATE = 1e3
+export const DEC_AURA_DAMAGE_RATE = 100
+export const MIN_AURA_DAMAGE_RATE = 500
 
 export const INIT_HERO_SPEED = 0.25
 export const INC_HERO_SPEED = 0.5

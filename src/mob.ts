@@ -10,6 +10,7 @@ import {
     MOB_HEALTH,
     MOB_MAX_COLLISION_SNAP_DIST,
     MOB_SPEED,
+    RED,
     SPAWN_RADIUS,
     SPRITE_ANIM_RATE_MS,
 } from "./const"
@@ -42,7 +43,7 @@ const E = {
 // stores ids of free entities
 let freePool: number[] = []
 
-const SIZE = 16
+export const MOB_SIZE = 16
 
 const spawnTimer = ticker(INIT_SPAWN_RATE)
 const frames = [0, 1, 2, 1]
@@ -79,11 +80,11 @@ export const loadMob = () => {
         // todo optimize out offscreen mobs?
         iterMobs((x, y, id) => {
             // check proximity to hero
-            E.near[id] = isNearHero(x, y, SIZE, SIZE)
+            E.near[id] = isNearHero(x, y, MOB_SIZE, MOB_SIZE)
 
             // check hero collision
             // todo: possible optimization: skip detection if hero is invulnerable
-            if (E.near[id] && isHittingHero(x, y, SIZE, SIZE)) {
+            if (E.near[id] && isHittingHero(x, y, MOB_SIZE, MOB_SIZE)) {
                 hitHero(MOB_ATTACK)
             } else {
                 // move towards hero
@@ -118,14 +119,14 @@ export const loadMob = () => {
                     continue
                 }
                 if (
-                    aabb(E.x[i], E.y[i], SIZE, SIZE, E.x[j], E.y[j], SIZE, SIZE)
+                    aabb(E.x[i], E.y[i], MOB_SIZE, MOB_SIZE, E.x[j], E.y[j], MOB_SIZE, MOB_SIZE)
                 ) {
                     const xOffset = Math.max(
-                        E.x[i] + SIZE - E.x[j],
+                        E.x[i] + MOB_SIZE - E.x[j],
                         MOB_MAX_COLLISION_SNAP_DIST,
                     )
                     const yOffset = Math.max(
-                        E.y[i] + SIZE - E.y[j],
+                        E.y[i] + MOB_SIZE - E.y[j],
                         MOB_MAX_COLLISION_SNAP_DIST,
                     )
                     if (xOffset > yOffset) {
@@ -152,11 +153,13 @@ export const loadMob = () => {
                         ? assets.mob2
                         : assets.mob3
             const frame = asset[frames[currentFrame] + dirOffset]
-            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), SIZE, SIZE)
+            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y), MOB_SIZE, MOB_SIZE)
             // draw collision rect
             if (DEBUG) {
                 ctx.strokeStyle = BLACK0
-                ctx.strokeRect(x - cam.x, y - cam.y, SIZE, SIZE)
+                ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
+                ctx.strokeStyle=RED
+                ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
             }
             return false
         })
@@ -255,7 +258,7 @@ export const isHittingMob = (
     w: number,
     h: number,
 ) => {
-    return aabb(x, y, w, h, E.x[id], E.y[id], SIZE, SIZE)
+    return aabb(x, y, w, h, E.x[id], E.y[id], MOB_SIZE, MOB_SIZE)
 }
 
 /**
