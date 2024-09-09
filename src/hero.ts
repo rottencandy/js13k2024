@@ -2,14 +2,11 @@ import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
-    BLACK0,
-    DEBUG,
     HEIGHT,
     HERO_MOB_COLLISION_PROXIMITY,
     VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
     WIDTH,
-    RED,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb } from "./core/math"
@@ -112,36 +109,36 @@ export const loadHero = () => {
             ~~(hero.y - center - cam.y),
         )
 
-        if (DEBUG) {
-            // center
-            ctx.strokeStyle = RED
-            ctx.strokeRect(hero.x - cam.x, hero.y - cam.y, 1, 1)
-            // collision radius
-            ctx.strokeStyle = BLACK0
-            ctx.strokeRect(
-                hero.x - center - cam.x,
-                hero.y - center - cam.y,
-                SIZE,
-                SIZE,
-            )
-            // rect used for checking hero proximity(for collisions)
-            ctx.strokeRect(
-                hero.x - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.x,
-                hero.y - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.y,
-                HERO_MOB_COLLISION_PROXIMITY,
-                HERO_MOB_COLLISION_PROXIMITY,
-            )
-            // pickup radius
-            ctx.beginPath()
-            ctx.arc(
-                hero.x - cam.x,
-                hero.y - cam.y,
-                stats.pickupRadius,
-                0,
-                Math.PI * 2,
-            )
-            ctx.stroke()
-        }
+        //if (DEBUG) {
+        //    // center
+        //    ctx.strokeStyle = RED
+        //    ctx.strokeRect(hero.x - cam.x, hero.y - cam.y, 1, 1)
+        //    // collision radius
+        //    ctx.strokeStyle = BLACK0
+        //    ctx.strokeRect(
+        //        hero.x - center - cam.x,
+        //        hero.y - center - cam.y,
+        //        SIZE,
+        //        SIZE,
+        //    )
+        //    // rect used for checking hero proximity(for collisions)
+        //    ctx.strokeRect(
+        //        hero.x - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.x,
+        //        hero.y - HERO_MOB_COLLISION_PROXIMITY / 2 - cam.y,
+        //        HERO_MOB_COLLISION_PROXIMITY,
+        //        HERO_MOB_COLLISION_PROXIMITY,
+        //    )
+        //    // pickup radius
+        //    ctx.beginPath()
+        //    ctx.arc(
+        //        hero.x - cam.x,
+        //        hero.y - cam.y,
+        //        stats.pickupRadius,
+        //        0,
+        //        Math.PI * 2,
+        //    )
+        //    ctx.stroke()
+        //}
     })
 }
 

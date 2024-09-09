@@ -21,7 +21,7 @@ loadSounds()
     const assets = await loadAssets()
     // display note if device is in portrait
     if (innerWidth < innerHeight) {
-        alert("for best experience use landscape mode.")
+        alert("for best experience use landscape mode")
     }
     loadIntro()
     ;(onresize = () => {

@@ -1,11 +1,8 @@
 import { Assets } from "./asset"
 import {
     BLACK0,
-    BLACK1,
     DDGREEN,
-    DEBUG,
     DGREEN,
-    GREY,
     HEIGHT,
     MENU_FONT_SIZE,
     UI_TRANSITION_DURATION,
@@ -96,9 +93,9 @@ const btn = (
         },
         click: onClick,
         render: (ctx: CTX) => {
-            if (DEBUG && obj.hovered) {
-                ctx.fillStyle = BLACK1
-            }
+            //if (DEBUG && obj.hovered) {
+            //    ctx.fillStyle = BLACK1
+            //}
             ctx.fillRect(x, y, w, h)
         },
     }
@@ -270,14 +267,14 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 ~~(HEIGHT / 7),
             )
 
-            if (DEBUG) {
-                ctx.fillStyle = GREY
-                powerup1btn.render(ctx)
-                ctx.fillStyle = GREY
-                powerup2btn.render(ctx)
-                ctx.fillStyle = GREY
-                powerup3btn.render(ctx)
-            }
+            //if (DEBUG) {
+            //    ctx.fillStyle = GREY
+            //    powerup1btn.render(ctx)
+            //    ctx.fillStyle = GREY
+            //    powerup2btn.render(ctx)
+            //    ctx.fillStyle = GREY
+            //    powerup3btn.render(ctx)
+            //}
 
             // icons
             ctx.imageSmoothingEnabled = false

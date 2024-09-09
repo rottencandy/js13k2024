@@ -5,7 +5,6 @@ import {
     GL_COLOR_BUFFER_BIT,
     GL_FLOAT,
     GL_FRAGMENT_SHADER,
-    GL_LINK_STATUS,
     GL_NEAREST,
     GL_ONE_MINUS_SRC_ALPHA,
     GL_RGBA,
@@ -89,11 +88,11 @@ export const setupPostProcess = (
     gl.attachShader(prg, vert)
     gl.attachShader(prg, frag)
     gl.linkProgram(prg)
-    if (!gl.getProgramParameter(prg, GL_LINK_STATUS)) {
-        console.error("Failed: " + gl.getProgramInfoLog(prg))
-        console.error("Vert: " + gl.getShaderInfoLog(vert))
-        console.error("Frag: " + gl.getShaderInfoLog(frag))
-    }
+    //if (!gl.getProgramParameter(prg, GL_LINK_STATUS)) {
+    //    console.error("Failed: " + gl.getProgramInfoLog(prg))
+    //    console.error("Vert: " + gl.getShaderInfoLog(vert))
+    //    console.error("Frag: " + gl.getShaderInfoLog(frag))
+    //}
     gl.useProgram(prg)
 
     gl.bindVertexArray(vao)

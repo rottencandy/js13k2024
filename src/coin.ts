@@ -1,7 +1,7 @@
 import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
-import { BLACK0, COIN_PICKUP_SPEED, DEBUG } from "./const"
+import { COIN_PICKUP_SPEED } from "./const"
 import { distance, limitMagnitude } from "./core/math"
 import { hero, isHittingHero } from "./hero"
 import { increaseXp, stats } from "./stat"
@@ -62,15 +62,15 @@ export const loadCoin = () => {
                 ~~(x - center - cam.x),
                 ~~(y - center - cam.y),
             )
-            if (DEBUG) {
-                ctx.strokeStyle = BLACK0
-                ctx.strokeRect(
-                    x - center - cam.x,
-                    y - center - cam.y,
-                    SIZE,
-                    SIZE,
-                )
-            }
+            //if (DEBUG) {
+            //    ctx.strokeStyle = BLACK0
+            //    ctx.strokeRect(
+            //        x - center - cam.x,
+            //        y - center - cam.y,
+            //        SIZE,
+            //        SIZE,
+            //    )
+            //}
         })
     })
 }

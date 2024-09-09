@@ -4,7 +4,6 @@ import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
     BLACK0,
-    DEBUG,
     MOB0_ATTACK,
     MOB0_HEALTH,
     MOB_MAX_COLLISION_SNAP_DIST,
@@ -223,28 +222,28 @@ export const loadMob = () => {
                 MOB_SIZE,
             )
             // draw collision rect
-            if (DEBUG) {
-                ctx.strokeStyle = BLACK0
-                ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
-                ctx.strokeStyle = RED
-                ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
-            }
+            //if (DEBUG) {
+            //    ctx.strokeStyle = BLACK0
+            //    ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
+            //    ctx.strokeStyle = RED
+            //    ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
+            //}
             return false
         })
 
         // draw spawn circle
-        if (DEBUG) {
-            ctx.strokeStyle = BLACK0
-            ctx.beginPath()
-            ctx.arc(
-                hero.x - cam.x,
-                hero.y - cam.y,
-                SPAWN_RADIUS,
-                0,
-                Math.PI * 2,
-            )
-            ctx.stroke()
-        }
+        //if (DEBUG) {
+        //    ctx.strokeStyle = BLACK0
+        //    ctx.beginPath()
+        //    ctx.arc(
+        //        hero.x - cam.x,
+        //        hero.y - cam.y,
+        //        SPAWN_RADIUS,
+        //        0,
+        //        Math.PI * 2,
+        //    )
+        //    ctx.stroke()
+        //}
     })
 }
 
