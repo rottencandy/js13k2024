@@ -1,10 +1,10 @@
 {
-  "name": "untitled-game-lib",
-  "version": "0.0.1",
+  "name": "untitled-game",
+  "version": "1.0.0",
   "main": "index.js",
   "author": "saud <mdsaud@pm.me>",
   "type": "module",
-  "license": "MIT",
+  "license": "GPLv3",
   "scripts": {
     "inline": "node scripts/inline.js",
     "build": "node scripts/build.js",

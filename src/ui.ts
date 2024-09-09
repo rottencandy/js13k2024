@@ -1,6 +1,7 @@
 import { Assets } from "./asset"
 import {
     BLACK0,
+    BLACK1,
     DDGREEN,
     DGREEN,
     HEIGHT,
@@ -22,6 +23,7 @@ import {
     powerupSprite,
     powerupText,
     randomPowerup,
+    stats,
     usePowerup,
 } from "./stat"
 
@@ -37,7 +39,7 @@ const transition = ticker(UI_TRANSITION_DURATION)
 
 const halfSecond = ticker(500)
 // this ticker is only used once, no need to bother with resetting
-const threeSeconds = ticker(3e3, false)
+const introTime = ticker(4e3, false)
 let buttonBlink = false
 
 let runTransition = false
@@ -92,20 +94,20 @@ const btn = (
             }
         },
         click: onClick,
-        render: (ctx: CTX) => {
-            //if (DEBUG && obj.hovered) {
-            //    ctx.fillStyle = BLACK1
-            //}
-            ctx.fillRect(x, y, w, h)
-        },
+        //render: (ctx: CTX) => {
+        //    //if (DEBUG && obj.hovered) {
+        //    //    ctx.fillStyle = BLACK1
+        //    //}
+        //    ctx.fillRect(x, y, w, h)
+        //},
     }
     return obj
 }
 
 const BTN_SIZE = 32
 const startBtn = btn(
-    ~~(WIDTH / 3) - 10,
-    ~~(HEIGHT / 3) * 2 - 10,
+    ~~(WIDTH / 3) + 20,
+    ~~(HEIGHT / 3) * 2,
     MENU_FONT_SIZE * 4 * 6,
     BTN_SIZE,
     startGame,
@@ -138,7 +140,7 @@ export const updateUI = (dt: number) => {
     }
     switch (scene) {
         case Scene.intro:
-            if (threeSeconds.tick(dt)) {
+            if (introTime.tick(dt)) {
                 loadTitle()
             }
             break
@@ -175,9 +177,7 @@ export const updateUI = (dt: number) => {
             }
             break
         case Scene.gameover:
-            if (keys.btnp.clk) {
-                startGame()
-            }
+            startBtn.update()
             break
     }
     if (runTransition && transition.tick(dt)) {
@@ -191,7 +191,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
         const norm = transition.ticks / UI_TRANSITION_DURATION
         switch (scene) {
             case Scene.gameplay:
-                if (prevScene === Scene.title) {
+                if (prevScene === Scene.title || prevScene === Scene.gameover) {
                     // 0 -> 1 -> 0
                     //const norm2 = norm * 2
                     //const lerpval = norm2 < 1 ? norm2 : 2 - norm2
@@ -224,15 +224,24 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.fillStyle = WHITE
             renderFontTex(
                 ctx,
-                "TITLE VERSION 1.0.0\nA JS13K 2024 GAME\n\nLOADING...",
+                "TITLE VERSION 1.0.0\nA JS13K 2024 GAME\nMADE BY SAUD WWW.SAUD.WTF\n\nLOADING...",
                 20,
                 20,
             )
             break
+
         case Scene.title:
             ctx.fillStyle = BLACK0
-            startBtn.render(ctx)
-            ctx.fillStyle = "pink"
+            //startBtn.render(ctx)
+            ctx.fillStyle = BLACK1
+            renderFont(
+                ctx,
+                "TITLE",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 3) + 2,
+                ~~(HEIGHT / 3) + 2,
+            )
+            ctx.fillStyle = WHITE
             renderFont(
                 ctx,
                 "TITLE",
@@ -245,11 +254,13 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                     ctx,
                     "START",
                     MENU_FONT_SIZE,
-                    ~~(WIDTH / 3),
-                    ~~(HEIGHT / 3) * 2,
+                    startBtn.x + 10,
+                    startBtn.y + 10,
                 )
             }
+            renderFontTex(ctx, "BY SAUD", WIDTH / 2, HEIGHT - 10)
             break
+
         case Scene.powerup:
             // bg
             ctx.fillStyle = BLACK0 + "77"
@@ -363,14 +374,34 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             break
 
         case Scene.gameover:
-            ctx.fillStyle = "pink"
+            ctx.fillStyle = WHITE
             renderFont(
                 ctx,
-                "GAME OVER",
+                "GAME OVER!",
                 MENU_FONT_SIZE,
                 ~~(WIDTH / 3),
-                ~~(HEIGHT / 3),
+                ~~(HEIGHT / 5),
             )
+
+            // time
+            const abstime = ~~stats.time
+            const mins = ~~(abstime / 60)
+            const secs = abstime % 60
+            renderFontTex(
+                ctx,
+                "TIME: " + mins + ":" + secs,
+                ~~(WIDTH / 2) - 20,
+                HEIGHT / 5 + 40,
+            )
+            renderFontTex(
+                ctx,
+                "SCORE: " + stats.score,
+                ~~(WIDTH / 2) - 20,
+                HEIGHT / 5 + 50,
+            )
+            if (buttonBlink) {
+                renderFontTex(ctx, "RESTART", startBtn.x + 10, startBtn.y + 10)
+            }
             break
     }
 }

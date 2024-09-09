@@ -108,11 +108,11 @@ export const powerupText = (powerup: Powerup) => {
         case Powerup.bulletDamage:
             return "++DMG"
         case Powerup.bulletFireRate:
-            return "++SHOOT SPEED"
+            return "SHOOT FASTER"
         case Powerup.maxHealth:
             return "++MAX HEALTH"
         case Powerup.auraRadius:
-            return stats.auraRadius > 0 ? "++SIZE" : "PLASMA FIELD"
+            return stats.auraRadius > 0 ? "++PLASMA SIZE" : "PLASMA FIELD"
         case Powerup.auraDamage:
             return "++DMG"
         case Powerup.auraDamageRate:
@@ -124,13 +124,13 @@ export const powerupText = (powerup: Powerup) => {
         case Powerup.orbDamage:
             return "++DMG"
         case Powerup.movementSpeed:
-            return "+ MOVE SPEED"
+            return "MOVE FASTER"
         case Powerup.lightsaberFireRate:
-            return stats.saber ? "++THROW SPEED" : "LIGHTSABER"
+            return stats.saber ? "FASTER THROWS" : "LIGHTSABER"
         case Powerup.lightsaberDamage:
             return "++DMG"
         case Powerup.magnet:
-            return "++PICKUP"
+            return "++PICKUP DIST"
         case Powerup.heal:
             return "HEAL"
     }
@@ -252,6 +252,7 @@ const isAvailable = (powerup: Powerup) => {
 
 export const stats = {
     /** Time passed since game session start, in seconds */
+    score: 0,
     time: 0,
     health: 0,
     maxHealth: 0,
@@ -279,6 +280,7 @@ export const stats = {
 }
 
 export const resetStats = () => {
+    stats.score = 0
     stats.time = 0
     stats.health = INIT_HEALTH_CAP
     stats.maxHealth = INIT_HEALTH_CAP

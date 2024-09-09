@@ -3,12 +3,10 @@ import { dropCoin } from "./coin"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
-    BLACK0,
     MOB0_ATTACK,
     MOB0_HEALTH,
     MOB_MAX_COLLISION_SNAP_DIST,
     MOB0_SPEED,
-    RED,
     SPAWN_RADIUS,
     SPRITE_ANIM_RATE_MS,
     MOB1_HEALTH,
@@ -283,6 +281,7 @@ export const attackMob = (id: number, dmg: number) => {
         E.active[id] = false
         freePool.push(id)
         dropCoin(E.x[id], E.y[id])
+        stats.score += 1
     }
 }
 
