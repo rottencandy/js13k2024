@@ -2,12 +2,12 @@ import { htmlPlugin } from "@craftamap/esbuild-plugin-html"
 import esbuild from "esbuild"
 
 const ctx = await esbuild.context({
-    entryPoints: ["src/main.ts", "src/app.css"],
-    bundle: true,
+    entryPoints: ["app/main.js", "app/app.css"],
+    bundle: false,
     metafile: true,
     charset: "utf8",
     format: "iife",
-    outdir: "app",
+    outdir: "inline",
     loader: { ".png": "dataurl" },
     assetNames: "[name]",
     plugins: [
@@ -15,8 +15,12 @@ const ctx = await esbuild.context({
             files: [
                 {
                     filename: "index.html",
-                    entryPoints: ["src/main.ts", "src/app.css"],
+                    entryPoints: ["app/main.js", "app/app.css"],
                     title: "ENGINE",
+                    inline: {
+                        js: true,
+                        css: true,
+                    },
                     htmlTemplate: "src/index.html",
                 },
             ],

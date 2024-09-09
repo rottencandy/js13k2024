@@ -106,31 +106,31 @@ export const powerupSprite = (powerup: Powerup, assets: Assets) => {
 export const powerupText = (powerup: Powerup) => {
     switch (powerup) {
         case Powerup.bulletDamage:
-            return "MORE DMG"
+            return "++DMG"
         case Powerup.bulletFireRate:
-            return "FASTER FIRE"
+            return "++SHOOT SPEED"
         case Powerup.maxHealth:
-            return "INCR MAX HEALTH"
+            return "++MAX HEALTH"
         case Powerup.auraRadius:
-            return stats.auraRadius > 0 ? "LARGER SIZE" : "PLASMA FIELD"
+            return stats.auraRadius > 0 ? "++SIZE" : "PLASMA FIELD"
         case Powerup.auraDamage:
-            return "MORE DMG"
+            return "++DMG"
         case Powerup.auraDamageRate:
-            return "MORE PWR"
+            return "++PWR"
         case Powerup.orbNum:
             return stats.orbs > 0 ? "+1 ORB" : "ORB"
         case Powerup.orbRadius:
             return "LARGER SIZE"
         case Powerup.orbDamage:
-            return "MORE DMG"
+            return "++DMG"
         case Powerup.movementSpeed:
             return "+ MOVE SPEED"
         case Powerup.lightsaberFireRate:
-            return stats.saber ? "MORE FIRE RATE" : "LIGHTSABER"
+            return stats.saber ? "++THROW SPEED" : "LIGHTSABER"
         case Powerup.lightsaberDamage:
-            return "MORE DMG"
+            return "++DMG"
         case Powerup.magnet:
-            return "MORE PICKUP"
+            return "++PICKUP"
         case Powerup.heal:
             return "HEAL"
     }

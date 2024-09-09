@@ -6,6 +6,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+    "inline": "node scripts/inline.js",
     "build": "node scripts/build.js",
     "dev": "node scripts/dev.js",
     "uglify": "uglifyjs --compress --mangle -o app/main.js -- app/main.js",
