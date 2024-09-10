@@ -4,6 +4,7 @@ import { addRenderComp } from "./components/render"
 import { COIN_PICKUP_SPEED } from "./const"
 import { distance, limitMagnitude } from "./core/math"
 import { hero, isHittingHero } from "./hero"
+import { playPickup } from "./sound"
 import { increaseXp, stats } from "./stat"
 
 const E = {
@@ -49,6 +50,7 @@ export const loadCoin = () => {
             // check if picked
             if (isHittingHero(E.x[id] - center, E.y[id] - center, SIZE, SIZE)) {
                 increaseXp()
+                playPickup()
                 E.active[id] = false
                 freePool.push(id)
             }

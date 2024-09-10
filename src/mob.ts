@@ -22,6 +22,7 @@ import {
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hero, hitHero, isHittingHero, isNearHero } from "./hero"
+import { playHit } from "./sound"
 import { stats } from "./stat"
 import { spawnFloatingText } from "./text"
 
@@ -281,6 +282,7 @@ export const attackMob = (id: number, dmg: number) => {
         E.active[id] = false
         freePool.push(id)
         dropCoin(E.x[id], E.y[id])
+        playHit()
         stats.score += 1
     }
 }

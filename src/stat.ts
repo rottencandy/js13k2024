@@ -43,6 +43,7 @@ import {
 } from "./const"
 import { clamp, pickRandom } from "./core/math"
 import { powerupMenu } from "./scene"
+import { playPowerup } from "./sound"
 import {
     updateAuraDmgRate,
     updateBulletFireRate,
@@ -251,8 +252,9 @@ const isAvailable = (powerup: Powerup) => {
 }
 
 export const stats = {
-    /** Time passed since game session start, in seconds */
+    won: false,
     score: 0,
+    /** Time passed since game session start, in seconds */
     time: 0,
     health: 0,
     maxHealth: 0,
@@ -280,6 +282,7 @@ export const stats = {
 }
 
 export const resetStats = () => {
+    stats.won = false
     stats.score = 0
     stats.time = 0
     stats.health = INIT_HEALTH_CAP
@@ -312,5 +315,6 @@ export const increaseXp = () => {
         stats.xp -= stats.levelXp
         stats.levelXp *= LEVEL_XP_CAP_MULTIPLIER
         powerupMenu()
+        playPowerup()
     }
 }

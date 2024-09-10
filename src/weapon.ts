@@ -27,6 +27,7 @@ import {
     MOB_SIZE,
     nearestMobPos,
 } from "./mob"
+import { playShoot } from "./sound"
 import { stats } from "./stat"
 
 const bullets = {
@@ -56,7 +57,7 @@ const sabers = {
 let saberFreePool: number[] = []
 const saberFireRate = ticker(INIT_SABER_FIRE_RATE)
 
-const AURA_PARTICLES_AGE = 1000
+const AURA_PARTICLES_AGE = 500
 const auraParticles = {
     x: Array(~~MAX_AURA_RADIUS).fill(0),
     y: Array(~~MAX_AURA_RADIUS).fill(0),
@@ -109,6 +110,7 @@ export const loadWeapon = () => {
                 const ypos = aimedMob.y - hero.y
                 const angle = Math.atan2(xpos, ypos)
                 fireBullet(hero.x, hero.y, angle)
+                playShoot()
             }
         }
 

@@ -11,6 +11,7 @@ import {
 import { ticker } from "./core/interpolation"
 import { aabb } from "./core/math"
 import { endGame } from "./scene"
+import { playHurt } from "./sound"
 import { stats } from "./stat"
 
 const enum State {
@@ -147,6 +148,7 @@ export const hitHero = (amt: number) => {
         pendingDamage += amt
         invulnerable = true
         vulnerability.reset()
+        playHurt()
     }
 }
 

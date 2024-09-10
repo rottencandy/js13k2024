@@ -7,7 +7,7 @@ import { loadHero, unloadHero } from "./hero"
 import { loadHud, unloadHud } from "./hud"
 import { loadMob, unloadMob } from "./mob"
 import { Observable } from "./observables"
-import { playTheme } from "./sound"
+import { playTheme, stopTheme } from "./sound"
 import { resetStats } from "./stat"
 import { loadText, unloadText } from "./text"
 import { loadWeapon, unloadWeapon } from "./weapon"
@@ -62,10 +62,10 @@ export const loadTitle = () => {
 }
 
 export const startGame = () => {
+    loadGameEntities()
     scene = Scene.gameplay
     obsEmit(Observable.scene, scene)
     resetStats()
-    loadGameEntities()
     playTheme()
 }
 
@@ -73,6 +73,7 @@ export const endGame = () => {
     unloadGameEntities()
     scene = Scene.gameover
     obsEmit(Observable.scene, scene)
+    stopTheme()
 }
 
 export const powerupMenu = () => {
