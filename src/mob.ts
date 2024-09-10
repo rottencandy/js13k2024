@@ -50,7 +50,8 @@ const E = {
 // stores ids of free entities
 let freePool: number[] = []
 
-export const MOB_SIZE = 16
+export const MOB_SIZE = 8
+const center = MOB_SIZE / 2
 
 const twoSeconds = ticker(2000)
 const seconds = ticker(1000)
@@ -130,11 +131,14 @@ export const loadMob = () => {
         // todo optimize out offscreen mobs?
         iterMobs((x, y, id, _flip, _near, _frame, _framet, type) => {
             // check proximity to hero
-            E.near[id] = isNearHero(x, y, MOB_SIZE, MOB_SIZE)
+            E.near[id] = isNearHero(x + center, y + center, MOB_SIZE, MOB_SIZE)
 
             // check hero collision
             // todo: possible optimization: skip detection if hero is invulnerable
-            if (E.near[id] && isHittingHero(x, y, MOB_SIZE, MOB_SIZE)) {
+            if (
+                E.near[id] &&
+                isHittingHero(x + center, y + center, MOB_SIZE, MOB_SIZE)
+            ) {
                 hitHero(attacks[type])
             } else {
                 // move towards hero
@@ -213,13 +217,7 @@ export const loadMob = () => {
                         ? assets.mob2
                         : assets.mob3
             const frame = asset[frames[currentFrame] + dirOffset]
-            ctx.drawImage(
-                frame,
-                ~~(x - cam.x),
-                ~~(y - cam.y),
-                MOB_SIZE,
-                MOB_SIZE,
-            )
+            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y))
             // draw collision rect
             //if (DEBUG) {
             //    ctx.strokeStyle = BLACK0
@@ -278,11 +276,11 @@ const spawnMob = (type: MobType) => {
 export const attackMob = (id: number, dmg: number) => {
     E.health[id] -= dmg
     spawnFloatingText(dmg, E.x[id], E.y[id])
+    playHit()
     if (E.health[id] <= 0) {
         E.active[id] = false
         freePool.push(id)
         dropCoin(E.x[id], E.y[id])
-        playHit()
         stats.score += 1
     }
 }
@@ -325,7 +323,16 @@ export const isHittingMob = (
     w: number,
     h: number,
 ) => {
-    return aabb(x, y, w, h, E.x[id], E.y[id], MOB_SIZE, MOB_SIZE)
+    return aabb(
+        x,
+        y,
+        w,
+        h,
+        E.x[id] + center,
+        E.y[id] + center,
+        MOB_SIZE,
+        MOB_SIZE,
+    )
 }
 
 /**
@@ -341,7 +348,7 @@ export const nearestMobPos = () => {
             id = mobid
         }
     })
-    if (id !== undefined) {
+    if (id !== undefined && isNearHero(E.x[id], E.y[id], MOB_SIZE, MOB_SIZE)) {
         return { x: E.x[id], y: E.y[id] }
     }
 }

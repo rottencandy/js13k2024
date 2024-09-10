@@ -19,7 +19,7 @@ const enum State {
     moving,
 }
 
-const SIZE = 16
+const SIZE = 8
 const center = SIZE / 2
 // used for checking hero proximity(for collisions)
 let pendingDamage = 0
@@ -153,7 +153,7 @@ export const hitHero = (amt: number) => {
 }
 
 export const isHittingHero = (x: number, y: number, w: number, h: number) => {
-    return aabb(hero.x - center, hero.y - center, SIZE, SIZE, x, y, w, h)
+    return aabb(hero.x, hero.y, SIZE, SIZE, x, y, w, h)
 }
 
 export const isNearHero = (x: number, y: number, w: number, h: number) => {

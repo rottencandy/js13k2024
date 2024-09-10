@@ -1,6 +1,8 @@
+import { cam } from "./cam"
 import { addPhysicsComp } from "./components/physics"
 import { addRenderComp } from "./components/render"
 import {
+    BLACK0,
     BLACK1,
     BLUE,
     HEIGHT,
@@ -15,6 +17,7 @@ import {
 } from "./const"
 import { renderFontTex } from "./core/font"
 import { keys } from "./core/input"
+import { hero } from "./hero"
 import { stats } from "./stat"
 
 let unloadPhysics: () => void
@@ -34,6 +37,17 @@ export const loadHud = () => {
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
+        // stage light
+        ctx.fillStyle = BLACK0 + "44"
+        ctx.beginPath()
+        ctx.arc(hero.x - cam.x, hero.y - cam.y, 120, 0, Math.PI * 2)
+        ctx.rect(WIDTH, 0, -WIDTH, HEIGHT)
+        ctx.fill()
+        ctx.beginPath()
+        ctx.arc(hero.x - cam.x, hero.y - cam.y, 100, 0, Math.PI * 2)
+        ctx.rect(WIDTH, 0, -WIDTH, HEIGHT)
+        ctx.fill()
+
         // bars fill
         ctx.fillStyle = RED
         ctx.fillRect(
@@ -78,7 +92,12 @@ export const loadHud = () => {
         const abstime = ~~stats.time
         const mins = ~~(abstime / 60)
         const secs = abstime % 60
-        renderFontTex(ctx, mins + ":" + secs, ~~(WIDTH / 7) * 6, UI_BAR_Y)
+        renderFontTex(
+            ctx,
+            mins + ":" + (secs < 10 ? "0" + secs : secs),
+            ~~(WIDTH / 7) * 6,
+            UI_BAR_Y,
+        )
 
         // virtual joystick
         if (keys.touchStartPos) {

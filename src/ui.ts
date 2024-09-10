@@ -22,7 +22,7 @@ import {
     Powerup,
     powerupSprite,
     powerupText,
-    randomPowerup,
+    randomPowerups,
     stats,
     usePowerup,
 } from "./stat"
@@ -56,9 +56,7 @@ obsListen(Observable.scene, (next: Scene) => {
     }
     if (next === Scene.powerup) {
         powerups.splice(0)
-        powerups.push(randomPowerup())
-        powerups.push(randomPowerup())
-        powerups.push(randomPowerup())
+        powerups.push(...randomPowerups())
     }
     prevScene = scene
     scene = next
@@ -389,7 +387,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             const secs = abstime % 60
             renderFontTex(
                 ctx,
-                "TIME: " + mins + ":" + secs,
+                "TIME: " + mins + ":" + (secs < 10 ? "0" + secs : secs),
                 ~~(WIDTH / 2) - 20,
                 HEIGHT / 5 + 40,
             )

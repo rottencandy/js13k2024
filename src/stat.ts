@@ -15,6 +15,7 @@ import {
     INC_PICKUP_RADIUS,
     INIT_AURA_DAMAGE,
     INIT_AURA_DAMAGE_RATE,
+    INIT_AURA_RADIUS,
     INIT_BULLET_DMG,
     INIT_BULLET_FIRE_RATE,
     INIT_HEALTH_CAP,
@@ -41,7 +42,7 @@ import {
     SABER_DMG_INC,
     SABER_MAX_DMG,
 } from "./const"
-import { clamp, pickRandom } from "./core/math"
+import { clamp, extractRandom } from "./core/math"
 import { powerupMenu } from "./scene"
 import { playPowerup } from "./sound"
 import {
@@ -150,7 +151,9 @@ export const usePowerup = (power: Powerup) => {
             stats.maxHealth += INC_HEALTH_CAP
             break
         case Powerup.auraRadius:
-            stats.auraRadius += INC_AURA_RADIUS
+            stats.auraRadius === 0
+                ? (stats.auraRadius = INIT_AURA_RADIUS)
+                : (stats.auraRadius += INC_AURA_RADIUS)
             break
         case Powerup.auraDamage:
             stats.auraDmg += INC_AURA_DAMAGE
@@ -188,7 +191,7 @@ export const usePowerup = (power: Powerup) => {
     }
 }
 
-export const randomPowerup = () => {
+export const randomPowerups = () => {
     const powers = [
         Powerup.bulletDamage,
         Powerup.bulletFireRate,
@@ -209,7 +212,7 @@ export const randomPowerup = () => {
     if (powers.length < 3) {
         powers.push(Powerup.heal, Powerup.heal)
     }
-    return pickRandom(powers)
+    return [extractRandom(powers), extractRandom(powers), extractRandom(powers)]
 }
 
 const isAvailable = (powerup: Powerup) => {

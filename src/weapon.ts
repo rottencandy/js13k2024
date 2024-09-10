@@ -16,6 +16,7 @@ import {
     ORB_CHARGE_TIME,
     WIDTH,
     HEIGHT,
+    ORB_SPIN_SPEED,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, rand, randInt } from "./core/math"
@@ -176,7 +177,7 @@ export const loadWeapon = () => {
         // spinny orbs
         if (stats.orbs > 0) {
             for (let i = 0; i < stats.orbs; i++) {
-                const angle = (i / stats.orbs) * 2 * Math.PI - stats.time * 2.5
+                const angle = (i / stats.orbs) * 2 * Math.PI - stats.time * ORB_SPIN_SPEED
                 orbs.x[i] = hero.x + Math.sin(angle) * stats.orbRadius
                 orbs.y[i] = hero.y + Math.cos(angle) * stats.orbRadius
                 orbs.charge[i] += dt
@@ -278,8 +279,8 @@ export const loadWeapon = () => {
             ctx.fillStyle = LGREEN + "33"
             ctx.beginPath()
             ctx.arc(
-                hero.x - cam.x,
-                hero.y - cam.y,
+                hero.x + 4 - cam.x,
+                hero.y + 4 - cam.y,
                 stats.auraRadius,
                 0,
                 Math.PI * 2,

@@ -25,13 +25,13 @@ canvas {
     transform: translate(-50%, -50%);
 
     /* Pixelate instead of blurring
-    */
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     font-smooth: never;
     -webkit-font-smoothing: none;
+    */
 }
 
 /* Note for portrait devices
