@@ -222,7 +222,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.fillStyle = WHITE
             renderFontTex(
                 ctx,
-                "TITLE VERSION 1.0.0\nA JS13K 2024 GAME\nMADE BY SAUD WWW.SAUD.WTF\n\nLOADING...",
+                "XIICUR SURVIIVORS VERSION 1.0.0\nA JS13K 2024 GAME\nMADE BY SAUD WWW.SAUD.WTF\n\nLOADING...",
                 20,
                 20,
             )
@@ -234,17 +234,17 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.fillStyle = BLACK1
             renderFont(
                 ctx,
-                "TITLE",
+                "XIICUR SURVIIVORS",
                 MENU_FONT_SIZE,
-                ~~(WIDTH / 3) + 2,
+                ~~(WIDTH / 5) + 2,
                 ~~(HEIGHT / 3) + 2,
             )
             ctx.fillStyle = WHITE
             renderFont(
                 ctx,
-                "TITLE",
+                "XIICUR SURVIIVORS",
                 MENU_FONT_SIZE,
-                ~~(WIDTH / 3),
+                ~~(WIDTH / 5),
                 ~~(HEIGHT / 3),
             )
             if (buttonBlink) {
@@ -256,7 +256,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                     startBtn.y + 10,
                 )
             }
-            renderFontTex(ctx, "BY SAUD", WIDTH / 2, HEIGHT - 10)
+            renderFontTex(ctx, "BY SAUD", WIDTH / 2 + 110, HEIGHT - 10)
             break
 
         case Scene.powerup:
