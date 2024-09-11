@@ -15,7 +15,7 @@ export type Keys = {
     btn: {
         spc: boolean
         clk: boolean
-        esc: boolean
+        //esc: boolean
     }
     /** True only if key is just pressed (not pressed last frame) */
     btnp: {
@@ -25,7 +25,7 @@ export type Keys = {
         rt: boolean
         spc: boolean
         clk: boolean
-        esc: boolean
+        //esc: boolean
     }
 }
 
@@ -39,7 +39,7 @@ export const keys: Keys = {
     clampedTouchPos: { x: 0, y: 0 },
     btn: {
         spc: false,
-        esc: false,
+        //esc: false,
         clk: false,
     },
     btnp: {
@@ -49,7 +49,7 @@ export const keys: Keys = {
         rt: false,
         spc: false,
         clk: false,
-        esc: false,
+        //esc: false,
     },
 }
 
@@ -103,9 +103,9 @@ export const initInput = (
                 case "d":
                     dirPressed.rt = pressed
                     break
-                case "Escape":
-                    keys.btn.esc = pressed
-                    break
+                //case "Escape":
+                //    keys.btn.esc = pressed
+                //    break
                 case " ":
                     keys.btn.spc = pressed
             }
@@ -117,7 +117,7 @@ export const initInput = (
     // not using `window` breaks chrome
     window.ongamepadconnected = (e) => {
         // only consider gamepads with analog sticks
-        if (e.gamepad.axes.length > 1) {
+        if (e.gamepad.axes.length > 1 && e.gamepad.buttons.length > 0) {
             gamepad = e.gamepad
         }
     }
@@ -170,6 +170,7 @@ export const initInput = (
         if (gamepad) {
             keys.dir.x = gamepad.axes[0]
             keys.dir.y = gamepad.axes[1]
+            keys.btn.spc = gamepad.buttons[0]?.pressed
         }
 
         if (hasTouch) {
@@ -210,7 +211,7 @@ export const initInput = (
         keys.btnp.lf = dirPressed.lf && !lastFrame.lf
         keys.btnp.rt = dirPressed.rt && !lastFrame.rt
         keys.btnp.clk = keys.btn.clk && !lastFrame.clk
-        keys.btnp.esc = keys.btn.esc && !lastFrame.esc
+        //keys.btnp.esc = keys.btn.esc && !lastFrame.esc
         keys.btnp.spc = keys.btn.spc && !lastFrame.spc
 
         lastFrame.up = dirPressed.up
@@ -218,7 +219,7 @@ export const initInput = (
         lastFrame.lf = dirPressed.lf
         lastFrame.rt = dirPressed.rt
         lastFrame.clk = keys.btn.clk
-        lastFrame.esc = keys.btn.esc
+        //lastFrame.esc = keys.btn.esc
         lastFrame.spc = keys.btn.spc
     }
 }

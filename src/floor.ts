@@ -1,6 +1,6 @@
 import { cam } from "./cam"
 import { addRenderComp } from "./components/render"
-import { GREEN, HEIGHT, WIDTH } from "./const"
+import { BROWN, HEIGHT, WIDTH } from "./const"
 
 let unloadRender: () => void
 
@@ -23,7 +23,7 @@ const rock1Pos = [
 export const loadFloor = () => {
     unloadRender = addRenderComp((ctx, assets) => {
         // base
-        ctx.fillStyle = GREEN
+        ctx.fillStyle = BROWN
         ctx.fillRect(0, 0, WIDTH, HEIGHT)
 
         // rocks
