@@ -37,6 +37,8 @@ export const hero = {
 const vulnerability = ticker(VULNERABILITY_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
 const deathAnim = ticker(5e3)
+const ms200 = ticker(200)
+const s3000 = ticker(3e3)
 
 let currentFrame = 0
 const frames = {
@@ -71,6 +73,8 @@ export const loadHero = () => {
             if (deathAnim.tick(dt)) {
                 endGame()
             }
+            ms200.tick(dt)
+            s3000.tick(dt)
             return
         }
         // movement
@@ -138,13 +142,13 @@ export const loadHero = () => {
                     ~~(hero.x - center - cam.x),
                     ~~(hero.y - center - cam.y),
                 )
-                const lerp = time % 200
+                const lerp = ms200.ticks / 200
                 ctx.strokeStyle = WHITE
                 ctx.beginPath()
                 ctx.arc(
                     hero.x + 4 - cam.x,
                     hero.y + 4 - cam.y,
-                    (lerp / 200) * 20,
+                    lerp * 20,
                     0,
                     Math.PI * 2,
                 )
@@ -154,7 +158,7 @@ export const loadHero = () => {
                 ctx.stroke()
                 // do nothing
             } else {
-                if (time === 3e3) {
+                if (s3000.ticks === 0) {
                     playHurt()
                 }
             }

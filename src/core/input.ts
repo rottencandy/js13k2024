@@ -63,7 +63,7 @@ export const initInput = (
 ) => {
     let dirty = false
     let gamepad: Gamepad | undefined = undefined
-    const hasTouch = !!window.ontouchend
+    const hasTouch = "ontouchstart" in window
     const dirPressed = {
         up: false,
         lf: false,

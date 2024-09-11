@@ -2,8 +2,8 @@
 export const DEBUG = false
 export const WIDTH = 320
 export const HEIGHT = 180
-export const JOYSTICK_SIZE = 150
-export const JOYSTICK_THUMB_SIZE = 50
+export const JOYSTICK_SIZE = 30
+export const JOYSTICK_THUMB_SIZE = 10
 
 // ui
 export const FONT_SIZE = 1
@@ -75,7 +75,7 @@ export const MOB3_ATTACK = 30
 
 // bullet
 export const INIT_BULLET_FIRE_RATE = 2e3
-export const BULLET_FIRE_RATE_DEC = 450
+export const BULLET_FIRE_RATE_DEC = 600
 export const MIN_BULLET_FIRE_RATE = 200
 
 export const INIT_BULLET_DMG = 10
@@ -116,7 +116,7 @@ export const SABER_SPEED = 0.09
 export const SABER_AGE = 3e3
 export const SABER_CHARGE_TIME = 200
 
-export const INIT_SABER_DMG = 5
+export const INIT_SABER_DMG = 20
 export const SABER_DMG_INC = 10
 export const SABER_MAX_DMG = 55
 
