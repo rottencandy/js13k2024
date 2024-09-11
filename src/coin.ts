@@ -44,7 +44,7 @@ export const loadCoin = () => {
                 _vec.y = hero.y - y
                 limitMagnitude(_vec)
                 E.x[id] += _vec.x * dt * COIN_PICKUP_SPEED
-                E.y[id] += _vec.y * dt
+                E.y[id] += _vec.y * dt * COIN_PICKUP_SPEED
             }
 
             // check if picked
