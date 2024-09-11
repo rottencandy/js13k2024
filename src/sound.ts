@@ -8,11 +8,14 @@ let shoot: number[]
 let hit: number[]
 let powerup: number[]
 let hurt: number[]
+let start: number[]
 
 export const playTheme = () => {
-    musicNode =  zzfxP(...theme)
-    musicNode.loop = true
-    return musicNode
+    playStart()
+    setTimeout(() => {
+        musicNode = zzfxP(...theme)
+        musicNode.loop = true
+    }, 2e3)
 }
 
 export const stopTheme = () => {
@@ -24,6 +27,7 @@ export const playShoot = () => zzfxP(shoot)
 export const playHit = () => zzfxP(hit)
 export const playHurt = () => zzfxP(hurt)
 export const playPowerup = () => zzfxP(powerup)
+export const playStart = () => zzfxP(start)
 
 // prettier-ignore
 export const loadSounds = () => {
@@ -33,4 +37,5 @@ export const loadSounds = () => {
     hit = zzfxG(...[,,246,,.02,.17,4,.4,-8,,,,,1,20,,,.2,.02]) // hit
     powerup = zzfxG(...[2.1,,139,.05,.16,.36,1,1.1,,1,357,.07,.04,,,,.2,.53,.12,.21]) // powerup
     hurt = zzfxG(...[.6,0,270,.01,,.2,3,3,,-26,,,,,,,,.05,.07]) // hurt
+    start = zzfxG(...[1.6,,521,.1,.25,.34,1,3.2,,,437,.09,.02,,,,.13,.5,.27]) // Powerup 4
 }

@@ -5,24 +5,25 @@ import { addRenderComp } from "./components/render"
 import {
     MOB0_ATTACK,
     MOB0_HEALTH,
-    MOB_MAX_COLLISION_SNAP_DIST,
     MOB0_SPEED,
+    MOB1_ATTACK,
+    MOB1_HEALTH,
+    MOB1_SPEED,
+    MOB2_ATTACK,
+    MOB2_HEALTH,
+    MOB2_SPEED,
+    MOB3_ATTACK,
+    MOB3_HEALTH,
+    MOB3_SPEED,
+    MOB_MAX_COLLISION_SNAP_DIST,
     SPAWN_RADIUS,
     SPRITE_ANIM_RATE_MS,
-    MOB1_HEALTH,
-    MOB2_HEALTH,
-    MOB3_HEALTH,
-    MOB1_SPEED,
-    MOB2_SPEED,
-    MOB3_SPEED,
-    MOB3_ATTACK,
-    MOB2_ATTACK,
-    MOB1_ATTACK,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb, angleToVec, distance, limitMagnitude, rand } from "./core/math"
 import { hero, hitHero, isHittingHero, isNearHero } from "./hero"
-import { playHit } from "./sound"
+import { endGame, prerpareDeathScene } from "./scene"
+import { playHit, playStart } from "./sound"
 import { stats } from "./stat"
 import { spawnFloatingText } from "./text"
 
@@ -50,13 +51,17 @@ const E = {
 // stores ids of free entities
 let freePool: number[] = []
 
+let wavesEnded = false
+
 export const MOB_SIZE = 8
 const center = MOB_SIZE / 2
 
-const twoSeconds = ticker(2000)
-const seconds = ticker(1000)
-const halfSeconds = ticker(500)
-const quraterSeconds = ticker(250)
+const tsec = ticker(2000)
+const sec = ticker(1000)
+const sec2 = ticker(500)
+const sec4 = ticker(250)
+const secf = ticker(100)
+const endGameAnim = ticker(7e3)
 
 const frames = [0, 1, 2, 1]
 const maxFrames = frames.length
@@ -104,27 +109,157 @@ export const loadMob = () => {
     E.type = []
     E.active = []
     freePool = []
-    twoSeconds.clear()
-    seconds.clear()
-    halfSeconds.clear()
-    quraterSeconds.clear()
+    tsec.clear()
+    sec.clear()
+    sec2.clear()
+    sec4.clear()
+    wavesEnded = false
 
     unloadPhysics = addPhysicsComp((dt) => {
         // mob spawn manager
         if (stats.time < 30) {
-            if (seconds.tick(dt)) {
+            if (sec.tick(dt)) {
                 spawnMob(MobType.blob)
             }
         } else if (stats.time < 60) {
-            if (halfSeconds.tick(dt)) {
+            if (sec2.tick(dt)) {
                 spawnMob(MobType.blob)
             }
         } else if (stats.time < 90) {
-            if (twoSeconds.tick(dt)) {
+            if (sec.tick(dt)) {
                 spawnMob(MobType.blob)
             }
-            if (seconds.tick(dt)) {
+            if (tsec.tick(dt)) {
                 spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 120) {
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+            if (sec.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 180) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 240) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.blob)
+                spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 270) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.blob)
+            }
+        } else if (stats.time < 300) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 330) {
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+            if (tsec.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 360) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.blob)
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 420) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.blob)
+                spawnMob(MobType.fly)
+            }
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 480) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 540) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
+            }
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 600) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 630) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
+                spawnMob(MobType.zombie)
+            }
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+            if (sec.tick(dt)) {
+                spawnMob(MobType.ghost)
+            }
+        } else if (stats.time < 660) {
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+            if (sec.tick(dt)) {
+                spawnMob(MobType.ghost)
+                spawnMob(MobType.blob)
+            }
+        } else if (stats.time < 690) {
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.ghost)
+            }
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.zombie)
+            }
+        } else if (stats.time < 720) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.ghost)
+            }
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.zombie)
+                spawnMob(MobType.fly)
+            }
+        } else if (stats.time < 750) {
+            if (sec4.tick(dt)) {
+                spawnMob(MobType.zombie)
+                spawnMob(MobType.fly)
+            }
+            if (sec2.tick(dt)) {
+                spawnMob(MobType.ghost)
+                spawnMob(MobType.blob)
+            }
+        } else if (stats.time < 780) {
+            if (secf.tick(dt)) {
+                spawnMob(MobType.ghost)
+                spawnMob(MobType.zombie)
+                spawnMob(MobType.fly)
+                spawnMob(MobType.blob)
+            }
+        } else {
+            if (!wavesEnded) {
+                stats.won = true
+                prerpareDeathScene()
+                iterMobs((_x, _y, id) => {
+                    attackMob(id, 1000)
+                })
+                wavesEnded = true
+            }
+            if (endGameAnim.tick(dt)) {
+                playStart()
+                endGame()
             }
         }
 

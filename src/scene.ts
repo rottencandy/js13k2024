@@ -16,7 +16,6 @@ export const enum Scene {
     intro,
     title,
     gameplay,
-    pause,
     powerup,
     gameover,
 }
@@ -82,9 +81,11 @@ export const powerupMenu = () => {
     obsEmit(Observable.scene, scene)
 }
 
-export const pauseGame = () => {
-    physicsPause(true)
-    scene = Scene.pause
+export const prerpareDeathScene = () => {
+    unloadHud()
+    unloadWeapon()
+    unloadCam()
+    stopTheme()
     obsEmit(Observable.scene, scene)
 }
 

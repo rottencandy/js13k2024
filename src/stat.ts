@@ -26,7 +26,7 @@ import {
     INIT_PICKUP_RADIUS,
     INIT_SABER_DMG,
     INIT_SABER_FIRE_RATE,
-    LEVEL_XP_CAP_MULTIPLIER,
+    LEVEL_XP_CAP_INC,
     MAX_AURA_DAMAGE,
     MAX_AURA_RADIUS,
     MAX_BULLET_DMG,
@@ -316,7 +316,7 @@ export const increaseXp = () => {
     stats.xp += COIN_XP
     if (stats.xp > stats.levelXp) {
         stats.xp -= stats.levelXp
-        stats.levelXp *= LEVEL_XP_CAP_MULTIPLIER
+        stats.levelXp += LEVEL_XP_CAP_INC
         powerupMenu()
         playPowerup()
     }

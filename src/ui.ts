@@ -375,11 +375,19 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             ctx.fillStyle = WHITE
             renderFont(
                 ctx,
-                "GAME OVER!",
+                stats.won ? "YOU WIN!" : "GAME OVER!",
                 MENU_FONT_SIZE,
-                ~~(WIDTH / 3),
+                ~~(WIDTH / 3) - 10,
                 ~~(HEIGHT / 5),
             )
+            if (stats.won) {
+                renderFontTex(
+                    ctx,
+                    "YOU HAVE LIFTED THE CURSE!",
+                    ~~(WIDTH / 3),
+                    HEIGHT / 5 + 25,
+                )
+            }
 
             // time
             const abstime = ~~stats.time

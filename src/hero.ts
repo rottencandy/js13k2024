@@ -7,16 +7,18 @@ import {
     VULNERABILITY_MS,
     SPRITE_ANIM_RATE_MS,
     WIDTH,
+    WHITE,
 } from "./const"
 import { ticker } from "./core/interpolation"
 import { aabb } from "./core/math"
-import { endGame } from "./scene"
-import { playHurt } from "./sound"
+import { endGame, prerpareDeathScene } from "./scene"
+import { playHit, playHurt } from "./sound"
 import { stats } from "./stat"
 
 const enum State {
     idle,
     moving,
+    dead,
 }
 
 const SIZE = 8
@@ -34,11 +36,13 @@ export const hero = {
 
 const vulnerability = ticker(VULNERABILITY_MS)
 const frameChange = ticker(SPRITE_ANIM_RATE_MS)
+const deathAnim = ticker(5e3)
 
 let currentFrame = 0
 const frames = {
     [State.idle]: [0, 1, 2, 0],
     [State.moving]: [3, 0, 4, 0],
+    [State.dead]: [0, 0, 0, 0],
 }
 const maxFrames = frames[State.idle].length
 
@@ -60,8 +64,15 @@ export const loadHero = () => {
 
     vulnerability.clear()
     frameChange.clear()
+    deathAnim.clear()
 
     unloadPhysics = addPhysicsComp((dt, keys) => {
+        if (state === State.dead) {
+            if (deathAnim.tick(dt)) {
+                endGame()
+            }
+            return
+        }
         // movement
         hero.x += keys.dir.x * stats.speed * dt
         hero.y += keys.dir.y * stats.speed * dt
@@ -83,7 +94,8 @@ export const loadHero = () => {
             stats.health -= 1
             pendingDamage -= 1
             if (stats.health <= 0) {
-                endGame()
+                prerpareDeathScene()
+                state = State.dead
             }
         }
 
@@ -95,20 +107,58 @@ export const loadHero = () => {
 
     unloadRender = addRenderComp((ctx, assets) => {
         // blink if invulnerable
-        if (invulnerable && vulnerability.ticks % 10 === 0) {
+        if (
+            invulnerable &&
+            vulnerability.ticks % 10 === 0 &&
+            state !== State.dead
+        ) {
             return
         }
         const dirOffset = flipped ? 5 : 0
         const frame = assets.hero[frames[state][currentFrame] + dirOffset]
-        switch (state) {
-            case State.idle:
-            case State.moving:
+        if (state !== State.dead) {
+            ctx.drawImage(
+                frame,
+                ~~(hero.x - center - cam.x),
+                ~~(hero.y - center - cam.y),
+            )
+        } else {
+            const time = deathAnim.ticks
+            // do nothing
+            if (time < 1e3) {
+                ctx.drawImage(
+                    frame,
+                    ~~(hero.x - center - cam.x),
+                    ~~(hero.y - center - cam.y),
+                )
+                // death anim
+            } else if (time < 3e3) {
+                ctx.drawImage(
+                    frame,
+                    ~~(hero.x - center - cam.x),
+                    ~~(hero.y - center - cam.y),
+                )
+                const lerp = time % 200
+                ctx.strokeStyle = WHITE
+                ctx.beginPath()
+                ctx.arc(
+                    hero.x + 4 - cam.x,
+                    hero.y + 4 - cam.y,
+                    (lerp / 200) * 20,
+                    0,
+                    Math.PI * 2,
+                )
+                if (lerp === 0) {
+                    playHit()
+                }
+                ctx.stroke()
+                // do nothing
+            } else {
+                if (time === 3e3) {
+                    playHurt()
+                }
+            }
         }
-        ctx.drawImage(
-            frame,
-            ~~(hero.x - center - cam.x),
-            ~~(hero.y - center - cam.y),
-        )
 
         //if (DEBUG) {
         //    // center

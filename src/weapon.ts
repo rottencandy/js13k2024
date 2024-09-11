@@ -177,9 +177,10 @@ export const loadWeapon = () => {
         // spinny orbs
         if (stats.orbs > 0) {
             for (let i = 0; i < stats.orbs; i++) {
-                const angle = (i / stats.orbs) * 2 * Math.PI - stats.time * ORB_SPIN_SPEED
-                orbs.x[i] = hero.x + Math.sin(angle) * stats.orbRadius
-                orbs.y[i] = hero.y + Math.cos(angle) * stats.orbRadius
+                const angle =
+                    (i / stats.orbs) * 2 * Math.PI - stats.time * ORB_SPIN_SPEED
+                orbs.x[i] = hero.x + 4 + Math.sin(angle) * stats.orbRadius
+                orbs.y[i] = hero.y + 4 + Math.cos(angle) * stats.orbRadius
                 orbs.charge[i] += dt
                 if (orbs.charge[i] >= ORB_CHARGE_TIME) {
                     orbs.charge[i] = 0
@@ -229,6 +230,7 @@ export const loadWeapon = () => {
                         sabers.charge.push(0)
                         sabers.active.push(true)
                     }
+                    playShoot()
                 }
             }
             for (let i = 0; i < sabers.x.length; i++) {
