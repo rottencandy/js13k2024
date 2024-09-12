@@ -44,6 +44,7 @@ const E = {
     near: [] as boolean[],
     frame: [] as number[],
     frameTicker: [] as number[],
+    dmgTicker: [] as number[],
     type: [] as MobType[],
     active: [] as boolean[],
 }
@@ -54,6 +55,7 @@ let freePool: number[] = []
 let wavesEnded = false
 
 export const MOB_SIZE = 8
+const DMG_BLINK_ANIM_TIME = 200
 const center = MOB_SIZE / 2
 
 const tsec = ticker(2000)
@@ -106,6 +108,7 @@ export const loadMob = () => {
     E.near = []
     E.frame = []
     E.frameTicker = []
+    E.dmgTicker = []
     E.type = []
     E.active = []
     freePool = []
@@ -292,6 +295,11 @@ export const loadMob = () => {
                 E.frameTicker[id] = 0
                 E.frame[id] = (E.frame[id] + 1) % maxFrames
             }
+
+            // hit animation
+            if (E.dmgTicker[id] > 0) {
+                E.dmgTicker[id] -= dt
+            }
         })
 
         // solve collisions within mobs, only for the ones close to hero
@@ -341,27 +349,45 @@ export const loadMob = () => {
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
-        iterMobs((x, y, _id, flipped, _near, currentFrame, _ticker, type) => {
-            const dirOffset = flipped ? 3 : 0
-            const asset =
-                type === MobType.blob
-                    ? assets.mob0
-                    : type === MobType.fly
-                      ? assets.mob1
-                      : type === MobType.zombie
-                        ? assets.mob2
-                        : assets.mob3
-            const frame = asset[frames[currentFrame] + dirOffset]
-            ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y))
-            // draw collision rect
-            //if (DEBUG) {
-            //    ctx.strokeStyle = BLACK0
-            //    ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
-            //    ctx.strokeStyle = RED
-            //    ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
-            //}
-            return false
-        })
+        iterMobs(
+            (
+                x,
+                y,
+                _id,
+                flipped,
+                _near,
+                currentFrame,
+                _ticker,
+                type,
+                dmgAnim,
+            ) => {
+                const dirOffset = flipped ? 3 : 0
+                const asset =
+                    type === MobType.blob
+                        ? assets.mob0
+                        : type === MobType.fly
+                          ? assets.mob1
+                          : type === MobType.zombie
+                            ? assets.mob2
+                            : assets.mob3
+                const frame = asset[frames[currentFrame] + dirOffset]
+
+                // blink if damaged
+                if (dmgAnim > 0 && dmgAnim % 10 === 0) {
+                    return false
+                }
+
+                ctx.drawImage(frame, ~~(x - cam.x), ~~(y - cam.y))
+                // draw collision rect
+                //if (DEBUG) {
+                //    ctx.strokeStyle = BLACK0
+                //    ctx.strokeRect(x - cam.x, y - cam.y, MOB_SIZE, MOB_SIZE)
+                //    ctx.strokeStyle = RED
+                //    ctx.strokeRect(x - cam.x, y - cam.y, 1, 1)
+                //}
+                return false
+            },
+        )
 
         // draw spawn circle
         //if (DEBUG) {
@@ -392,6 +418,7 @@ const spawnMob = (type: MobType) => {
         E.flipped[i] = false
         E.frame[i] = 0
         E.frameTicker[i] = 0
+        E.dmgTicker[i] = 0
         E.near[i] = false
         E.type[i] = type
         E.active[i] = true
@@ -403,6 +430,7 @@ const spawnMob = (type: MobType) => {
     E.flipped.push(false)
     E.frame.push(0)
     E.frameTicker.push(0)
+    E.dmgTicker.push(0)
     E.near.push(false)
     E.type.push(type)
     return E.active.push(true)
@@ -417,6 +445,8 @@ export const attackMob = (id: number, dmg: number) => {
         freePool.push(id)
         dropCoin(E.x[id], E.y[id])
         stats.score += 1
+    } else {
+        E.dmgTicker[id] = DMG_BLINK_ANIM_TIME
     }
 }
 
@@ -430,6 +460,7 @@ export const iterMobs = (
         frame: number,
         frameTicker: number,
         type: MobType,
+        dmgTicker: number,
     ) => boolean | void,
 ) => {
     for (let i = 0; i < E.x.length; i++) {
@@ -443,6 +474,7 @@ export const iterMobs = (
                 E.frame[i],
                 E.frameTicker[i],
                 E.type[i],
+                E.dmgTicker[i],
             )
             if (end) {
                 break
