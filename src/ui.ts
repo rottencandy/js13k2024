@@ -6,6 +6,7 @@ import {
     DGREEN,
     HEIGHT,
     MENU_FONT_SIZE,
+    RED,
     UI_TRANSITION_DURATION,
     WHITE,
     WIDTH,
@@ -228,6 +229,7 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
             )
             break
 
+        // such a bespoke title rendering technique
         case Scene.title:
             ctx.fillStyle = BLACK0
             //startBtn.render(ctx)
@@ -239,14 +241,39 @@ export const renderUI = (ctx: CTX, assets: Assets) => {
                 ~~(WIDTH / 5) + 2,
                 ~~(HEIGHT / 3) + 2,
             )
-            ctx.fillStyle = WHITE
+            ctx.fillStyle = RED
             renderFont(
                 ctx,
-                "XIICUR SURVIIVORS",
+                "XII",
                 MENU_FONT_SIZE,
                 ~~(WIDTH / 5),
                 ~~(HEIGHT / 3),
             )
+            ctx.fillStyle = WHITE
+            renderFont(
+                ctx,
+                "   CUR SURVI",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 5) + 15,
+                ~~(HEIGHT / 3),
+            )
+            ctx.fillStyle = RED
+            renderFont(
+                ctx,
+                "I",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 5) + 153,
+                ~~(HEIGHT / 3),
+            )
+            ctx.fillStyle = WHITE
+            renderFont(
+                ctx,
+                "VORS",
+                MENU_FONT_SIZE,
+                ~~(WIDTH / 5) + 165,
+                ~~(HEIGHT / 3),
+            )
+
             if (buttonBlink) {
                 renderFont(
                     ctx,
