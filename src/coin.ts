@@ -18,6 +18,8 @@ let freePool: number[] = []
 const SIZE = 8
 const center = SIZE / 2
 
+let playPickupSound = false
+
 // throwaway temporary variable for optimization
 const _vec = { x: 0, y: 0 }
 
@@ -50,11 +52,15 @@ export const loadCoin = () => {
             // check if picked
             if (isHittingHero(E.x[id] - center, E.y[id] - center, SIZE, SIZE)) {
                 increaseXp()
-                playPickup()
+                playPickupSound = true
                 E.active[id] = false
                 freePool.push(id)
             }
         })
+        if (playPickupSound) {
+            playPickup()
+            playPickupSound = false
+        }
     })
 
     unloadRender = addRenderComp((ctx, assets) => {

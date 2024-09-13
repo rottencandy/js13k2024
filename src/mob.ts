@@ -53,6 +53,7 @@ const E = {
 let freePool: number[] = []
 
 let wavesEnded = false
+let playHitSound = false
 
 export const MOB_SIZE = 8
 const DMG_BLINK_ANIM_TIME = 200
@@ -346,6 +347,11 @@ export const loadMob = () => {
                 }
             }
         }
+
+        if (playHitSound) {
+            playHit()
+            playHitSound = false
+        }
     })
 
     unloadRender = addRenderComp((ctx, assets) => {
@@ -439,7 +445,7 @@ const spawnMob = (type: MobType) => {
 export const attackMob = (id: number, dmg: number) => {
     E.health[id] -= dmg
     spawnFloatingText(dmg, E.x[id], E.y[id])
-    playHit()
+    playHitSound = true
     if (E.health[id] <= 0) {
         E.active[id] = false
         freePool.push(id)
