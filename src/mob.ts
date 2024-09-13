@@ -158,9 +158,12 @@ export const loadMob = () => {
         } else if (stats.time < 270) {
             if (secf.tick(dt)) {
                 spawnMob(MobType.blob)
+                spawnMob(MobType.blob)
+                spawnMob(MobType.blob)
             }
         } else if (stats.time < 300) {
             if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
                 spawnMob(MobType.fly)
             }
         } else if (stats.time < 330) {
@@ -193,6 +196,7 @@ export const loadMob = () => {
         } else if (stats.time < 540) {
             if (secf.tick(dt)) {
                 spawnMob(MobType.fly)
+                spawnMob(MobType.fly)
             }
             if (sec4.tick(dt)) {
                 spawnMob(MobType.zombie)
@@ -204,6 +208,7 @@ export const loadMob = () => {
             }
         } else if (stats.time < 630) {
             if (secf.tick(dt)) {
+                spawnMob(MobType.fly)
                 spawnMob(MobType.fly)
                 spawnMob(MobType.zombie)
             }
@@ -248,8 +253,11 @@ export const loadMob = () => {
         } else if (stats.time < 780) {
             if (secf.tick(dt)) {
                 spawnMob(MobType.ghost)
+                spawnMob(MobType.ghost)
                 spawnMob(MobType.zombie)
                 spawnMob(MobType.fly)
+                spawnMob(MobType.blob)
+                spawnMob(MobType.blob)
                 spawnMob(MobType.blob)
             }
         } else {
