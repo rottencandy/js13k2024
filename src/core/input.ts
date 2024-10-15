@@ -82,31 +82,29 @@ export const initInput = (
 
     const setKeyState =
         (pressed: boolean) =>
-        ({ key }: { key: string }) => {
+        ({ code }: { code: string }) => {
             dirty = true
-            switch (key) {
+            switch (code) {
                 case "ArrowUp":
-                case "w":
-                case "z":
+                case "KeyW":
                     dirPressed.up = pressed
                     break
                 case "ArrowDown":
-                case "s":
+                case "KeyS":
                     dirPressed.dn = pressed
                     break
                 case "ArrowLeft":
-                case "a":
-                case "q":
+                case "KeyA":
                     dirPressed.lf = pressed
                     break
                 case "ArrowRight":
-                case "d":
+                case "KeyD":
                     dirPressed.rt = pressed
                     break
                 //case "Escape":
                 //    keys.btn.esc = pressed
                 //    break
-                case " ":
+                case "Space":
                     keys.btn.spc = pressed
             }
         }
