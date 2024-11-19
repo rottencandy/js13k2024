@@ -61,6 +61,7 @@ export const loadHero = () => {
     hero.y = HEIGHT / 2
     stats.health = 100
     state = State.idle
+    pendingDamage = 0
     flipped = false
     invulnerable = false
 

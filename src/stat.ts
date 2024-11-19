@@ -314,7 +314,7 @@ export const resetStats = () => {
 
 export const increaseXp = () => {
     stats.xp += COIN_XP
-    if (stats.xp > stats.levelXp) {
+    if (stats.xp >= stats.levelXp) {
         stats.xp -= stats.levelXp
         stats.levelXp += LEVEL_XP_CAP_INC
         powerupMenu()
