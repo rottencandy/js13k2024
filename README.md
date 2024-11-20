@@ -3,6 +3,8 @@ Xiicur Survivors
 
 A game made for the [js13k 2024](https://js13kgames.com/) game jam.
 
+![Screenshot of the game](/img/screenshot.png)
+
 Play it here: https://dev.js13kgames.com/2024/games/xiicur-surviivors
 
 Listen to the soundtrack here: https://keithclark.github.io/ZzFXM/tracker/?url=https://raw.githubusercontent.com/rottencandy/js13k2024/refs/heads/main/assets/Song.js
